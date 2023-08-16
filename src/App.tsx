@@ -5,10 +5,14 @@ import { Button, ThankYouResponse } from './components';
 
 const App = () => {
   return (
-    <Wrapper fullScreen>
-      <div>hello</div>
-      
-    </Wrapper>
+    <div className={'h-screen bg-blue-500 p-5'}>
+      <Wrapper>
+        <ThankYouResponse
+          title="Thanks for your feedback"
+          subtext="Have a great day!"
+        />
+      </Wrapper>
+    </div>
   );
 };
 
