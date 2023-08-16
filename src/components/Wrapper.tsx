@@ -14,7 +14,7 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
   return (
     <div
       className={classnames(
-        'bg-white p-6 flex gap-6 flex-col justify-center items-center',
+        'relative bg-white p-6 flex gap-6 flex-col justify-center items-center w-fit',
         fullScreen ? 'w-screen h-screen' : 'rounded-2xl'
       )}
     >
