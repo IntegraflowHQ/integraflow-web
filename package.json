@@ -8,7 +8,7 @@
     "surveys",
     "experience management"
   ],
-  "source": "src/App.tsx",
+  "source": "src/index.ts",
   "main": "./dist/index.js",
   "module": "./dist/index.module.js",
   "unpkg": "./dist/index.umd.js",
@@ -64,6 +64,7 @@
     "jest-environment-jsdom": "^29.6.2",
     "jest-fetch-mock": "^3.0.3",
     "jest-preset-preact": "^4.1.0",
+    "lucide-preact": "^0.268.0",
     "microbundle": "^0.15.1",
     "preact": "10.16.0",
     "preact-cli": "^3.5.0",
