@@ -4,7 +4,7 @@
     "target": "ESNext" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', or 'ESNEXT'. */,
     "module": "ESNext" /* Specify module code generation: 'none', commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */,
     // "lib": [],                             /* Specify library files to be included in the compilation:  */
-    // "allowJs": true,                          /* Allow javascript files to be compiled. */
+    "allowJs": true,                          /* Allow javascript files to be compiled. */
     // "checkJs": true,                       /* Report errors in .js files. */
     "jsx": "react" /* Specify JSX code generation: 'preserve', 'react-native', or 'react'. */,
     "jsxFactory": "h" /* Specify the JSX factory function to use when targeting react JSX emit, e.g. React.createElement or h. */,
@@ -20,7 +20,7 @@
     // "isolatedModules": true,               /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
 
     /* Strict Type-Checking Options */
-    // "strict": true,                           /* Enable all strict type-checking options. */
+    "strict": true,                           /* Enable all strict type-checking options. */
     // "noImplicitAny": true,                 /* Raise error on expressions and declarations with an implied 'any' type. */
     // "strictNullChecks": true,              /* Enable strict null checks. */
     // "noImplicitThis": true,                /* Raise error on 'this' expressions with an implied 'any' type. */
@@ -55,9 +55,6 @@
     "declaration": true,
     "declarationDir": "dist"
   },
-  "references": [
-    { "path": "./tsconfig/tsconfig.json" } // Add this line, adjust the path to the actual location
-  ],
-  "include": ["src", "../types/**/*.ts"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist", "coverage"]
 }
