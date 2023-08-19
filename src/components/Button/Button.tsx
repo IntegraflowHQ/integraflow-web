@@ -1,15 +1,22 @@
+import classNames from 'classnames';
 import { h, FunctionComponent } from 'preact';
 
 interface ButtonProps {
-  label: string;
+  label?: string;
   size?: 'md' | 'sm' | 'full';
   onClick?: () => void;
+  classname?: string;
+  buttonPosition?: 'left' | 'right' | 'center';
+  type?: 'button' | 'submit' | 'reset';
 }
 
 export const Button: FunctionComponent<ButtonProps> = ({
   label,
   size = 'md',
   onClick,
+  classname,
+  type,
+  buttonPosition = 'left',
 }) => {
   const onClickHandler = () => {
     if (onClick) {
@@ -26,10 +33,23 @@ export const Button: FunctionComponent<ButtonProps> = ({
     widthClasses = 'w-full';
   }
 
+  const buttonPositionClasses =
+    buttonPosition === 'left'
+      ? 'float-left'
+      : buttonPosition === 'right'
+      ? 'float-right'
+      : 'mx-auto';
+
   return (
     <button
+      type={type}
       onClick={onClickHandler}
-      className={`text-white font-semibold bg-formily-black py-2 px-4 rounded-lg ${widthClasses}`}
+      className={classNames(
+        classname,
+        widthClasses,
+        buttonPositionClasses,
+        `block text-white font-semibold bg-formily-black py-2 px-4 rounded-lg`
+      )}
     >
       {label}
     </button>
