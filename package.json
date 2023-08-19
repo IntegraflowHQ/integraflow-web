@@ -8,7 +8,7 @@
     "surveys",
     "experience management"
   ],
-  "source": "src/index.ts",
+  "source": "src/App.tsx",
   "main": "./dist/index.js",
   "module": "./dist/index.module.js",
   "unpkg": "./dist/index.umd.js",
