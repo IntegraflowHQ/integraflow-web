@@ -2,15 +2,15 @@ import { FunctionComponent, h } from 'preact';
 
 interface ButtonProps {
   text: string;
-  color: string;
+  color?: string;
   size?: 'md' | 'sm' | 'full';
   onClick?: () => void;
 }
 
 export const Button: FunctionComponent<ButtonProps> = ({
   text,
-  color,
   onClick,
+  color = '#050505',
   size = 'md',
 }) => {
   const onClickHandler = () => {

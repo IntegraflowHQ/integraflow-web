@@ -8,6 +8,7 @@ interface ContainerProps {
   fullScreen?: boolean;
   placement?: PlacementType;
   close?: () => void;
+  background?: string;
 }
 
 export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
@@ -15,6 +16,7 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
   fullScreen,
   placement,
   close,
+  background = '#FFFFFF',
 }) => {
   return (
     <div
@@ -36,9 +38,10 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
         >
           <div
             className={classnames(
-              'bg-white p-6 flex gap-6 flex-col justify-center items-center relative',
+              'p-6 flex gap-6 flex-col justify-center items-center relative',
               fullScreen ? 'w-screen h-screen' : 'rounded-2xl w-fit'
             )}
+            style={{ backgroundColor: background }}
           >
             {!fullScreen && (
               <button className={'absolute right-6 top-6'} onClick={close}>
