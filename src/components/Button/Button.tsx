@@ -6,8 +6,8 @@ interface ButtonProps {
   size?: 'md' | 'sm' | 'full';
   onClick?: () => void;
   classname?: string;
-  color: string;
-  buttonPosition?: 'left' | 'right' | 'center';
+  color?: string;
+  position?: 'left' | 'right' | 'center';
   type?: 'button' | 'submit' | 'reset';
 }
 
@@ -18,7 +18,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
   classname,
   type,
   color,
-  buttonPosition = 'left',
+  position = 'left',
 }) => {
   const onClickHandler = () => {
     if (onClick) {
@@ -36,11 +36,11 @@ export const Button: FunctionComponent<ButtonProps> = ({
   }
 
   const buttonPositionClasses =
-    buttonPosition === 'left'
-      ? 'float-left'
-      : buttonPosition === 'right'
-      ? 'float-right'
-      : 'mx-auto';
+    position === 'center'
+      ? 'mx-auto'
+      : position === 'right'
+      ? 'ml-auto'
+      : 'mr-auto';
 
   return (
     <button
