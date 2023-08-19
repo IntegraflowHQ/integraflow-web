@@ -46,12 +46,12 @@ export const Button: FunctionComponent<ButtonProps> = ({
     <button
       type={type}
       onClick={onClickHandler}
+      style={{ backgroundColor: color ? color : '#050505' }}
       className={classNames(
-        color ? color : 'bg-formily-black',
         classname,
         widthClasses,
         buttonPositionClasses,
-        `block text-white font-semibold bg-formily-black py-2 px-4 rounded-lg`
+        `block text-white font-semibold  py-2 px-4 rounded-lg`
       )}
     >
       {label}
