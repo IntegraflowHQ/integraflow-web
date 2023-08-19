@@ -43,7 +43,7 @@ export default function SingleResponse({
           </label>
         ))}
       </div>
-      <Button text='Submit' color={theme?.button} size='full' />
+      <Button label='Submit' color={theme?.button} size='full' />
     </form>
   );
 }
