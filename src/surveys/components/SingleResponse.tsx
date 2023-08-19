@@ -1,6 +1,6 @@
 import { VNode, h } from 'preact';
 import { useState } from 'preact/hooks';
-import { Button, Label } from '../../components';
+import { Button, Header } from '../../components';
 import { ID, Question, Theme } from '../../types';
 
 interface SingleResponseProps {
@@ -25,7 +25,7 @@ export default function SingleResponse({
 
   return (
     <form className={'max-w-sm space-y-4'} onSubmit={handleSubmit}>
-      <Label text={question.label} color={theme?.question} />
+      <Header title={question.label} color={theme?.question} />
       <div className={'space-y-2'}>
         {(question.options ?? []).map((option) => (
           <label
