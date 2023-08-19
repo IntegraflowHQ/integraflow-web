@@ -6,6 +6,7 @@ interface ButtonProps {
   size?: 'md' | 'sm' | 'full';
   onClick?: () => void;
   classname?: string;
+  color: string;
   buttonPosition?: 'left' | 'right' | 'center';
   type?: 'button' | 'submit' | 'reset';
 }
@@ -16,6 +17,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
   onClick,
   classname,
   type,
+  color,
   buttonPosition = 'left',
 }) => {
   const onClickHandler = () => {
@@ -45,6 +47,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
       type={type}
       onClick={onClickHandler}
       className={classNames(
+        color ? color : 'bg-formily-black',
         classname,
         widthClasses,
         buttonPositionClasses,
