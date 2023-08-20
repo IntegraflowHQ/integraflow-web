@@ -25,7 +25,11 @@ export default function SingleResponse({
 
   return (
     <form className={'max-w-sm space-y-4'} onSubmit={handleSubmit}>
-      <Header title={question.label} color={theme?.question} />
+      <Header
+        title={question.label}
+        description={question.description}
+        color={theme?.question}
+      />
       <div className={'space-y-2'}>
         {(question.options ?? []).map((option) => (
           <label
