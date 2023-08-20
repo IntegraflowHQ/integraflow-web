@@ -6,12 +6,14 @@ import { ID, Question, Theme } from '../../types';
 interface SingleResponseProps {
   question: Question;
   onAnswered: (questionId: ID, answerId: ID) => void;
+  submitText?: string;
   theme?: Theme;
 }
 
 export default function SingleResponse({
   question,
   onAnswered,
+  submitText,
   theme,
 }: SingleResponseProps): VNode {
   const [selectedOption, setSelectedOption] = useState<ID>('');
@@ -47,7 +49,11 @@ export default function SingleResponse({
           </label>
         ))}
       </div>
-      <Button label='Submit' color={theme?.button} size='full' />
+      <Button
+        label={submitText ?? 'Submit'}
+        color={theme?.button}
+        size='full'
+      />
     </form>
   );
 }
