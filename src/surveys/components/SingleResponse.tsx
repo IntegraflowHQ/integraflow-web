@@ -33,7 +33,7 @@ export default function SingleResponse({
       <div className={'space-y-2'}>
         {(question.options ?? []).map((option) => (
           <label
-            for={option.label}
+            onClick={() => setSelectedOption(option.id)}
             className={'rounded-xl py-3 px-4 flex gap-2 items-center'}
             style={{ backgroundColor: theme?.answer ?? '#F0F0F0' }}
           >
