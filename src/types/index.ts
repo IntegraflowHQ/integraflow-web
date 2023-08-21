@@ -317,10 +317,6 @@ export interface Event {
 
 export interface State {
   surveys?: Survey[];
-  person: {
-    id: ID;
-    attributes: UserAttributes;
-  }
   installId?: string;
   user?: UserAttributes;
 }

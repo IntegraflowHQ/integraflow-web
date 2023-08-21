@@ -18,7 +18,7 @@
     /* Generates corresponding '.d.ts' file. */
     "declarationDir": "dist",
     // "declarationMap": true,                /* Generates a sourcemap for each corresponding '.d.ts' file. */
-    "sourceMap": true,
+    // "sourceMap": true,
     /* Generates corresponding '.map' file. */
     // "outFile": "./",                       /* Concatenate and emit output to single file. */
     "outDir": "./dist/",
@@ -51,6 +51,7 @@
 
     /* Module Resolution Options */
     "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
+    "resolveJsonModule": true /* Allow importing .json files */,
     // "baseUrl": "./",                       /* Base directory to resolve non-absolute module names. */
     // "paths": {},                           /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
