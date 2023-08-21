@@ -39,6 +39,7 @@ export default function App({
         // isOpen={isOpen}
         close={close}
         placement={survey.settings.placement}
+        background={survey.theme?.background}
       >
         <SurveyView
           survey={survey}

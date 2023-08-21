@@ -9,54 +9,54 @@ export enum AnswerType {
   RATING = 'rating',
   NPS = 'nps',
   FORM = 'form',
-  CTA = 'cta'
+  CTA = 'cta',
 }
 
 export enum FormFieldType {
-  FIRST_NAME = "first_name",
-  LAST_NAME = "last_name",
-  EMAIL = "email",
-  ORGANIZATION = "organization",
-  DEPARTMENT = "department",
-  JOB_TITLE = "job_title",
-  PHONE = "phone",
-  WEBSITE = "website",
-  COUNTRY = "country",
-  ADDRESS_ONE = "address_one",
-  ADDRESS_TWO = "address_two",
-  CITY = "city",
-  STATE = "state",
-  ZIP = "zip",
-  FAX = "fax",
-  ANNUAL_REVENUE = "annual_revenue",
-  EMPLOYEES = "employees",
-  INDUSTRY = "industry",
-  CONFIRMATION = "confirmation",
-  SECURITY_INFO = "security_info"
+  FIRST_NAME = 'first_name',
+  LAST_NAME = 'last_name',
+  EMAIL = 'email',
+  ORGANIZATION = 'organization',
+  DEPARTMENT = 'department',
+  JOB_TITLE = 'job_title',
+  PHONE = 'phone',
+  WEBSITE = 'website',
+  COUNTRY = 'country',
+  ADDRESS_ONE = 'address_one',
+  ADDRESS_TWO = 'address_two',
+  CITY = 'city',
+  STATE = 'state',
+  ZIP = 'zip',
+  FAX = 'fax',
+  ANNUAL_REVENUE = 'annual_revenue',
+  EMPLOYEES = 'employees',
+  INDUSTRY = 'industry',
+  CONFIRMATION = 'confirmation',
+  SECURITY_INFO = 'security_info',
 }
 
 export enum LogicOperator {
   OR = 'or',
-  AND = 'and'
+  AND = 'and',
 }
 
 export enum LogicFormCondition {
   IS_FILLED_IN = 'filled',
   IS_NOT_FILLED_IN = 'not_filled',
-  HAS_ANY_VALUE = 'any_value'
+  HAS_ANY_VALUE = 'any_value',
 }
 
 export enum LogicRangeCondition {
   IS = 'is',
   IS_NOT = 'is_not',
   IS_BETWEEN = 'between',
-  HAS_ANY_VALUE = 'any_value'
+  HAS_ANY_VALUE = 'any_value',
 }
 
 export enum LogicDateCondition {
   HAS_ANY_VALUE = 'any_value',
   QUESTION_IS_ANSWERED = 'answered',
-  QUESTION_IS_NOT_ANSWERED = 'not_answered'
+  QUESTION_IS_NOT_ANSWERED = 'not_answered',
 }
 
 export enum LogicMultipleCondition {
@@ -64,7 +64,7 @@ export enum LogicMultipleCondition {
   INCLUDES_ALL = 'includes_all',
   INCLUDES_ANY = 'includes_any',
   DOES_NOT_INCLUDE_ANY = 'not_include_any',
-  HAS_ANY_VALUE = 'any_value'
+  HAS_ANY_VALUE = 'any_value',
 }
 
 export enum LogicTextCondition {
@@ -72,23 +72,28 @@ export enum LogicTextCondition {
   ANSWER_DOES_NOT_CONTAIN = 'not_contain',
   HAS_ANY_VALUE = 'any_value',
   QUESTION_IS_ANSWERED = 'answered',
-  QUESTION_IS_NOT_ANSWERED = 'not_answered'
+  QUESTION_IS_NOT_ANSWERED = 'not_answered',
 }
 
 export enum LogicSingleCondition {
   IS = 'is',
   IS_NOT = 'is_not',
-  HAS_ANY_VALUE = 'any_value'
+  HAS_ANY_VALUE = 'any_value',
 }
 
 export enum CTAType {
   LINK = 'link',
   NEXT = 'next',
   CLOSE = 'close',
-  HIDDEN = 'hidden'
+  HIDDEN = 'hidden',
 }
 
-export type PlacementType = "bottomLeft" | "bottomRight" | "topLeft" | "topRight" | "center";
+export type PlacementType =
+  | 'bottomLeft'
+  | 'bottomRight'
+  | 'topLeft'
+  | 'topRight'
+  | 'center';
 
 export type ID = string | number;
 
@@ -157,7 +162,7 @@ export interface RangeSettings {
 }
 
 export interface CTASettings {
-  type: CTAType,
+  type: CTAType;
   text?: string;
   link?: boolean;
 }
@@ -194,6 +199,7 @@ export interface TextSettings {
     operator: LogicOperator;
     values: string[];
   })[];
+  singleLine?: boolean;
 }
 
 export interface Question {
@@ -203,7 +209,14 @@ export interface Question {
   type: AnswerType;
   options?: (QuestionOption | FormField)[];
   maxPath: number;
-  settings: FormSettings | RangeSettings | CTASettings | DateSettings | MultipleSettings | SingleSettings | TextSettings;
+  settings:
+    | FormSettings
+    | RangeSettings
+    | CTASettings
+    | DateSettings
+    | MultipleSettings
+    | SingleSettings
+    | TextSettings;
 }
 
 export enum FilterOperator {
@@ -250,7 +263,7 @@ export interface SurveySettings {
   recurringPeriod: number;
   placement?: PlacementType;
   showProgressBar: boolean;
-  submitText?: boolean;
+  submitText?: string;
 }
 
 export interface Theme {
@@ -274,14 +287,14 @@ export interface Survey {
 }
 
 export type Jsonish =
-    | string
-    | number
-    | boolean
-    | null
-    | { [key: string]: Jsonish }
-    | { toJSON: () => any }
-    | Jsonish[]
-    | undefined;
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Jsonish }
+  | { toJSON: () => any }
+  | Jsonish[]
+  | undefined;
 
 export interface UserAttributes {
   id: ID,
@@ -302,6 +315,10 @@ export interface Event {
 
 export interface State {
   surveys?: Survey[];
+  person: {
+    id: ID;
+    attributes: UserAttributes;
+  }
   installId?: string;
   user?: UserAttributes;
 }
