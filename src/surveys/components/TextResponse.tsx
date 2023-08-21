@@ -33,11 +33,12 @@ const TextResponse = ({ theme, question, onAnswered }: Props) => {
             <input
               type="text"
               className={
-                'w-full mt-3 border border-gray-300 rounded-xl p-3 bg-formily-grey focus:outline-none focus:ring-2 focus:border-transparent'
+                'w-full mt-3 border border-gray-300 rounded-xl p-3 bg-formily-grey focus:outline-none focus:ring-1 focus:border-transparent'
               }
               style={{
-                color: theme?.question,
-                backgroundColor: theme?.answer,
+                color: theme?.answer,
+                backgroundColor: `${theme?.answer}1A`,
+                // 1A is 10% opacity of the color hex code
               }}
               name={question.id.toString()}
               id={question.id.toString()}
@@ -62,11 +63,11 @@ const TextResponse = ({ theme, question, onAnswered }: Props) => {
                   setAnswer(e.currentTarget.value);
                 }}
                 className={
-                  'w-full mt-3 resize-none border border-gray-300 rounded-xl p-4 bg-formily-grey focus:outline-none focus:ring-2 focus:border-transparent'
+                  'w-full mt-3 resize-none border border-gray-300 rounded-xl p-4 bg-formily-grey focus:outline-none focus:ring-1 focus:border-transparent'
                 }
                 style={{
-                  color: theme?.question,
-                  backgroundColor: theme?.answer,
+                  color: theme?.answer,
+                  backgroundColor: `${theme?.answer}1A`,
                 }}
               ></textarea>
             </div>
