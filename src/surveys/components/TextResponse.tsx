@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { CTASettings, Question, Theme } from '../../types';
+import { CTASettings, Question, TextSettings, Theme } from '../../types';
 import { useState } from 'preact/hooks';
 import { Button, Header } from '../../components';
 type Props = {
@@ -29,24 +29,48 @@ const TextResponse = ({ theme, question, onAnswered }: Props) => {
       />
       <div>
         <form onSubmit={onSubmitHandler}>
-          <textarea
-            name={question.id.toString()}
-            id={question.id.toString()}
-            cols={20}
-            rows={5}
-            placeholder={'Type your answer here...'}
-            value={answer}
-            onChange={(e: h.JSX.TargetedEvent<HTMLTextAreaElement, Event>) => {
-              setAnswer(e.currentTarget.value);
-            }}
-            className={
-              'w-full mt-3 resize-none border border-gray-300 rounded-xl p-4 bg-formily-grey focus:outline-none focus:ring-2 focus:border-transparent'
-            }
-            style={{
-              color: theme?.question,
-              backgroundColor: theme?.answer,
-            }}
-          ></textarea>
+          {(question.settings as TextSettings).singleLine === true ? (
+            <input
+              type="text"
+              className={
+                'w-full mt-3 border border-gray-300 rounded-xl p-3 bg-formily-grey focus:outline-none focus:ring-2 focus:border-transparent'
+              }
+              style={{
+                color: theme?.question,
+                backgroundColor: theme?.answer,
+              }}
+              name={question.id.toString()}
+              id={question.id.toString()}
+              placeholder={'Type your answer here...'}
+              value={answer}
+              onChange={(e: h.JSX.TargetedEvent<HTMLInputElement, Event>) => {
+                setAnswer(e.currentTarget.value);
+              }}
+            />
+          ) : (
+            <div>
+              <textarea
+                name={question.id.toString()}
+                id={question.id.toString()}
+                cols={20}
+                rows={5}
+                placeholder={'Type your answer here...'}
+                value={answer}
+                onChange={(
+                  e: h.JSX.TargetedEvent<HTMLTextAreaElement, Event>
+                ) => {
+                  setAnswer(e.currentTarget.value);
+                }}
+                className={
+                  'w-full mt-3 resize-none border border-gray-300 rounded-xl p-4 bg-formily-grey focus:outline-none focus:ring-2 focus:border-transparent'
+                }
+                style={{
+                  color: theme?.question,
+                  backgroundColor: theme?.answer,
+                }}
+              ></textarea>
+            </div>
+          )}
           <Button
             color={theme?.button}
             label={(question?.settings as CTASettings).text}
