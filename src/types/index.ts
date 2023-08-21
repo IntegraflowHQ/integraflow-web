@@ -158,7 +158,9 @@ export interface FormSettings {
 export interface RangeSettings {
   rightText?: string;
   leftText?: string;
+  count?: number;
   logic?: RangeLogic[];
+  shape?: 'star' | 'thumb' | 'heart';
 }
 
 export interface CTASettings {
