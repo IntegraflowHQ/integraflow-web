@@ -5,7 +5,7 @@ import { Button, Header } from '../../components';
 type Props = {
   question: Question;
   theme?: Theme;
-  onAnswered?: () => void;
+  onAnswered?: (questionId: string | number, answer: string) => void;
 };
 
 const TextResponse = ({ theme, question, onAnswered }: Props) => {
@@ -16,7 +16,7 @@ const TextResponse = ({ theme, question, onAnswered }: Props) => {
   ) => {
     event.preventDefault();
     if (onAnswered) {
-      onAnswered();
+      onAnswered(question?.id, answer);
     }
   };
 
@@ -30,29 +30,27 @@ const TextResponse = ({ theme, question, onAnswered }: Props) => {
       <div>
         <form onSubmit={onSubmitHandler}>
           <textarea
-            name=""
-            id=""
+            name={question.id.toString()}
+            id={question.id.toString()}
             cols={20}
             rows={5}
             placeholder={'Type your answer here...'}
-            onChange={(e) => {
-              console.log(e.target);
+            value={answer}
+            onChange={(e: h.JSX.TargetedEvent<HTMLTextAreaElement, Event>) => {
+              setAnswer(e.currentTarget.value);
             }}
             className={
-              'w-full mt-3 resize-none border border-gray-300 rounded-xl p-4 bg-formily-grey focus:outline-none focus:ring-2 focus:ring-formily-blue focus:border-transparent'
+              'w-full mt-3 resize-none border border-gray-300 rounded-xl p-4 bg-formily-grey focus:outline-none focus:ring-2 focus:border-transparent'
             }
           ></textarea>
-          <div className={'mt-3'}>
-            <Button
-              label={(question?.settings as CTASettings).text}
-              type="submit"
-              size="full"
-              classname="mt-3"
-            />
-          </div>
+          <Button
+            label={(question?.settings as CTASettings).text}
+            type="submit"
+            size="full"
+            classname="mt-3"
+          />
         </form>
       </div>
-      <div></div>
     </div>
   );
 };
