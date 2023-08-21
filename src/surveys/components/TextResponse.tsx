@@ -5,7 +5,7 @@ import { Button, Header } from '../../components';
 type Props = {
   question: Question;
   theme?: Theme;
-  onAnswered?: (questionId: string | number, answer: string) => void;
+  onAnswered: (questionId: string | number, answer: string) => void;
 };
 
 const TextResponse = ({ theme, question, onAnswered }: Props) => {
@@ -42,8 +42,13 @@ const TextResponse = ({ theme, question, onAnswered }: Props) => {
             className={
               'w-full mt-3 resize-none border border-gray-300 rounded-xl p-4 bg-formily-grey focus:outline-none focus:ring-2 focus:border-transparent'
             }
+            style={{
+              color: theme?.question,
+              backgroundColor: theme?.answer,
+            }}
           ></textarea>
           <Button
+            color={theme?.button}
             label={(question?.settings as CTASettings).text}
             type="submit"
             size="full"
