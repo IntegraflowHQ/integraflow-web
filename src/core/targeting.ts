@@ -30,7 +30,7 @@ function propIn(filterValue: FilterValue, propValue: any): boolean {
   return false;
 }
 
-function propIs(filterValue: FilterValue, propValue: any): boolean {
+function propEq(filterValue: FilterValue, propValue: any): boolean {
   return filterValue == propValue;
 }
 
@@ -59,10 +59,10 @@ function filterMatched(operator: FilterOperator, filterValue: FilterValue, value
 
   switch (operator) {
     case FilterOperator.IS:
-      isFilterMatched = propIs(filterValue, value);
+      isFilterMatched = propEq(filterValue, value);
       break;
     case FilterOperator.IS_NOT:
-      isFilterMatched = !propIs(filterValue, value);
+      isFilterMatched = !propEq(filterValue, value);
       break;
     case FilterOperator.CONTAINS:
       isFilterMatched = propContains(filterValue, value);
