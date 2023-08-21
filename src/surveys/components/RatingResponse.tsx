@@ -1,8 +1,8 @@
-import { Star } from 'lucide-preact';
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { Header } from '../../components';
 import { ID, Question, RangeSettings, Theme } from '../../types';
+import RatingIcon from './RatingIcon';
 
 interface RatingResponseProps {
   question: Question;
@@ -38,11 +38,12 @@ function RatingResponse({ question, onAnswered, theme }: RatingResponseProps) {
       <div className='flex justify-center gap-6 px-6'>
         {[1, 2, 3, 4, 5].map((num) => (
           <button onClick={() => setAnswer(num)} key={num.toString()}>
-            <Star
-              color={num <= answer ? '#FFCB45' : theme?.answer ?? '#F2F2F2'}
-              fill={num <= answer ? '#FFCB45' : theme?.answer ?? '#F2F2F2'}
-              size={40}
-            />
+            {
+              <RatingIcon
+                shape={(question.settings as RangeSettings).shape}
+                color={num <= answer ? '#FFCB45' : theme?.answer ?? '#F2F2F2'}
+              />
+            }
           </button>
         ))}
       </div>
