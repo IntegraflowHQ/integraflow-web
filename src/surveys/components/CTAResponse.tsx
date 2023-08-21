@@ -25,15 +25,13 @@ export const CTAResponse = ({ question, theme, onAnswered }: Props) => {
       />
 
       {(question?.settings as CTASettings).type === CTAType.HIDDEN ? null : (
-        <div className={'mt-3'}>
-          <Button
-            label={(question?.settings as CTASettings).text}
-            onClick={onClickHandler}
-            classname="mt-3"
-            position="right"
-            type={'submit'}
-          />
-        </div>
+        <Button
+          label={(question?.settings as CTASettings).text}
+          onClick={onClickHandler}
+          classname="mt-3"
+          position="right"
+          type={'submit'}
+        />
       )}
     </div>
   );
