@@ -1,10 +1,12 @@
 import { h, render } from 'preact';
 
 import Formily from '..';
-import { Context, RootFrame, RootFrameContainer } from '../core';
-import { ID, Survey } from '../types';
+import { Context, RootFrame, RootFrameContainer, SdkEvent } from '../core';
+import { ID, Survey, SurveyAnswer, UserAttributes } from '../types';
 import { deferSurveyActivation } from '../utils';
 import App from './App';
+import { TargetingEngine } from '../core/targeting';
+import { getState } from '../core/storage';
 
 export type SurveyManagerState =
   | 'loading'
@@ -18,6 +20,7 @@ export class SurveyManager {
   private readonly formilyClient: Formily;
   private readonly context: Context;
   private readonly surveyContainer: RootFrameContainer;
+  private readonly targetingEngine: TargetingEngine;
 
   private state?: SurveyManagerState;
   private surveys: Survey[];
@@ -31,8 +34,25 @@ export class SurveyManager {
     this.formilyClient = client;
     this.context = ctx;
 
+    this.targetingEngine = new TargetingEngine(ctx, this.onEventTracked);
+
     this.setState('loading');
   }
+
+  private onEventTracked = (event: SdkEvent) => {
+    console.info('Survey trigger saw event', event);
+
+    if (this.state !== 'ready') {
+        console.info('Not ready, waiting on queue');
+        return;
+    }
+
+    if (event.type === 'audienceUpdated') {
+      return this.loadSurveys();
+    }
+
+    this.evaluateTriggers();
+};
 
   private setState(state: SurveyManagerState) {
     console.info('Setting survey manager state:' + state);
@@ -53,20 +73,24 @@ export class SurveyManager {
     }
   }
 
-  private async onQuestionAnswered(surveyId: ID) {
+  private async onQuestionAnswered(surveyId: ID, questionId: ID, answer: SurveyAnswer) {
     // TODO: Perform some async actions.
+    this.context.listeners.onQuestionAnswered?.(surveyId, questionId, answer);
   }
 
   private async onSurveyDisplayed(surveyId: ID) {
     // TODO: Perform some async actions.
+    this.context.listeners.onSurveyDisplayed?.(surveyId);
   }
 
   private async onSurveyClosed(surveyId: ID) {
     // TODO: Perform some async actions. Probably display a new survey, if available
+    this.context.listeners.onSurveyClosed?.(surveyId);
   }
 
   private async onSurveyCompleted(surveyId: ID) {
     // TODO: Perform some async actions. Probably display a new survey, if available
+    this.context.listeners.onSurveyCompleted?.(surveyId);
   }
 
   private render() {
@@ -87,26 +111,33 @@ export class SurveyManager {
   }
 
   private async loadSurveys(): Promise<void> {
-    // TODO: Load surveys from the backend to get the latest updates
+    const state = await getState(this.context);
 
-    if (this.context.surveys.length > 0) {
-      this.surveys = [...this.context.surveys];
+    if (state.surveys?.length === 0) {
+      return Promise.resolve();
     }
 
-    for (let survey of this.surveys) {
-      // TODO: Evaluate survey audience to ensure the right people are targeted.
+    for (let survey of (state.surveys || [])) {
+      const isMatched = this.targetingEngine.evaluateAttributes(survey, state.user);
+      if (isMatched) {
+        this.surveys.push(survey);
+      }
     }
 
     return Promise.resolve();
   }
 
-  private async evaluateTriggers() {
+  private evaluateTriggers() {
     console.info('Evaluating survey triggers');
 
-    // TODO: Evaluate survey triggers to ensure the right people are targeted.
-    const matchedSurveys = [...this.surveys];
+    const matchedSurveys = this.targetingEngine.filterSurveys(this.surveys);
 
     this.activateSurveys(matchedSurveys);
+  }
+
+  private evaluateAttributes(survey: Survey, attributes: UserAttributes) {
+    console.info('Evaluating survey attributes');
+    return this.targetingEngine.evaluateAttributes(survey)
   }
 
   private activateSurvey(survey: Survey) {

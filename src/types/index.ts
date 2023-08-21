@@ -200,20 +200,38 @@ export interface Question {
   id: string | number;
   label: string;
   description?: string;
-  type: ResponseType;
+  type: AnswerType;
   options?: (QuestionOption | FormField)[];
   maxPath: number;
   settings: FormSettings | RangeSettings | CTASettings | DateSettings | MultipleSettings | SingleSettings | TextSettings;
 }
 
+export enum FilterOperator {
+  IS = 'is',
+  IS_NOT = 'is_not',
+  STARTS_WITH = 'starts_with',
+  ENDS_WITH = 'ends_with',
+  CONTAINS = 'contains',
+  DOES_NOT_CONTAIN = 'not_contain',
+  IS_UNKNOWN = 'is_unknown',
+  HAS_ANY_VALUE = 'any_value',
+  GREATER_THAN = 'greater_than',
+  LESS_THAN = 'less_than',
+  IS_TRUE = 'is_true',
+  IS_FALSE = 'is_false'
+}
+
+export type FilterValue = number | boolean | string | string[];
+
 export interface Trigger {
   delay?: number;
   conditions?: {
     event: string;
+    operator: LogicOperator;
     filters?: {
       property: string;
-      operator: string;
-      value: number | boolean | string | string[];
+      operator: FilterOperator;
+      value: FilterValue;
     }[];
   }[];
 }
@@ -222,8 +240,8 @@ export interface Audience {
   operator: LogicOperator;
   filters: {
     attribute: string;
-    operator: string;
-    value: number | boolean | string | string[];
+    operator: FilterOperator;
+    value: FilterValue;
   }[];
 }
 
@@ -249,7 +267,7 @@ export interface Survey {
   type: string;
   questions: Question[];
   trigger?: Trigger;
-  audience?: Audience[];
+  audience?: Audience;
   settings: SurveySettings;
   theme?: Theme;
   answeredCount?: number;
@@ -266,6 +284,7 @@ export type Jsonish =
     | undefined;
 
 export interface UserAttributes {
+  id: ID,
   [key: string]: Jsonish;
 }
 
@@ -273,15 +292,34 @@ export interface EventProperties {
   [key: string]: Jsonish;
 }
 
-export interface State {
-  surveys?: Survey[];
-  person: {
-    id: ID;
-    attributes: UserAttributes;
-  }
+export interface Event {
+  event: string,
+  uuid: string,
+  timestamp: number,
+  properties?: EventProperties,
+  userId?: ID
 }
 
-export interface Configuration {
+export interface State {
+  surveys?: Survey[];
+  installId?: string;
+  user?: UserAttributes;
+}
+
+export interface Listeners {
+  onEventTracked?: (payload: Event) => void;
+  onAudienceChanged?: (audience: UserAttributes) => void;
+  onSurveyDisplayed?: (surveyId: ID) => void;
+  onSurveyClosed?: (surveyId: ID) => Promise<void>;
+  onQuestionAnswered?: (
+    surveyId: ID,
+    questionId: ID,
+    answer: SurveyAnswer
+  ) => void;
+  onSurveyCompleted?: (surveyId: ID) => void;
+}
+
+export interface Configuration extends Listeners {
   apiHost?: string;
   appKey?: string;
   surveys?: Survey[];
