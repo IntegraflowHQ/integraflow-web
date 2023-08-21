@@ -159,6 +159,7 @@ export interface RangeSettings {
   rightText?: string;
   leftText?: string;
   logic?: RangeLogic[];
+  shape?: 'star' | 'thumb' | 'heart';
 }
 
 export interface CTASettings {
