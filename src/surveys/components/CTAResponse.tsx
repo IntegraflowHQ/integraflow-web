@@ -4,9 +4,9 @@ import { Button } from '../../components/Button/Button';
 import { Header } from '../../components';
 
 type Props = {
-  question?: Question;
+  question: Question;
   theme?: Theme;
-  onAnswered?: () => void;
+  onAnswered: () => void;
 };
 
 export const CTAResponse = ({ question, theme, onAnswered }: Props) => {
@@ -17,10 +17,10 @@ export const CTAResponse = ({ question, theme, onAnswered }: Props) => {
   };
 
   return (
-    <div>
+    <div className={'border'}>
       <Header
-        title={question?.label ? question?.label : ''}
-        description={question?.description ? question.description : ''}
+        title={question?.label}
+        description={question?.description}
         color={theme?.question ? theme?.question : '#050505'}
       />
 
