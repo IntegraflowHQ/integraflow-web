@@ -6,13 +6,13 @@ import { Header } from '../../components';
 type Props = {
   question?: Question;
   theme?: Theme;
-  onAnswer?: () => void;
+  onAnswered?: () => void;
 };
 
-export const CTAResponse = ({ question, theme, onAnswer }: Props) => {
+export const CTAResponse = ({ question, theme, onAnswered }: Props) => {
   const onClickHandler = () => {
-    if (onAnswer) {
-      onAnswer();
+    if (onAnswered) {
+      onAnswered();
     }
   };
 
