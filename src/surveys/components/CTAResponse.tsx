@@ -17,47 +17,22 @@ export const CTAResponse = ({ question, theme, onAnswered }: Props) => {
   };
 
   return (
-    <div className={'border'}>
+    <div className={'max-w-[489px]'}>
       <Header
         title={question?.label}
         description={question?.description}
         color={theme?.question ? theme?.question : '#050505'}
       />
 
-      {(question?.settings as CTASettings).type === CTAType.CLOSE && (
-        <div>
-          <Button
-            label={(question?.settings as CTASettings).text}
-            onClick={onClickHandler}
-            classname="mt-3"
-            position="right"
-            type={'submit'}
-          />
-        </div>
+      {(question?.settings as CTASettings).type === CTAType.HIDDEN ? null : (
+        <Button
+          label={(question?.settings as CTASettings).text}
+          onClick={onClickHandler}
+          classname="mt-3"
+          position="right"
+          type={'submit'}
+        />
       )}
-      {(question?.settings as CTASettings).type === CTAType.LINK && (
-        <div className={'mt-3'}>
-          <Button
-            label={(question?.settings as CTASettings).text}
-            onClick={onClickHandler}
-            classname="mt-3"
-            position="right"
-            type={'submit'}
-          />
-        </div>
-      )}
-      {(question?.settings as CTASettings).type === CTAType.NEXT && (
-        <div className={'mt-3'}>
-          <Button
-            label={(question?.settings as CTASettings).text}
-            onClick={onClickHandler}
-            classname="mt-3"
-            position="right"
-            type={'submit'}
-          />
-        </div>
-      )}
-      {(question?.settings as CTASettings).type === CTAType.HIDDEN && null}
     </div>
   );
 };
