@@ -1,4 +1,5 @@
 import { Context, RootFrame } from './core';
+import { SyncManager } from './core/sync';
 import { SurveyManager } from './surveys';
 import { Configuration, EventProperties, UserAttributes } from './types';
 
@@ -6,6 +7,7 @@ export default class Formily {
   private readonly config: Configuration;
   private static instance: Formily;
   private readonly surveyManager: SurveyManager;
+  private readonly syncManager: SyncManager;
 
   private static initialized: boolean = false;
   private readonly context: Context;
@@ -23,6 +25,8 @@ export default class Formily {
       this.context,
       this.rootFrame
     );
+
+    this.syncManager = new SyncManager(this.context);
   }
 
   static init(config: Configuration) {
@@ -30,21 +34,42 @@ export default class Formily {
       this.instance = new Formily(config);
       this.initialized = true;
     }
+
+    return this.instance;
   }
 
   async identify(identifier: string, attributes?: UserAttributes): Promise<void> {
-    // TODO: Persist user attributes in a local storage then send to the server
+    await this.syncManager.identifyUser(identifier, attributes);
   }
 
-  async logout(): Promise<void> {
-    // Clear user and survey data from local storage
+  async updateUserAttribute(attributes: UserAttributes): Promise<void> {
+    await this.syncManager.updateUserAttribute(attributes);
+  }
+
+  async reset(resetInstallId?: boolean): Promise<void> {
+    await this.syncManager.reset(resetInstallId);
   }
 
   async track(event: string, properties?: EventProperties): Promise<void> {
-    // TODO: Track user events
+    await this.syncManager.trackEvent(event, properties);
+  }
+
+  async trackRouteChange() {
+    if (typeof window === 'undefined') return;
+
+    await this.syncManager.trackEvent('pageView', {
+      title: document.title,
+      url: window.location.href
+    });
   }
 
   async registerRouteChange() {
-    // TODO: Add url change listener for SPA
+    if (typeof window === 'undefined') return;
+
+    window.addEventListener('hashchange', this.trackRouteChange);
+    window.addEventListener('popstate', this.trackRouteChange);
+    window.addEventListener('pushstate', this.trackRouteChange);
+    window.addEventListener('replacestate', this.trackRouteChange);
+    window.addEventListener('load', this.trackRouteChange);
   }
 }

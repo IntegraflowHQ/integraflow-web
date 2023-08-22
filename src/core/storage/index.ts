@@ -4,25 +4,98 @@ import {
   get as idbGet,
   set as idbSet
 } from './idb-keyval';
-import { Configuration } from '../../types';
+import { State } from '../../types';
+import { Context } from '../context';
+import { uuidv4 } from '../../utils';
 
 const store = new Store('formify', 'default');
+
+const getCacheKeys = (key: string) => ({
+  STATE_CACHE_KEY: `${key}State`,
+  STATE_CACHE_KEY_UPDATED: `${key}StateUpdated`
+});
+
+const MAX_CACHE_AGE_MS = 1 * 60 * 60 * 1000;
 
 export function get<T>(key: IDBValidKey): Promise<T> {
   return idbGet(key, store);
 }
 
-export function set<T extends any>(key: IDBValidKey, value: T): Promise<T> {
-  return idbSet(key, value, store).then(() => value);
+export async function set<T extends any>(key: IDBValidKey, value: T): Promise<T> {
+  await idbSet(key, value, store);
+  return value;
 }
 
 export function del(key: IDBValidKey): Promise<void> {
   return idbDel(key, store);
 }
 
-export function persistConfig(config: Configuration): Promise<Configuration> {
-  return set<Configuration>('config', {
-    surveys: config.surveys,
+export async function getState(
+  ctx: Context
+): Promise<State> {
+  const cacheKeys = getCacheKeys('state');
+  let state = (await get<State>(cacheKeys.STATE_CACHE_KEY)) ?? {};
 
-  });
+  const lastLoadTime =
+    (await get<number>(cacheKeys.STATE_CACHE_KEY_UPDATED)) ?? 0;
+  let updatedRemoteState = false;
+
+  if (Date.now() - lastLoadTime > MAX_CACHE_AGE_MS) {
+    console.info('State never synced/stale, syncing now...');
+
+    const installId = state.installId ?? uuidv4();
+    try {
+      // TODO: Sync with the backend
+      state = {
+        surveys: ctx.surveys ?? [],
+        installId,
+        user: state.user ?? { id: installId },
+      };
+
+      updatedRemoteState = true;
+    } catch (e) {
+      console.warn(e);
+      // Noop (fallback to local)
+    }
+  }
+
+  if (updatedRemoteState) {
+    await set(cacheKeys.STATE_CACHE_KEY, state);
+    await set(cacheKeys.STATE_CACHE_KEY_UPDATED, Date.now());
+  }
+
+  return state;
+}
+
+export async function persistState(
+  ctx: Context,
+  state: State
+): Promise<void> {
+  try {
+    // TODO: Sync with the backend
+  } catch (e) {
+    console.warn(e);
+    // Noop (fallback to local)
+  }
+
+  const cacheKeys = getCacheKeys('state');
+  await set(cacheKeys.STATE_CACHE_KEY, state);
+  await set(cacheKeys.STATE_CACHE_KEY_UPDATED, Date.now());
+}
+
+export async function resetState(
+  ctx: Context,
+  resetInstallId: boolean
+): Promise<void> {
+  const state = await getState(ctx);
+
+  state.user = undefined;
+
+  if (resetInstallId) {
+    state.installId = undefined;
+  }
+
+  const cacheKeys = getCacheKeys('state');
+  await set(cacheKeys.STATE_CACHE_KEY, state);
+  await set(cacheKeys.STATE_CACHE_KEY_UPDATED, Date.now());
 }
