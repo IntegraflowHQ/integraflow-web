@@ -11,7 +11,7 @@ import {
 } from '../../assets';
 
 type Props = {
-  question?: Question;
+  question: Question;
   theme?: Theme;
   onAnswered: (questionId: string | number, answer: string) => void;
 };
@@ -23,7 +23,7 @@ type SmileyOption = {
 }[];
 
 export const SmileyResponse = ({ question, theme, onAnswered }: Props) => {
-  const smileyOptions: SmileyOption = [
+  const smileyOptions = [
     {
       id: 1,
       emoji: <AngryEmoji />,
@@ -61,12 +61,13 @@ export const SmileyResponse = ({ question, theme, onAnswered }: Props) => {
       />
       <div>
         <div className={'flex space-x-8 my-2'}>
-          {smileyOptions.map((option) => (
+          {question.options?.map((option) => (
             <button
               key={option.id}
+              onClick={() => onAnswered(question.id, option.label)}
               className={'cursor-pointer block p-2 rounded-full bg-[#EFF0F6]'}
             >
-              {option.emoji}
+              {option.label}
             </button>
           ))}
         </div>

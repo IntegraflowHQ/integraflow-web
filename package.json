@@ -8,8 +8,32 @@
     "surveys",
     "experience management"
   ],
+<<<<<<< Updated upstream
   "main": "dist/index.js",
   "types": "types/src/index.d.ts",
+=======
+  "source": "src/App.tsx",
+  "main": "./dist/index.js",
+  "module": "./dist/index.module.js",
+  "unpkg": "./dist/index.umd.js",
+  "types": "./dist/js/src/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.module.js"
+    },
+    "./package.json": "./package.json",
+    "./": "./"
+  },
+  "scripts": {
+    "clean": "rimraf .turbo node_modules dist",
+    "dev": "concurrently \"tailwindcss -i ./src/styles/globals.css -o dist/styles.css --watch\" \"microbundle --css inline --watch\"",
+    "go": "microbundle --css inline --watch",
+    "lint": "eslint '{src,tests}/**/*.{ts,tsx}'",
+    "test": "jest",
+    "build": "tailwindcss -i ./src/styles/globals.css -o dist/styles.css && microbundle --css inline"
+  },
+>>>>>>> Stashed changes
   "files": [
     "src",
     "types",
