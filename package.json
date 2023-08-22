@@ -8,30 +8,20 @@
     "surveys",
     "experience management"
   ],
-  "source": "src/index.ts",
-  "main": "./dist/index.js",
-  "module": "./dist/index.module.js",
-  "unpkg": "./dist/index.umd.js",
-  "types": "./dist/js/src/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/index.js",
-      "import": "./dist/index.module.js"
-    },
-    "./package.json": "./package.json",
-    "./": "./"
-  },
-  "scripts": {
-    "clean": "rimraf .turbo node_modules dist",
-    "dev": "concurrently \"tailwindcss -i ./src/styles/globals.css -o dist/styles.css --watch\" \"microbundle --css inline --watch\"",
-    "go": "microbundle --css inline --watch",
-    "lint": "eslint '{src,tests}/**/*.{ts,tsx}'",
-    "test": "jest",
-    "build": "tailwindcss -i ./src/styles/globals.css -o dist/styles.css && microbundle --css inline"
-  },
+  "main": "dist/index.js",
+  "types": "types/src/index.d.ts",
   "files": [
-    "dist"
+    "src",
+    "types",
+    "dist/index.js"
   ],
+  "scripts": {
+    "build": "webpack",
+    "dev": "webpack --watch",
+    "dist": "NODE_ENV=production webpack",
+    "snippet": "tsc -t es5 --outFile dist/snippet.js src/web/snippet.ts && uglifyjs dist/snippet.js -o dist/snippet.js",
+    "test": "jest"
+  },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
     "extends": [
@@ -44,33 +34,38 @@
   },
   "author": "Formily <dev@formily.com>",
   "devDependencies": {
-    "@babel/core": "^7.22.9",
-    "@babel/preset-env": "^7.22.9",
-    "@babel/preset-typescript": "^7.22.5",
-    "@types/jest": "^29.5.3",
+    "@types/jest": "^27.0.3",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
-    "autoprefixer": "^10.4.14",
     "babel-jest": "^29.6.2",
-    "classnames": "^2.3.2",
-    "concurrently": "^8.2.0",
-    "cross-env": "^7.0.3",
+    "css-loader": "^6.2.0",
     "eslint": "^8.46.0",
     "eslint-config-preact": "^1.3.0",
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-react": "7.33.1",
-    "isomorphic-fetch": "^3.0.0",
     "jest": "^29.6.2",
     "jest-environment-jsdom": "^29.6.2",
     "jest-fetch-mock": "^3.0.3",
     "jest-preset-preact": "^4.1.0",
-    "lucide-preact": "^0.268.0",
-    "microbundle": "^0.15.1",
-    "preact": "10.16.0",
     "preact-cli": "^3.5.0",
     "preact-render-to-string": "^6.2.0",
-    "regenerator-runtime": "^0.13.11",
-    "tailwindcss": "^3.3.3"
+    "prettier": "^1.19.1",
+    "sass": "^1.43.5",
+    "sass-loader": "^12.3.0",
+    "style-loader": "^3.2.1",
+    "tailwindcss": "^3.3.3",
+    "terser": "^5.7.2",
+    "terser-webpack-plugin": "^5.1.4",
+    "ts-jest": "^27.0.7",
+    "ts-loader": "^9.2.5",
+    "typescript": "^4.4.2",
+    "webpack": "^5.51.1",
+    "webpack-cli": "^4.8.0"
+  },
+  "dependencies": {
+    "classnames": "^2.3.2",
+    "lucide-preact": "^0.268.0",
+    "preact": "10.16.0"
   },
   "jest": {
     "transformIgnorePatterns": [
