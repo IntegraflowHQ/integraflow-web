@@ -6,73 +6,81 @@ const isProd = environment === 'production';
 const devtool = environment === 'development' ? 'inline-source-map' : false;
 
 const moduleCfg = {
-    rules: [
+  rules: [
+    {
+      test: /\.tsx?$/,
+      use: 'ts-loader',
+      exclude: /node_modules/,
+    },
+    {
+      test: /\.s[ac]ss$/,
+      use: ['style-loader', 'css-loader', 'sass-loader'],
+    },
+    {
+      test: /\.css$/,
+      use: [
+        'style-loader',
+        'css-loader',
+        'sass-loader',
         {
-            test: /\.tsx?$/,
-            use: 'ts-loader',
-            exclude: /node_modules/
+          loader: 'postcss-loader',
+          options: { postcssOptions: { plugins: [['postcss-preset-env']] } },
         },
-        {
-            test: /\.s[ac]ss$/,
-            use: ['style-loader', 'css-loader', 'sass-loader']
-        },
-        {
-          test: /\.css$/,
-          use: ['style-loader', 'css-loader', 'sass-loader']
-        }
-    ]
+      ],
+    },
+  ],
 };
 
 const resolve = {
-    extensions: ['.ts', '.tsx', '.js']
+  extensions: ['.ts', '.tsx', '.js'],
 };
 
 const optimization = {
-    minimize: isProd,
-    minimizer: [
-        new TerserPlugin({
-            parallel: true,
-            extractComments: {
-                banner: false
-            },
-            terserOptions: {
-                compress: {
-                    // IE10 issues
-                    typeofs: false,
-                    pure_funcs: ['console.log', 'console.info']
-                }
-            }
-        })
-    ]
+  minimize: isProd,
+  minimizer: [
+    new TerserPlugin({
+      parallel: true,
+      extractComments: {
+        banner: false,
+      },
+      terserOptions: {
+        compress: {
+          // IE10 issues
+          typeofs: false,
+          pure_funcs: ['console.log', 'console.info'],
+        },
+      },
+    }),
+  ],
 };
 
 const output = {
-    filename: '[name].js',
-    path: path.resolve(__dirname, 'dist')
+  filename: '[name].js',
+  path: path.resolve(__dirname, 'dist'),
 };
 
 module.exports = [
-    {
-        mode: environment,
-        entry: {
-            index: './src/index.ts'
-        },
-        devtool,
-        module: moduleCfg,
-        resolve,
-        optimization,
-        output: { ...output, library: 'formily', libraryTarget: 'umd' }
+  {
+    mode: environment,
+    entry: {
+      index: './src/index.ts',
     },
-    {
-        target: ['web', 'es5'],
-        mode: environment,
-        entry: {
-            'web-bundle': './src/web/index.ts'
-        },
-        devtool,
-        module: moduleCfg,
-        resolve,
-        optimization,
-        output
-    }
+    devtool,
+    module: moduleCfg,
+    resolve,
+    optimization,
+    output: { ...output, library: 'formily', libraryTarget: 'umd' },
+  },
+  {
+    target: ['web', 'es5'],
+    mode: environment,
+    entry: {
+      'web-bundle': './src/web/index.ts',
+    },
+    devtool,
+    module: moduleCfg,
+    resolve,
+    optimization,
+    output,
+  },
 ];
