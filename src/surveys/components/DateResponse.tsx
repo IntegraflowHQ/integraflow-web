@@ -31,28 +31,26 @@ export default function DateResponse({
   };
 
   return (
-    <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+    <form className='flex flex-col gap-4 w-96' onSubmit={handleSubmit}>
       <div className='mr-6'>
-        <Header title={question.label} color={theme?.question} />
+        <Header
+          title={question.label}
+          color={theme?.question}
+          description={question.description ?? 'Date'}
+        />
       </div>
 
-      <label htmlFor={`date-${question.id}`} className={'flex flex-col gap-2'}>
-        <span style={{ color: theme?.answer ? theme.answer : '#050505' }}>
-          {question.description ?? 'Date'}
-        </span>
-
-        <DatePicker
-          color={theme?.answer}
-          clearIcon={null}
-          calendarIcon={null}
-          dayPlaceholder='DD'
-          monthPlaceholder='MM'
-          yearPlaceholder='YYYY'
-          format='dd/MM/yyyy'
-          value={selectedDate}
-          onChange={(value) => setSelectedDate(value)}
-        />
-      </label>
+      <DatePicker
+        color={theme?.answer}
+        clearIcon={null}
+        calendarIcon={null}
+        dayPlaceholder='DD'
+        monthPlaceholder='MM'
+        yearPlaceholder='YYYY'
+        format='dd/MM/yyyy'
+        value={selectedDate}
+        onChange={(value) => setSelectedDate(value)}
+      />
 
       <Button
         label={submitText ?? 'Submit'}
