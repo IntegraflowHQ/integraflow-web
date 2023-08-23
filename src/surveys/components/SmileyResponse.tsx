@@ -39,7 +39,7 @@ export const SmileyResponse = ({ question, theme, onAnswered }: Props) => {
   };
 
   return (
-    <div className={'max-w-[389px]'}>
+    <div>
       <Header
         title={question?.label ? question.label : ''}
         description={question?.description}
@@ -47,7 +47,7 @@ export const SmileyResponse = ({ question, theme, onAnswered }: Props) => {
         centered
       />
       <div>
-        <div className={'flex justify-between space-x-8 my-2'}>
+        <div className={'flex justify-around max-w-[317px] my-2 mx-auto'}>
           {question.options?.map((option, index) => (
             <button
               key={option.id}
@@ -61,9 +61,21 @@ export const SmileyResponse = ({ question, theme, onAnswered }: Props) => {
             </button>
           ))}
         </div>
-        <div className={'flex justify-between'}>
-          <span>{(question?.settings as RangeSettings).leftText}</span>
-          <span>{(question?.settings as RangeSettings).rightText}</span>
+        <div className={'flex gap-12 justify-between w-full '}>
+          <span
+            style={{
+              color: theme?.question ? theme?.question : '#050505',
+            }}
+          >
+            {(question?.settings as RangeSettings).leftText}
+          </span>
+          <span
+            style={{
+              color: theme?.question ? theme?.question : '#050505',
+            }}
+          >
+            {(question?.settings as RangeSettings).rightText}
+          </span>
         </div>
       </div>
     </div>
