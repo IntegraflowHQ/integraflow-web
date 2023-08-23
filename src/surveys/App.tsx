@@ -34,7 +34,7 @@ export default function App({
   };
 
   return (
-    <div id='fbjs'>
+    <div id="fbjs">
       <Wrapper
         // isOpen={isOpen}
         close={close}
