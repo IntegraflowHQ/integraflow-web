@@ -153,6 +153,7 @@ export interface FormSettings {
   consent?: boolean;
   consentText?: string;
   logic?: FormLogic[];
+  multiselect: boolean;
 }
 
 export interface RangeSettings {
@@ -233,7 +234,7 @@ export enum FilterOperator {
   GREATER_THAN = 'greater_than',
   LESS_THAN = 'less_than',
   IS_TRUE = 'is_true',
-  IS_FALSE = 'is_false'
+  IS_FALSE = 'is_false',
 }
 
 export type FilterValue = number | boolean | string | string[];
@@ -299,7 +300,7 @@ export type Jsonish =
   | undefined;
 
 export interface UserAttributes {
-  id: ID,
+  id: ID;
   [key: string]: Jsonish;
 }
 
@@ -308,11 +309,11 @@ export interface EventProperties {
 }
 
 export interface Event {
-  event: string,
-  uuid: string,
-  timestamp: number,
-  properties?: EventProperties,
-  userId?: ID
+  event: string;
+  uuid: string;
+  timestamp: number;
+  properties?: EventProperties;
+  userId?: ID;
 }
 
 export interface State {
