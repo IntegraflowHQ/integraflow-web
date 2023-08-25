@@ -1,9 +1,17 @@
 import { VNode, h } from 'preact';
 import { useState } from 'preact/hooks';
 
-import { ID, Survey, SurveyAnswer } from '../../types';
+import {
+  AnswerType,
+  FormField,
+  FormFieldType,
+  ID,
+  Survey,
+  SurveyAnswer,
+} from '../../types';
 import { SmileyResponse } from './SmileyResponse';
 import { AngryEmoji } from '../../assets';
+import { ContactFormResponse } from './ContactFormResponse';
 
 interface SurveyProps {
   survey: Survey;
@@ -27,7 +35,40 @@ export default function Survey({
   // TODO: Navigate through all the questions one after the other based on the logic settings
   return (
     <div>
-      <SmileyResponse
+      <ContactFormResponse
+        onAnswered={(questionId, answer) => {
+          console.log(questionId, answer);
+        }}
+        question={{
+          id: 1,
+          label: 'How was your experience?',
+          type: AnswerType.TEXT,
+          maxPath: 4,
+          settings: {
+            text: 'Submit',
+            singleLine: true,
+            consentText: 'Submit',
+          },
+          options: [
+            {
+              orderNumber: 1,
+              required: true,
+              id: '',
+              label: 'First Name',
+              type: FormFieldType.FIRST_NAME,
+            },
+            {
+              orderNumber: 1,
+              required: true,
+              id: '',
+              label: 'Last Name',
+              type: FormFieldType.LAST_NAME,
+            },
+          ],
+          description: 'It will only take a few minutes',
+        }}
+      />
+      {/* <SmileyResponse
         onAnswered={(questionId, answer) => {
           console.log(questionId, answer);
         }}
@@ -42,8 +83,8 @@ export default function Survey({
             rightText: 'Good',
           },
           description: 'It will only take a few minutes',
-        }}
-      />
+        }} */}
+      {/* /> */}
     </div>
   );
 }
