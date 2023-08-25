@@ -43,11 +43,11 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
   if (question.options && question.options.length > 0) {
     rangeContent = question.options
       .sort((a, b) => a.orderNumber - b.orderNumber)
-      .map((option) => {
+      .map((option, index) => {
         if (question.type === 'nps')
           return (
             <Button
-              label={option.orderNumber.toString()}
+              label={`${index + 1}`}
               size='sm'
               onClick={() => {
                 setAnswerId(option.id);
