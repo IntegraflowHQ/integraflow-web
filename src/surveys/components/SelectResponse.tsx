@@ -77,7 +77,7 @@ export default function SelectResponse({
       </div>
       <Button
         label={submitText ?? 'Submit'}
-        color={submitText ? submitText : 'Submit'}
+        color={theme?.button}
         size="full"
       />
     </form>
