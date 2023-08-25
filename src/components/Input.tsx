@@ -1,15 +1,13 @@
 import { h } from 'preact';
 import { useState } from 'preact/hooks';
-import { FormField, FormFieldType, ID } from '../types';
 
 type Props = {
   label?: string;
-  color?: string;
+  color: string;
   name: string;
-  id: ID;
-  type: FormFieldType;
-  placeholder?: string;
-  onChange: (e: h.JSX.TargetedEvent<HTMLInputElement, Event>) => void;
+  id: string;
+  placeholder: string;
+  onChange?: (e: h.JSX.TargetedEvent<HTMLInputElement, Event>) => void;
 };
 export const Input = ({
   label,
@@ -17,7 +15,6 @@ export const Input = ({
   name,
   id,
   placeholder,
-  type: type,
   onChange,
 }: Props) => {
   const [inputValue, setInputValue] = useState('');
@@ -31,13 +28,13 @@ export const Input = ({
     <div>
       <label
         className={'text-formily-dark-grey block mb-1 font-sans'}
-        htmlFor={id + ''}
+        htmlFor={id}
       >
         {label}
       </label>
 
       <input
-        type={type}
+        type="text"
         className={
           'w-full border border-gray-300 rounded-xl p-2 bg-formily-grey focus:outline-none focus:ring-1 focus:border-transparent'
         }
@@ -47,7 +44,7 @@ export const Input = ({
           // 1A is 10% opacity of the color hex code
         }}
         name={name}
-        id={id + ''}
+        id={id}
         placeholder={placeholder}
         value={inputValue}
         onInput={handleInputChange}
