@@ -2,10 +2,10 @@ import { Heart, Star, ThumbsUp } from 'lucide-preact';
 import { VNode, h } from 'preact';
 
 export default function RatingIcon({
-  color,
+  color = '#050505',
   shape,
 }: {
-  color: string;
+  color?: string;
   shape?: 'heart' | 'thumb' | 'star';
 }): VNode {
   if (shape === 'heart') return <Heart color={color} fill={color} size={40} />;

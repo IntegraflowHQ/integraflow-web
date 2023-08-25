@@ -15,6 +15,9 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
   const [value, setValue] = useState(0);
   const [answerId, setAnswerId] = useState<ID | null>(null);
 
+  const lightAnswerColor = theme?.answer && `${theme?.answer}1A`;
+  const mediumAnswerColor = theme?.answer && `${theme?.answer}9A`;
+
   useEffect(() => {
     const answerQuestion = () => {
       if (value === 0) return;
@@ -54,11 +57,11 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
                 setValue(option.orderNumber);
               }}
               color={
-                value === option.orderNumber ? theme?.button : theme?.background
+                value === option.orderNumber
+                  ? mediumAnswerColor
+                  : lightAnswerColor
               }
-              textColor={
-                value === option.orderNumber ? theme?.background : theme?.button
-              }
+              textColor={theme?.answer}
               classname='border'
             />
           );
@@ -74,9 +77,7 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
             <RatingIcon
               shape={(question.settings as RangeSettings).shape}
               color={
-                option.orderNumber <= value
-                  ? '#FFCB45'
-                  : theme?.answer ?? '#F2F2F2'
+                option.orderNumber <= value ? theme?.answer : lightAnswerColor
               }
             />
           </button>
@@ -93,8 +94,8 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
             label={num.toString()}
             size='sm'
             onClick={() => setValue(num)}
-            color={value === num ? theme?.button : theme?.background}
-            textColor={value === num ? theme?.background : theme?.button}
+            color={value === num ? mediumAnswerColor : lightAnswerColor}
+            textColor={theme?.answer}
             classname='border'
           />
         );
@@ -103,7 +104,7 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
         <button onClick={() => setValue(num)} key={num.toString()}>
           <RatingIcon
             shape={(question.settings as RangeSettings).shape}
-            color={num <= value ? '#FFCB45' : theme?.answer ?? '#F2F2F2'}
+            color={num <= value ? theme?.answer : lightAnswerColor}
           />
         </button>
       );
@@ -130,10 +131,10 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
       </div>
 
       <div className='flex justify-between'>
-        <span style={{ color: theme?.question ?? '#050505' }}>
+        <span style={{ color: theme?.answer ?? '#050505' }}>
           {(question.settings as RangeSettings).leftText ?? 'Very unsatisfied'}
         </span>
-        <span style={{ color: theme?.question ?? '#050505' }}>
+        <span style={{ color: theme?.answer ?? '#050505' }}>
           {(question.settings as RangeSettings).rightText ?? 'Very satisfied'}
         </span>
       </div>
