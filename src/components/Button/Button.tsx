@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import { h, FunctionComponent } from 'preact';
+import { FunctionComponent, h } from 'preact';
 
 interface ButtonProps {
   label?: string;
@@ -7,6 +7,7 @@ interface ButtonProps {
   onClick?: () => void;
   classname?: string;
   color?: string;
+  textColor?: string;
   position?: 'left' | 'right' | 'center';
   type?: 'button' | 'submit' | 'reset';
 }
@@ -18,6 +19,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
   classname,
   type,
   color,
+  textColor = 'white',
   position = 'left',
 }) => {
   const onClickHandler = () => {
@@ -46,12 +48,12 @@ export const Button: FunctionComponent<ButtonProps> = ({
     <button
       type={type}
       onClick={onClickHandler}
-      style={{ backgroundColor: color ? color : '#050505' }}
+      style={{ backgroundColor: color ? color : '#050505', color: textColor }}
       className={classNames(
         classname,
         widthClasses,
         buttonPositionClasses,
-        `block text-white font-semibold  py-2 px-4 rounded-lg`
+        `block font-semibold  py-2 px-4 rounded-lg`
       )}
     >
       {label}
