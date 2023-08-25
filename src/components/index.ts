@@ -2,3 +2,4 @@ export * from './Button';
 export * from './Header';
 export * from './Wrapper';
 export { Button } from './Button/Button';
+export { default as DatePicker } from './DatePicker';
