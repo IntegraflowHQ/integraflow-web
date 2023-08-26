@@ -153,7 +153,6 @@ export interface FormSettings {
   consent?: boolean;
   consentText?: string;
   logic?: FormLogic[];
-  multiselect: boolean;
 }
 
 export interface RangeSettings {
