@@ -189,12 +189,14 @@ export interface DateSettings {
 }
 
 export interface MultipleSettings {
-  randomizeAnswer?: boolean;
+  randomize?: boolean;
+  randomizeExceptLast?: boolean;
   logic?: MultipleLogic[];
 }
 
 export interface SingleSettings {
-  randomizeAnswer?: boolean;
+  randomize?: boolean;
+  randomizeExceptLast?: boolean;
   logic?: SingleLogic[];
 }
 
