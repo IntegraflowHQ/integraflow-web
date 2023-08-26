@@ -1,11 +1,11 @@
 import { h } from 'preact';
-import { CTASettings, Question, TextSettings, Theme } from '../../types';
+import { CTASettings, ID, Question, SurveyAnswer, TextSettings, Theme } from '../../types';
 import { useState } from 'preact/hooks';
 import { Button, Header } from '../../components';
 type Props = {
   question: Question;
   theme?: Theme;
-  onAnswered: (questionId: string | number, answer: string) => void;
+  onAnswered: (answer: SurveyAnswer[], nextQuestionId: ID | null) => void;
 };
 
 const TextResponse = ({ theme, question, onAnswered }: Props) => {
@@ -15,9 +15,8 @@ const TextResponse = ({ theme, question, onAnswered }: Props) => {
     event: h.JSX.TargetedEvent<HTMLFormElement, Event>
   ) => {
     event.preventDefault();
-    if (onAnswered) {
-      onAnswered(question?.id, answer);
-    }
+
+    onAnswered([{ answer }], question.id);
   };
 
   return (

@@ -1,4 +1,4 @@
-import { Survey } from '../types';
+import { LogicOperator, QuestionOption, Survey } from '../types';
 
 export function onDOMReady(fn: () => void) {
   if (document.readyState !== 'loading') {
@@ -7,6 +7,10 @@ export function onDOMReady(fn: () => void) {
     document.addEventListener('DOMContentLoaded', fn);
   }
 }
+
+export function cn(...classes: string[]) {
+  return classes.filter(Boolean).join(' ');
+};
 
 export function deferSurveyActivation(
   survey: Survey,
@@ -54,4 +58,35 @@ export function uuidv4() {
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 export function escapeRegExp(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export function propConditionsMatched(conditions: boolean[], operator: LogicOperator) {
+  let conditionMatched = conditions.some(matched => matched);
+  if (operator === LogicOperator.AND) {
+    conditionMatched = conditions.every(matched => matched);
+  }
+
+  return conditionMatched;
+}
+
+function shuffle(options: QuestionOption[]) {
+  for (let i = 0; i < options.length; i++) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+};
+
+export function shuffleArray(options: QuestionOption[], shuffleOption: string) {
+  const optionsCopy = [...options];
+
+  if (shuffleOption === "all") {
+    shuffle(optionsCopy);
+  } else if (shuffleOption === "exceptLast") {
+    const lastElement = optionsCopy.pop();
+    shuffle(optionsCopy);
+  
+    optionsCopy.push(lastElement as QuestionOption);
+  }
+
+  return optionsCopy;
 }

@@ -2,26 +2,26 @@ import { h, render } from 'preact';
 
 import Formily from '..';
 import { Context, RootFrame, RootFrameContainer, SdkEvent } from '../core';
-import { ID, Survey, SurveyAnswer, UserAttributes } from '../types';
+import { ID, Survey, SurveyAnswer } from '../types';
 import { deferSurveyActivation } from '../utils';
 import App from './App';
 import { TargetingEngine } from '../core/targeting';
 import { getState } from '../core/storage';
+import { SurveyLogic } from './logic';
 
 export type SurveyManagerState =
   | 'loading'
   | 'ready'
-  | 'requesting'
-  | 'requesting-silent'
-  | 'requesting-silent-dismissed'
-  | 'postaction';
+  | 'running';
 
 export class SurveyManager {
   private readonly formilyClient: Formily;
   private readonly context: Context;
-  private readonly surveyContainer: RootFrameContainer;
+  private readonly rootFrame: RootFrame;
   private readonly targetingEngine: TargetingEngine;
+  private readonly surveyLogic: SurveyLogic;
 
+  private surveyContainer: RootFrameContainer;
   private state?: SurveyManagerState;
   private surveys: Survey[];
   private activeSurveys: Survey[];
@@ -30,11 +30,13 @@ export class SurveyManager {
     this.surveys = [];
     this.activeSurveys = [];
 
+    this.rootFrame = rootFrame;
     this.surveyContainer = rootFrame.createContainer('survey');
     this.formilyClient = client;
     this.context = ctx;
 
     this.targetingEngine = new TargetingEngine(ctx, this.onEventTracked);
+    this.surveyLogic = new SurveyLogic();
 
     this.setState('loading');
   }
@@ -67,15 +69,17 @@ export class SurveyManager {
         this.setState('ready');
         break;
       case 'ready':
-        await this.evaluateTriggers();
-        this.render();
+        this.evaluateTriggers();
+        this.renderSurvey();
+        break;
+      case 'running':
         break;
     }
   }
 
-  private async onQuestionAnswered(surveyId: ID, questionId: ID, answer: SurveyAnswer) {
+  private async onQuestionAnswered(surveyId: ID, questionId: ID, answers: SurveyAnswer[]) {
     // TODO: Perform some async actions.
-    this.context.listeners.onQuestionAnswered?.(surveyId, questionId, answer);
+    this.context.listeners.onQuestionAnswered?.(surveyId, questionId, answers);
   }
 
   private async onSurveyDisplayed(surveyId: ID) {
@@ -86,6 +90,8 @@ export class SurveyManager {
   private async onSurveyClosed(surveyId: ID) {
     // TODO: Perform some async actions. Probably display a new survey, if available
     this.context.listeners.onSurveyClosed?.(surveyId);
+
+    this.hideSurvey(surveyId);
   }
 
   private async onSurveyCompleted(surveyId: ID) {
@@ -93,20 +99,53 @@ export class SurveyManager {
     this.context.listeners.onSurveyCompleted?.(surveyId);
   }
 
-  private render() {
-    if (!this.state || this.activeSurveys.length === 0) {
+  private hideSurvey(surveyId: ID) {
+    const name = this.surveyContainer.name;
+    this.rootFrame.removeContainer(name);
+    this.surveyContainer = this.rootFrame.createContainer(name)
+
+    const idx = this.activeSurveys.findIndex(survey => survey.id === surveyId);
+    if (idx === -1) {
+      this.setState('ready');
       return;
     }
 
+    this.activeSurveys.splice(idx, 1);
+    this.setState('ready');
+  }
+
+  private renderSurvey(survey?: Survey) {
+    if (survey) {
+      this.render(survey);
+      return;
+    }
+
+    if (this.activeSurveys.length > 0) {
+      this.render(this.activeSurveys[0]);
+    }
+  }
+
+  private render(survey: Survey) {
+    if (!this.state || !survey) {
+      return;
+    }
+
+    if (this.state !== 'ready') {
+      return;
+    }
+
+    this.setState('running');
+
     render(
-        <App
-          survey={this.activeSurveys[0]}
-          onQuestionAnswered={this.onQuestionAnswered}
-          onSurveyDisplayed={this.onSurveyDisplayed}
-          onSurveyClosed={this.onSurveyClosed}
-          onSurveyCompleted={this.onSurveyCompleted}
-        />,
-        this.surveyContainer.element
+      <App
+        survey={survey}
+        surveyLogic={this.surveyLogic}
+        onQuestionAnswered={this.onQuestionAnswered}
+        onSurveyDisplayed={this.onSurveyDisplayed}
+        onSurveyClosed={this.onSurveyClosed}
+        onSurveyCompleted={this.onSurveyCompleted}
+      />,
+      this.surveyContainer.element
     );
   }
 
@@ -135,14 +174,9 @@ export class SurveyManager {
     this.activateSurveys(matchedSurveys);
   }
 
-  private evaluateAttributes(survey: Survey, attributes: UserAttributes) {
-    console.info('Evaluating survey attributes');
-    return this.targetingEngine.evaluateAttributes(survey)
-  }
-
   private activateSurvey(survey: Survey) {
     if (this.activeSurveys.indexOf(survey) > -1) {
-        return;
+      return;
     }
 
     this.activeSurveys.push(survey);
@@ -161,11 +195,18 @@ export class SurveyManager {
       this.activateSurvey(survey);
     }
 
-    this.render();
+    this.renderSurvey();
   }
 
   private activateDeferredSurvey(survey: Survey) {
     this.activateSurvey(survey as Survey);
-    this.render();
+    this.renderSurvey();
+  }
+
+  showSurvey(surveyId: ID) {
+    const survey = this.context.surveys?.find(survey => survey.id === surveyId);
+    if (survey) {
+      this.renderSurvey(survey);
+    }
   }
 }

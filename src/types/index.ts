@@ -98,21 +98,12 @@ export type PlacementType =
 export type ID = string | number;
 
 export interface SurveyAnswer {
-  type: AnswerType;
-  id?: ID;
-  ids?: ID[];
-  value?: string;
-}
-
-export interface QuestionAnswer {
   finished?: boolean;
   ctaSuccess?: boolean;
-  content?: string;
-  questionAnswerId?: number;
-  type?: AnswerType;
-  completionRate: number;
-  answer: string;
-  answerId: number;
+  fieldType?: FormFieldType;
+  completionRate?: number;
+  answer?: string;
+  answerId?: ID;
 }
 
 export interface QuestionOption {
@@ -128,8 +119,8 @@ export interface FormField extends QuestionOption {
 
 export interface QuestionLogic {
   id?: ID;
-  orderNumber?: number;
-  goTo: string | number;
+  orderNumber: number;
+  destination: ID;
 }
 
 export interface FormLogic extends QuestionLogic {
@@ -145,6 +136,30 @@ export interface RangeLogic extends QuestionLogic {
   condition: LogicRangeCondition;
   operator: LogicOperator;
   values: number[];
+}
+
+export interface DateLogic extends QuestionLogic {
+  condition: LogicDateCondition;
+  operator: LogicOperator;
+  values: string[];
+}
+
+export interface MultipleLogic extends QuestionLogic {
+  condition: LogicMultipleCondition;
+  operator: LogicOperator;
+  values: ID[];
+}
+
+export interface SingleLogic extends QuestionLogic {
+  condition: LogicSingleCondition;
+  operator: LogicOperator;
+  values: ID[];
+}
+
+export interface TextLogic extends QuestionLogic {
+  condition: LogicTextCondition;
+  operator: LogicOperator;
+  values: string[];
 }
 
 export interface FormSettings {
@@ -170,37 +185,21 @@ export interface CTASettings {
 }
 
 export interface DateSettings {
-  logic?: (QuestionLogic & {
-    condition: LogicDateCondition;
-    operator: LogicOperator;
-    values: string[];
-  })[];
+  logic?: DateLogic[];
 }
 
 export interface MultipleSettings {
   randomizeAnswer?: boolean;
-  logic?: (QuestionLogic & {
-    condition: LogicMultipleCondition;
-    operator: LogicOperator;
-    values: ID[];
-  })[];
+  logic?: MultipleLogic[];
 }
 
 export interface SingleSettings {
   randomizeAnswer?: boolean;
-  logic?: (QuestionLogic & {
-    condition: LogicSingleCondition;
-    operator: LogicOperator;
-    values: ID[];
-  })[];
+  logic?: SingleLogic[];
 }
 
 export interface TextSettings {
-  logic?: (QuestionLogic & {
-    condition: LogicTextCondition;
-    operator: LogicOperator;
-    values: string[];
-  })[];
+  logic?: TextLogic[];
   singleLine?: boolean;
 }
 
@@ -222,6 +221,7 @@ export interface Question {
 }
 
 export enum FilterOperator {
+  IN = 'in',
   IS = 'is',
   IS_NOT = 'is_not',
   STARTS_WITH = 'starts_with',
@@ -329,7 +329,7 @@ export interface Listeners {
   onQuestionAnswered?: (
     surveyId: ID,
     questionId: ID,
-    answer: SurveyAnswer
+    answers: SurveyAnswer[]
   ) => void;
   onSurveyCompleted?: (surveyId: ID) => void;
 }
