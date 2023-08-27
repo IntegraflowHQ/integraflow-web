@@ -57,10 +57,10 @@ export const Button: FunctionComponent<ButtonProps> = ({
         hoverColor: hoverColor,
       }}
       className={classNames(
-        classname,
+        `block font-semibold  py-2 px-4 rounded-lg`,
         widthClasses,
         buttonPositionClasses,
-        `block font-semibold  py-2 px-4 rounded-lg`
+        classname
       )}
     >
       {label}
