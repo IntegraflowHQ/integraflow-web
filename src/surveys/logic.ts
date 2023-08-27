@@ -5,6 +5,7 @@ import {
   LogicDateCondition,
   LogicFormCondition,
   LogicMultipleCondition,
+  LogicOperator,
   LogicRangeCondition,
   LogicSingleCondition,
   LogicTextCondition,
@@ -15,8 +16,8 @@ import {
 } from '../types';
 import { propConditionsMatched } from '../utils';
 
-const resolveTextLogic = (answer: string, textLogic: TextLogic): boolean => {
-  const { condition, operator, values } = textLogic;
+const resolveTextLogic = (answer: string | null, textLogic: TextLogic): boolean => {
+  const { condition, operator = LogicOperator.OR, values = [] } = textLogic;
   if (!condition) {
     return false;
   }
@@ -61,7 +62,7 @@ const resolveTextLogic = (answer: string, textLogic: TextLogic): boolean => {
   return conditionMatched;
 };
 
-const resolveDateLogic = (answer: string, dateLogic: DateLogic): boolean => {
+const resolveDateLogic = (answer: string | null, dateLogic: DateLogic): boolean => {
   const { condition } = dateLogic;
   if (!condition) {
     return false;
@@ -89,8 +90,8 @@ const resolveDateLogic = (answer: string, dateLogic: DateLogic): boolean => {
   return conditionMatched;
 };
 
-const resolveRangeLogic = (answerId: number, rangeLogic: RangeLogic): boolean => {
-  const { condition, values } = rangeLogic;
+const resolveRangeLogic = (answerId: ID | null, rangeLogic: RangeLogic): boolean => {
+  const { condition, values = [] } = rangeLogic;
   if (!condition) {
     return false;
   }
@@ -98,20 +99,19 @@ const resolveRangeLogic = (answerId: number, rangeLogic: RangeLogic): boolean =>
   let conditionMatched = false;
   switch (condition) {
     case LogicRangeCondition.IS:
-      conditionMatched = values?.includes(answerId);
+      conditionMatched = answerId ? values?.includes(answerId) : false;
       break;
 
     case LogicRangeCondition.IS_NOT:
-      conditionMatched = !values?.includes(answerId);
+      conditionMatched = answerId ? !values?.includes(answerId) : false;
       break;
     
     case LogicRangeCondition.IS_BETWEEN:
       if (values.length === 2) {
-        conditionMatched = answerId <= values[1] && values[0] <= answerId;
+        conditionMatched = answerId ? (answerId <= values[1] && values[0] <= answerId) : false;
       } else {
         conditionMatched = false;
       }
-
       break;
 
     case LogicRangeCondition.HAS_ANY_VALUE:
@@ -126,8 +126,8 @@ const resolveRangeLogic = (answerId: number, rangeLogic: RangeLogic): boolean =>
   return conditionMatched;
 };
 
-const resolveSingleLogic = (answerId: ID, singleLogic: SingleLogic): boolean => {
-  const { condition, values } = singleLogic;
+const resolveSingleLogic = (answerId: ID | null, singleLogic: SingleLogic): boolean => {
+  const { condition, values = [] } = singleLogic;
   if (!condition) {
     return false;
   }
@@ -135,11 +135,11 @@ const resolveSingleLogic = (answerId: ID, singleLogic: SingleLogic): boolean => 
   let conditionMatched = false;
   switch (condition) {
     case LogicSingleCondition.IS:
-      conditionMatched = values.includes(answerId);
+      conditionMatched = answerId ? values.includes(answerId) : false;
       break;
 
     case LogicSingleCondition.IS_NOT:
-      conditionMatched = !values.includes(answerId);
+      conditionMatched = answerId ? !values.includes(answerId) : false;
       break;
 
     case LogicSingleCondition.HAS_ANY_VALUE:
@@ -154,8 +154,8 @@ const resolveSingleLogic = (answerId: ID, singleLogic: SingleLogic): boolean => 
   return conditionMatched;
 };
 
-const resolveMultipleLogic = (answerIds: ID[], multipleLogic: MultipleLogic): boolean => {
-  const { condition, values } = multipleLogic;
+const resolveMultipleLogic = (answerIds: ID[] | null, multipleLogic: MultipleLogic): boolean => {
+  const { condition, values = [] } = multipleLogic;
   if (!condition) {
     return false;
   }
@@ -163,19 +163,19 @@ const resolveMultipleLogic = (answerIds: ID[], multipleLogic: MultipleLogic): bo
   let conditionMatched = false;
   switch (condition) {
     case LogicMultipleCondition.IS_EXACTLY:
-      conditionMatched = answerIds.length === values.length && answerIds.every((answerId) => values.includes(answerId));
+      conditionMatched = answerIds ? (answerIds.length === values.length && answerIds.every((answerId) => values.includes(answerId))) : false;
       break;
 
     case LogicMultipleCondition.INCLUDES_ALL:
-      conditionMatched = values.every((value) => answerIds.includes(value));
+      conditionMatched = answerIds ? values.every((value) => answerIds.includes(value)) : false;
       break;
 
     case LogicMultipleCondition.INCLUDES_ANY:
-      conditionMatched = values.some((value) => answerIds.includes(value));
+      conditionMatched = answerIds ? values.some((value) => answerIds.includes(value)) : false;
       break;
 
     case LogicMultipleCondition.DOES_NOT_INCLUDE_ANY:
-      conditionMatched = !(values.some((value) => answerIds.includes(value)));
+      conditionMatched = answerIds ? !(values.some((value) => answerIds.includes(value))) : false;
       break;
 
     case LogicMultipleCondition.HAS_ANY_VALUE:
@@ -190,7 +190,7 @@ const resolveMultipleLogic = (answerIds: ID[], multipleLogic: MultipleLogic): bo
   return conditionMatched;
 };
 
-const resolveFormLogic = (answers: { [key: ID]: string }, formLogic: FormLogic): boolean => {
+const resolveFormLogic = (answers: { [key: ID]: string | null }, formLogic: FormLogic): boolean => {
   const { operator, groups } = formLogic;
   if (!operator || !groups) {
     return false;
@@ -205,7 +205,7 @@ const resolveFormLogic = (answers: { [key: ID]: string }, formLogic: FormLogic):
   return propConditionsMatched(matches, operator);
 };
 
-const resolveFormGroup = (answers: { [key: ID]: string }, group: FormLogic['groups'][0]): boolean => {
+const resolveFormGroup = (answers: { [key: ID]: string | null }, group: FormLogic['groups'][0]): boolean => {
   const { condition } = group;
   if (!condition) {
     return false;
@@ -230,7 +230,7 @@ const resolveFormGroup = (answers: { [key: ID]: string }, group: FormLogic['grou
   return conditionMatched;
 };
 
-const resolveIsFilledInFormLogic = (answers: { [key: ID]: string }, group: FormLogic['groups'][0]): boolean => {
+const resolveIsFilledInFormLogic = (answers: { [key: ID]: string | null }, group: FormLogic['groups'][0]): boolean => {
   const { operator, fields } = group;
   if (!operator || !fields) {
     return false;
@@ -246,7 +246,7 @@ const resolveIsFilledInFormLogic = (answers: { [key: ID]: string }, group: FormL
   return propConditionsMatched(matches, operator);
 }
 
-const resolveIsNotFilledInFormLogic = (answers: { [key: ID]: string }, group: FormLogic['groups'][0]): boolean => {
+const resolveIsNotFilledInFormLogic = (answers: { [key: ID]: string | null }, group: FormLogic['groups'][0]): boolean => {
   const { operator, fields } = group;
   if (!operator || !fields) {
     return false;
@@ -262,7 +262,7 @@ const resolveIsNotFilledInFormLogic = (answers: { [key: ID]: string }, group: Fo
   return propConditionsMatched(matches, operator);
 }
 
-const resolveHasAnyValueFormLogic = (answers: { [key: ID]: string }, group: FormLogic['groups'][0]): boolean => {
+const resolveHasAnyValueFormLogic = (answers: { [key: ID]: string | null }, group: FormLogic['groups'][0]): boolean => {
   const { operator, fields } = group;
   if (!operator || !fields) {
     return false;
@@ -278,7 +278,7 @@ const resolveHasAnyValueFormLogic = (answers: { [key: ID]: string }, group: Form
 }
 
 export class SurveyLogic {
-  getTextQuestionDestination(answer: string, logic: TextLogic[]): ID | null {
+  getTextQuestionDestination(answer: string | null, logic: TextLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;
@@ -292,7 +292,7 @@ export class SurveyLogic {
     return nextId;
   }
 
-  getDateQuestionDestination(answer: string, logic: DateLogic[]): ID | null {
+  getDateQuestionDestination(answer: string | null, logic: DateLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;
@@ -306,7 +306,7 @@ export class SurveyLogic {
     return nextId;
   }
 
-  getRangeQuestionDestination(answerId: number, logic: RangeLogic[]): ID | null {
+  getRangeQuestionDestination(answerId: ID | null, logic: RangeLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;
@@ -320,7 +320,7 @@ export class SurveyLogic {
     return nextId;
   }
 
-  getSingleQuestionDestination(answerId: ID, logic: SingleLogic[]): ID | null {
+  getSingleQuestionDestination(answerId: ID | null, logic: SingleLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;
@@ -334,7 +334,7 @@ export class SurveyLogic {
     return nextId;
   }
 
-  getMultipleQuestionDestination(answerIds: ID[], logic: MultipleLogic[]): ID | null {
+  getMultipleQuestionDestination(answerIds: ID[] | null, logic: MultipleLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;
@@ -348,7 +348,7 @@ export class SurveyLogic {
     return nextId;
   }
 
-  getFormQuestionDestination(answers: { [key: ID]: string }, logic: FormLogic[]): ID | null {
+  getFormQuestionDestination(answers: { [key: ID]: string | null }, logic: FormLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;

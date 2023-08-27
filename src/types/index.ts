@@ -134,47 +134,49 @@ export interface FormLogic extends QuestionLogic {
 
 export interface RangeLogic extends QuestionLogic {
   condition: LogicRangeCondition;
-  operator: LogicOperator;
-  values: number[];
+  operator?: LogicOperator;
+  values?: ID[];
 }
 
 export interface DateLogic extends QuestionLogic {
   condition: LogicDateCondition;
-  operator: LogicOperator;
-  values: string[];
+  operator?: LogicOperator;
+  values?: string[];
 }
 
 export interface MultipleLogic extends QuestionLogic {
   condition: LogicMultipleCondition;
-  operator: LogicOperator;
-  values: ID[];
+  operator?: LogicOperator;
+  values?: ID[];
 }
 
 export interface SingleLogic extends QuestionLogic {
   condition: LogicSingleCondition;
-  operator: LogicOperator;
-  values: ID[];
+  operator?: LogicOperator;
+  values?: ID[];
 }
 
 export interface TextLogic extends QuestionLogic {
   condition: LogicTextCondition;
-  operator: LogicOperator;
-  values: string[];
+  operator?: LogicOperator;
+  values?: string[];
 }
 
-export interface FormSettings {
+export interface QuestionSettings<T> {
+  logic?: T[];
+}
+
+export interface FormSettings extends QuestionSettings<FormLogic> {
   disclaimer?: boolean;
   disclaimerText?: string;
   consent?: boolean;
   consentText?: string;
-  logic?: FormLogic[];
 }
 
-export interface RangeSettings {
+export interface RangeSettings extends QuestionSettings<RangeLogic> {
   rightText?: string;
   leftText?: string;
   count?: number;
-  logic?: RangeLogic[];
   shape?: 'star' | 'thumb' | 'heart';
 }
 
@@ -184,34 +186,30 @@ export interface CTASettings {
   link?: boolean;
 }
 
-export interface DateSettings {
-  logic?: DateLogic[];
-}
+export interface DateSettings extends QuestionSettings<DateLogic> {}
 
-export interface MultipleSettings {
+export interface MultipleSettings extends QuestionSettings<MultipleLogic> {
   randomize?: boolean;
   randomizeExceptLast?: boolean;
-  logic?: MultipleLogic[];
 }
 
-export interface SingleSettings {
+export interface SingleSettings extends QuestionSettings<SingleLogic> {
   randomize?: boolean;
   randomizeExceptLast?: boolean;
-  logic?: SingleLogic[];
 }
 
-export interface TextSettings {
-  logic?: TextLogic[];
+export interface TextSettings extends QuestionSettings<TextLogic> {
   singleLine?: boolean;
 }
 
 export interface Question {
   id: string | number;
+  orderNumber: number;
   label: string;
   description?: string;
   type: AnswerType;
   options?: (QuestionOption | FormField)[];
-  maxPath: number;
+  maxPath?: number;
   settings:
     | FormSettings
     | RangeSettings
@@ -279,9 +277,9 @@ export interface Theme {
 }
 
 export interface Survey {
-  id: string;
+  id: ID;
   name?: string;
-  type: string;
+  type?: string;
   questions: Question[];
   trigger?: Trigger;
   audience?: Audience;
@@ -341,4 +339,21 @@ export interface Configuration extends Listeners {
   appKey?: string;
   surveys?: Survey[];
   debug?: boolean;
+}
+
+export type Objective =
+  | 'increase_user_adoption'
+  | 'increase_conversion'
+  | 'support_sales'
+  | 'sharpen_marketing_messaging'
+  | 'improve_user_retention'
+  | 'other';
+
+export interface Template {
+  name: string;
+  description: string;
+  icon?: any;
+  category?: 'Product Experience' | 'Exploration' | 'Growth' | 'Increase Revenue' | 'Customer Success';
+  objectives?: [Objective, Objective?, Objective?];
+  survey: Survey;
 }

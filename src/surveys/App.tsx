@@ -2,14 +2,12 @@ import { VNode, h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 
 import { Wrapper } from '../components';
-import { ID, Survey, SurveyAnswer } from '../types';
+import { ID, Question, Survey, SurveyAnswer } from '../types';
 import SurveyView from './components/Survey';
-import { SurveyLogic } from './logic';
-import { SurveyContext } from './context';
 
 interface AppProps {
   survey: Survey;
-  surveyLogic: SurveyLogic;
+  getNextQuestionId: (question: Question, answers: SurveyAnswer[]) => ID | null;
   onSurveyDisplayed?: (surveyId: ID) => void;
   onSurveyClosed?: (surveyId: ID) => Promise<void>;
   onQuestionAnswered?: (
@@ -22,7 +20,7 @@ interface AppProps {
 
 export default function App({
   survey,
-  surveyLogic,
+  getNextQuestionId,
   onSurveyDisplayed,
   onSurveyClosed,
   onQuestionAnswered,
@@ -34,33 +32,27 @@ export default function App({
     onSurveyDisplayed?.(survey.id);
   });
 
-  const close = () => {
+  const close = (force: boolean = false) => {
     setIsOpen(false);
     setTimeout(() => {
       onSurveyClosed?.(survey.id);
-    }, 1000); // wait for animation to finish
+    }, force ? 0 : 500); // wait for animation to finish
   };
 
   return (
-    <SurveyContext.Provider
-      value={{
-        surveyLogic,
-        theme: survey.theme
-      }}
+    <Wrapper
+      // isOpen={isOpen}
+      close={() => close(true)}
+      placement={survey.settings.placement}
+      background={survey.theme?.background}
     >
-      <Wrapper
-        // isOpen={isOpen}
+      <SurveyView
+        survey={survey}
         close={close}
-        placement={survey.settings.placement}
-        background={survey.theme?.background}
-      >
-        <SurveyView
-          survey={survey}
-          close={close}
-          onQuestionAnswered={onQuestionAnswered}
-          onSurveyCompleted={onSurveyCompleted}
-        />
-      </Wrapper>
-    </SurveyContext.Provider>
+        getNextQuestionId={getNextQuestionId}
+        onQuestionAnswered={onQuestionAnswered}
+        onSurveyCompleted={onSurveyCompleted}
+      />
+    </Wrapper>
   );
 }

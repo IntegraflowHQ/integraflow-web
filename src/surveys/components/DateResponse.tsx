@@ -7,7 +7,7 @@ import { DatePicker } from '../../components';
 
 interface DateResponseProps {
   question: Question;
-  onAnswered: (answer: SurveyAnswer[], nextQuestionId: ID | null) => void;
+  onAnswered: (answers: SurveyAnswer[]) => void;
   submitText?: string;
   theme?: Theme;
 }
@@ -23,7 +23,7 @@ export default function DateResponse({
   const handleSubmit = (e: h.JSX.TargetedEvent<HTMLFormElement, Event>) => {
     e.preventDefault();
     if (!selectedDate) return;
-    onAnswered([{ answer: selectedDate.toISOString() }], question.id);
+    onAnswered([{ answer: selectedDate.toISOString() }]);
   };
 
   return (

@@ -2,7 +2,20 @@ import { h, render } from 'preact';
 
 import Formily from '..';
 import { Context, RootFrame, RootFrameContainer, SdkEvent } from '../core';
-import { ID, Survey, SurveyAnswer } from '../types';
+import {
+  AnswerType,
+  DateLogic,
+  FormLogic,
+  ID,
+  MultipleLogic,
+  Question,
+  QuestionSettings,
+  RangeLogic,
+  SingleLogic,
+  Survey,
+  SurveyAnswer,
+  TextLogic
+} from '../types';
 import { deferSurveyActivation } from '../utils';
 import App from './App';
 import { TargetingEngine } from '../core/targeting';
@@ -54,12 +67,6 @@ export class SurveyManager {
     }
 
     this.evaluateTriggers();
-};
-
-  private setState(state: SurveyManagerState) {
-    console.info('Setting survey manager state:' + state);
-    this.state = state;
-    this.onEnter(state);
   }
 
   private async onEnter(state: SurveyManagerState) {
@@ -77,26 +84,78 @@ export class SurveyManager {
     }
   }
 
-  private async onQuestionAnswered(surveyId: ID, questionId: ID, answers: SurveyAnswer[]) {
+  private onQuestionAnswered = async (surveyId: ID, questionId: ID, answers: SurveyAnswer[]) => {
     // TODO: Perform some async actions.
     this.context.listeners.onQuestionAnswered?.(surveyId, questionId, answers);
   }
 
-  private async onSurveyDisplayed(surveyId: ID) {
+  private onSurveyDisplayed = async (surveyId: ID) => {
     // TODO: Perform some async actions.
     this.context.listeners.onSurveyDisplayed?.(surveyId);
   }
 
-  private async onSurveyClosed(surveyId: ID) {
+  private onSurveyClosed = async (surveyId: ID) => {
     // TODO: Perform some async actions. Probably display a new survey, if available
     this.context.listeners.onSurveyClosed?.(surveyId);
 
     this.hideSurvey(surveyId);
   }
 
-  private async onSurveyCompleted(surveyId: ID) {
+  private onSurveyCompleted = (surveyId: ID) => {
     // TODO: Perform some async actions. Probably display a new survey, if available
     this.context.listeners.onSurveyCompleted?.(surveyId);
+  }
+
+  private getNextQuestionId = (question: Question, answers: SurveyAnswer[]): ID | null => {
+    const { type, settings } = question;
+
+    const logic = (settings as QuestionSettings<any>).logic;
+    if (!logic) {
+      return null;
+    }
+  
+    let nextQuestionId = null;
+    switch (type) {
+      case AnswerType.TEXT:
+        nextQuestionId = this.surveyLogic.getTextQuestionDestination(answers[0].answer ?? null, (logic as TextLogic[]));
+        break;
+      case AnswerType.SINGLE:
+        nextQuestionId = this.surveyLogic.getSingleQuestionDestination(answers[0].answerId ?? null, (logic as SingleLogic[]));
+        break;
+      case AnswerType.MULTIPLE:
+        const answerIds = (answers || []).map(answer => answer.answerId!).filter(answer => !!answer);
+        nextQuestionId = this.surveyLogic.getMultipleQuestionDestination(answerIds ?? null, (logic as MultipleLogic[]));
+        break;
+      case AnswerType.DATE:
+        nextQuestionId = this.surveyLogic.getDateQuestionDestination(answers[0].answer ?? null, (logic as DateLogic[]));
+        break;
+      case AnswerType.FORM:
+        const answerMap: { [key: ID]: string | null; } = {};
+        for (const ans of answers) {
+          const { answer, answerId } = ans;
+          if (answerId) {
+            answerMap[answerId] = answer ?? null;
+          }
+        }
+
+        nextQuestionId = this.surveyLogic.getFormQuestionDestination(answerMap, (logic as FormLogic[]));
+        break;
+      case AnswerType.CSAT:
+      case AnswerType.NPS:
+      case AnswerType.NUMERICAL_SCALE:
+      case AnswerType.RATING:
+      case AnswerType.SMILEY_SCALE:
+        nextQuestionId = this.surveyLogic.getRangeQuestionDestination((answers[0].answerId as number) ?? null, (logic as RangeLogic[]));
+        break;
+    }
+
+    return nextQuestionId;
+  }
+
+  private setState(state: SurveyManagerState) {
+    console.info('Setting survey manager state:' + state);
+    this.state = state;
+    this.onEnter(state);
   }
 
   private hideSurvey(surveyId: ID) {
@@ -111,6 +170,8 @@ export class SurveyManager {
     }
 
     this.activeSurveys.splice(idx, 1);
+
+    console.log('hideSurvey', this.activeSurveys);
     this.setState('ready');
   }
 
@@ -126,6 +187,7 @@ export class SurveyManager {
   }
 
   private render(survey: Survey) {
+    console.log('Rendering', this.state, survey);
     if (!this.state || !survey) {
       return;
     }
@@ -136,10 +198,13 @@ export class SurveyManager {
 
     this.setState('running');
 
+    const orderedQuestions = survey.questions.sort((a, b) => a.orderNumber - b.orderNumber);
+    survey.questions = orderedQuestions;
+
     render(
       <App
         survey={survey}
-        surveyLogic={this.surveyLogic}
+        getNextQuestionId={this.getNextQuestionId}
         onQuestionAnswered={this.onQuestionAnswered}
         onSurveyDisplayed={this.onSurveyDisplayed}
         onSurveyClosed={this.onSurveyClosed}
@@ -175,7 +240,7 @@ export class SurveyManager {
   }
 
   private activateSurvey(survey: Survey) {
-    if (this.activeSurveys.indexOf(survey) > -1) {
+    if ((this.activeSurveys.findIndex(activeSurvey => survey.id === activeSurvey.id)) > -1) {
       return;
     }
 
@@ -205,8 +270,15 @@ export class SurveyManager {
 
   showSurvey(surveyId: ID) {
     const survey = this.context.surveys?.find(survey => survey.id === surveyId);
+
     if (survey) {
-      this.renderSurvey(survey);
+      const idx = this.activeSurveys.findIndex(survey => survey.id === surveyId);
+      if (idx >= 0) {
+        this.activeSurveys.splice(idx, 1);
+      }
+
+      this.activeSurveys.unshift(survey);
+      this.renderSurvey();
     }
   }
 }

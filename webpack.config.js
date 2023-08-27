@@ -1,5 +1,6 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const environment = process.env.NODE_ENV || 'development';
 const isProd = environment === 'production';
@@ -88,5 +89,18 @@ module.exports = [
     resolve,
     optimization,
     output,
+  },
+  {
+    target: ['web', 'es5'],
+    mode: environment,
+    entry: {
+      'demo-bundle': './src/demo/index.ts',
+    },
+    devtool,
+    module: moduleCfg,
+    resolve,
+    optimization,
+    output: { ...output, path: path.resolve(__dirname, 'dist/demo'), },
+    plugins: [new HtmlWebpackPlugin()],
   },
 ];

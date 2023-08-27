@@ -5,10 +5,11 @@ import TextResponse from './TextResponse';
 import { SmileyResponse } from './SmileyResponse';
 import DateResponse from './DateResponse';
 import { CTAResponse } from './CTAResponse';
+import SingleResponse from './SingleResponse';
 
 interface ResponseProps {
   question: Question;
-  onAnswered: (answers: SurveyAnswer[], nextQuestionId?: ID | null) => void;
+  onAnswered: (answers: SurveyAnswer[]) => void;
   theme?: Theme;
   submitText?: string;
 }
@@ -27,6 +28,7 @@ export default function Response({
         question={question}
         onAnswered={onAnswered}
         theme={theme}
+        submitText={submitText}
       />;
       break;
     case AnswerType.SMILEY_SCALE:
@@ -64,7 +66,11 @@ export default function Response({
       element = <div>Multiple</div>;
       break;
     case AnswerType.SINGLE:
-      element = <div>Single</div>;
+      element = <SingleResponse
+        question={question}
+        onAnswered={onAnswered}
+        theme={theme}
+      />;
       break;
     case AnswerType.FORM:
       element = <div>Form</div>

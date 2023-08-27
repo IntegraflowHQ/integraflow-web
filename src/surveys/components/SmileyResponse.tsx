@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { Header } from '../../components';
-import { ID, Question, RangeSettings, SurveyAnswer, Theme } from '../../types';
+import { Question, RangeSettings, SurveyAnswer, Theme } from '../../types';
 import {
   AngryEmoji,
   HappyEmoji,
@@ -12,7 +12,7 @@ import {
 type Props = {
   question: Question;
   theme?: Theme;
-  onAnswered: (answer: SurveyAnswer[], nextQuestionId: ID | null) => void;
+  onAnswered: (answers: SurveyAnswer[]) => void;
 };
 
 const smileyOptions = [
@@ -51,7 +51,7 @@ export const SmileyResponse = ({ question, theme, onAnswered }: Props) => {
           {question.options?.map((option, index) => (
             <button
               key={option.id}
-              onClick={() => onAnswered([{ answerId: option.id, answer: option.label }], question.id)}
+              onClick={() => onAnswered([{ answerId: option.id, answer: option.label }])}
               className={'cursor-pointer block p-2 rounded-full bg-[#EFF0F6]'}
             >
               {renderSmiley(

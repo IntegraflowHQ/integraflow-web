@@ -35,6 +35,10 @@ export class RootFrame {
   
   removeContainer(name: string) {
     const idx = this.containers.findIndex(container => container.name === name);
-    this.containers.splice(idx, 1);
+
+    if (idx >= 0) {
+      this.containers[idx].element.remove();
+      this.containers.splice(idx, 1);
+    }
   }
 }

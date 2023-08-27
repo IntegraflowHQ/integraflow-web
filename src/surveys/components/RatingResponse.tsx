@@ -13,7 +13,7 @@ import RatingIcon from './RatingIcon';
 
 interface RatingResponseProps {
   question: Question;
-  onAnswered: (questionId: ID, answer: SurveyAnswer) => void;
+  onAnswered: (answers: SurveyAnswer[]) => void;
   theme?: Theme;
 }
 

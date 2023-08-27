@@ -1,7 +1,7 @@
 import { VNode, h } from 'preact';
-import { useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'preact/hooks';
 
-import { ID, Survey, SurveyAnswer } from '../../types';
+import { ID, Question, Survey, SurveyAnswer } from '../../types';
 import Progress from '../../components/Progress';
 import { cn } from '../../utils';
 import Response from './Response';
@@ -9,6 +9,7 @@ import Response from './Response';
 interface SurveyProps {
   survey: Survey;
   close: () => void;
+  getNextQuestionId: (question: Question, answers: SurveyAnswer[]) => ID | null;
   onQuestionAnswered?: (
     surveyId: ID,
     questionId: ID,
@@ -22,8 +23,9 @@ export default function Survey({
   close,
   onQuestionAnswered,
   onSurveyCompleted,
+  getNextQuestionId
 }: SurveyProps): VNode {
-  const [activeQuestionId, setActiveQuestionId] = useState(survey.questions[0].id);
+  const [activeQuestion, setActiveQuestion] = useState(survey.questions[0]);
   const [progress, setProgress] = useState(0);
   const [loading, setLoading] = useState(false);
 
@@ -34,19 +36,21 @@ export default function Survey({
     if (contentRef.current) {
       contentRef.current.scrollTop = 0;
     }
-  }, [activeQuestionId]);
+  }, [activeQuestion]);
 
   useEffect(() => {
     setProgress(calculateProgress());
 
+    console.log('Here');
+
     function calculateProgress() {
-      const index = survey.questions.findIndex((question) => question.id === activeQuestionId);
+      const index = survey.questions.findIndex((question) => question.id === activeQuestion.id);
       return index / survey.questions.length;
     }
-  }, [activeQuestionId, survey]);
+  }, [activeQuestion, survey]);
 
-  const resolveNextQuestion = (currentQuestionId: ID, nextQuestionId?: ID | null) => {
-    if (!survey) {
+  const resolveNextQuestion = useCallback((answers: SurveyAnswer[]) => {
+    if (!survey || !activeQuestion) {
       return null;
     }
 
@@ -54,43 +58,55 @@ export default function Survey({
       return null;
     }
 
+    const nextQuestionId = getNextQuestionId(activeQuestion, answers);
+
     let nextQuestion = null;
     if (nextQuestionId) {
       nextQuestion = survey.questions.find(question => question.id === nextQuestionId);
+      console.log('resolveNextQuestion', nextQuestionId, nextQuestion);
     } else {
-      nextQuestion = survey.questions.find(question => question.id === currentQuestionId);
+      const index = survey.questions.findIndex(question => question.id === activeQuestion.id);
+      console.log('resolveNextQuestion', activeQuestion.id, index);
+
+      if (index >= 0 && ((index + 1) < survey.questions.length)) {
+        nextQuestion = survey.questions[index + 1];
+      }
     }
 
     return nextQuestion;
-  }
+  }, [survey, activeQuestion])
 
-  const isLastQuestion = (questionId: ID) => {
+  const isLastQuestion = useCallback((questionId: ID) => {
     return questionId === survey.questions[survey.questions.length - 1].id;
-  }
+  }, [survey])
 
-  const onAnswered = (answers: SurveyAnswer[], nextQuestionId?: ID | null) => {
+  const onAnswered = useCallback((answers: SurveyAnswer[]) => {
     if (!survey) {
       return;
     }
 
     setLoading(true);
 
-    const nextQuestion = resolveNextQuestion(activeQuestionId, nextQuestionId);
-    const finished = isLastQuestion(activeQuestionId) || nextQuestionId === -1;
+    const nextQuestion = resolveNextQuestion(answers);
+    const finished = isLastQuestion(activeQuestion.id);
 
     if (answers.length > 0) {
       answers[answers.length - 1].finished = finished;
     }
 
-    onQuestionAnswered?.(survey.id, activeQuestionId, answers);
+    onQuestionAnswered?.(survey.id, activeQuestion.id, answers);
 
-    if (!nextQuestion) {
+    setLoading(false);
+
+    if (finished || !nextQuestion) {
+      onSurveyCompleted?.(survey.id);
+
       close();
       return;
     }
 
-    setActiveQuestionId(nextQuestion.id);
-  };
+    setActiveQuestion(nextQuestion);
+  }, [survey, activeQuestion]);
 
   return (
     <div>
@@ -103,7 +119,7 @@ export default function Survey({
         )}>
         {(survey.questions.map(
           (question, idx) =>
-            activeQuestionId === question.id && (
+            activeQuestion.id === question.id && (
               <Response
                 key={question.id}
                 onAnswered={onAnswered}
