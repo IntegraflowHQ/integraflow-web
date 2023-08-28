@@ -14,8 +14,7 @@ import Response from './Response';
 
 interface SurveyProps {
   survey: Survey;
-  close: () => void;
-  forceClose: () => void;
+  close: (force?: boolean) => void;
   getNextQuestionId: (question: Question, answers: SurveyAnswer[]) => ID | null;
   onQuestionAnswered?: (
     surveyId: ID,
@@ -28,7 +27,6 @@ interface SurveyProps {
 export default function Survey({
   survey,
   close,
-  forceClose,
   onQuestionAnswered,
   onSurveyCompleted,
   getNextQuestionId,
@@ -133,7 +131,7 @@ export default function Survey({
 
   return (
     <Wrapper
-      close={forceClose}
+      close={() => close(true)}
       placement={survey.settings.placement}
       background={survey.theme?.background}
       showProgressBar={survey.settings.showProgressBar}
