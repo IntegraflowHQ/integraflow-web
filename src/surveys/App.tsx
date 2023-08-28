@@ -1,7 +1,6 @@
 import { VNode, h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 
-import { Wrapper } from '../components';
 import { ID, Question, Survey, SurveyAnswer } from '../types';
 import SurveyView from './components/Survey';
 
@@ -34,25 +33,24 @@ export default function App({
 
   const close = (force: boolean = false) => {
     setIsOpen(false);
-    setTimeout(() => {
-      onSurveyClosed?.(survey.id);
-    }, force ? 0 : 500); // wait for animation to finish
+    setTimeout(
+      () => {
+        onSurveyClosed?.(survey.id);
+      },
+      force ? 0 : 500
+    ); // wait for animation to finish
   };
 
+  const forceClose = () => close(true);
+
   return (
-    <Wrapper
-      // isOpen={isOpen}
-      close={() => close(true)}
-      placement={survey.settings.placement}
-      background={survey.theme?.background}
-    >
-      <SurveyView
-        survey={survey}
-        close={close}
-        getNextQuestionId={getNextQuestionId}
-        onQuestionAnswered={onQuestionAnswered}
-        onSurveyCompleted={onSurveyCompleted}
-      />
-    </Wrapper>
+    <SurveyView
+      survey={survey}
+      close={close}
+      forceClose={forceClose}
+      getNextQuestionId={getNextQuestionId}
+      onQuestionAnswered={onQuestionAnswered}
+      onSurveyCompleted={onSurveyCompleted}
+    />
   );
 }
