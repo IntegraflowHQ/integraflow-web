@@ -41,13 +41,10 @@ export default function App({
     ); // wait for animation to finish
   };
 
-  const forceClose = () => close(true);
-
   return (
     <SurveyView
       survey={survey}
       close={close}
-      forceClose={forceClose}
       getNextQuestionId={getNextQuestionId}
       onQuestionAnswered={onQuestionAnswered}
       onSurveyCompleted={onSurveyCompleted}
