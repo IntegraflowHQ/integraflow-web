@@ -26,21 +26,13 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
   const lightAnswerColor = theme?.answer && hexToRgba(theme.answer, 0.1);
 
   useEffect(() => {
-    const answerQuestion = () => {
-      if (value === 0) return;
+    if (value === 0) return;
 
-      const answer = answerId
-        ? { type: question.type, answerId: answerId }
-        : { type: question.type, answer: value.toString() };
+    const answer = answerId
+      ? { type: question.type, answerId: answerId }
+      : { type: question.type, answer: value.toString() };
 
-      onAnswered([answer]);
-    };
-
-    const timeoutId = setTimeout(answerQuestion, 500);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
+    onAnswered([answer]);
   }, [value, answerId]);
 
   const renderOption = (
