@@ -3,12 +3,11 @@ import { Button, Header } from '../../components';
 import { AnswerType, ID, Question, SurveyAnswer, Theme } from '../../types';
 
 import { useState } from 'preact/hooks';
-import { Value } from 'react-date-picker/dist/cjs/shared/types';
 import { DatePicker } from '../../components';
 
 interface DateResponseProps {
   question: Question;
-  onAnswered: (questionId: ID, answer: SurveyAnswer) => void;
+  onAnswered: (answers: SurveyAnswer[]) => void;
   submitText?: string;
   theme?: Theme;
 }
@@ -19,15 +18,12 @@ export default function DateResponse({
   submitText,
   theme,
 }: DateResponseProps) {
-  const [selectedDate, setSelectedDate] = useState<Value>();
+  const [selectedDate, setSelectedDate] = useState<Date | null>();
 
   const handleSubmit = (e: h.JSX.TargetedEvent<HTMLFormElement, Event>) => {
     e.preventDefault();
     if (!selectedDate) return;
-    onAnswered(question.id, {
-      type: AnswerType.DATE,
-      value: selectedDate.toLocaleString(),
-    });
+    onAnswered([{ answer: selectedDate.toISOString() }]);
   };
 
   return (
@@ -49,7 +45,7 @@ export default function DateResponse({
         yearPlaceholder='YYYY'
         format='dd/MM/yyyy'
         value={selectedDate}
-        onChange={(value) => setSelectedDate(value)}
+        onChange={(value) => setSelectedDate(value as Date)}
       />
 
       <Button

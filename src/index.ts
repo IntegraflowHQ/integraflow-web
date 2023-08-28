@@ -1,7 +1,7 @@
 import { Context, RootFrame } from './core';
 import { SyncManager } from './core/sync';
 import { SurveyManager } from './surveys';
-import { Configuration, EventProperties, UserAttributes } from './types';
+import { Configuration, EventProperties, ID, UserAttributes } from './types';
 
 export default class Formily {
   private readonly config: Configuration;
@@ -71,5 +71,9 @@ export default class Formily {
     window.addEventListener('pushstate', this.trackRouteChange);
     window.addEventListener('replacestate', this.trackRouteChange);
     window.addEventListener('load', this.trackRouteChange);
+  }
+
+  showSurvey(surveyId: ID) {
+    this.surveyManager.showSurvey(surveyId);
   }
 }
