@@ -62,7 +62,7 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
           size='sm'
           onClick={handleOptionClick}
           color={theme?.answer}
-          classname='border w-[56px] h-[52px]'
+          classname='border w-[45px] h-[42px] flex justify-center items-center'
           variant='surveyInput'
           isActive={isSelected}
         />
@@ -97,7 +97,7 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
   };
 
   return (
-    <div className='px-6 space-y-3'>
+    <div className='space-y-3 w-[504px] overflow-x-auto'>
       <Header
         title={question.label}
         description={question.description}
@@ -108,7 +108,7 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
       <div
         className={classnames(
           'flex',
-          question.type === 'nps' ? 'gap-4' : 'gap-6',
+          question.type === 'nps' ? 'justify-between' : 'gap-6',
           question.type === 'rating' && 'px-6 justify-center'
         )}
       >
