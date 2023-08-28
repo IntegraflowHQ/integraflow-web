@@ -28,9 +28,9 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
   useEffect(() => {
     if (value === 0) return;
 
-    const answer = answerId
-      ? { type: question.type, answerId: answerId }
-      : { type: question.type, answer: value.toString() };
+    const answer: SurveyAnswer = answerId
+      ? { answerId: answerId }
+      : { answer: value.toString() }; // When only `question.settings.count` is provided
 
     onAnswered([answer]);
   }, [value, answerId]);
@@ -42,7 +42,7 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
     const isSelected = value === index + 1;
 
     const handleOptionClick = () => {
-      option && setAnswerId(option.id);
+      option && setAnswerId(option.id); // When `question.options` is provided
       setValue(index + 1);
     };
 
