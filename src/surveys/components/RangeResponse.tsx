@@ -28,11 +28,7 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
   useEffect(() => {
     if (value === 0) return;
 
-    const answer: SurveyAnswer = answerId
-      ? { answerId: answerId }
-      : { answer: value.toString() }; // When only `question.settings.count` is provided
-
-    onAnswered([answer]);
+    onAnswered([{ answerId: answerId ?? value }]);
   }, [value, answerId]);
 
   const renderOption = (
