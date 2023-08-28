@@ -1,19 +1,19 @@
 import { h } from 'preact';
-import { CTASettings, CTAType, Question, Theme } from '../../types';
+import { useContext } from 'preact/hooks';
+
+import { CTASettings, CTAType, ID, Question, SurveyAnswer, Theme } from '../../types';
 import { Button } from '../../components/Button/Button';
 import { Header } from '../../components';
 
 type Props = {
   question: Question;
   theme?: Theme;
-  onAnswered: () => void;
+  onAnswered: (answers: SurveyAnswer[]) => void;
 };
 
 export const CTAResponse = ({ question, theme, onAnswered }: Props) => {
   const onClickHandler = () => {
-    if (onAnswered) {
-      onAnswered();
-    }
+    onAnswered([{ ctaSuccess: true }]);
   };
 
   return (

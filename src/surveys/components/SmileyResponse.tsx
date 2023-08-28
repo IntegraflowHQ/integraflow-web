@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { Header } from '../../components';
-import { Question, RangeSettings, Theme } from '../../types';
+import { Question, RangeSettings, SurveyAnswer, Theme } from '../../types';
 import {
   AngryEmoji,
   HappyEmoji,
@@ -12,38 +12,38 @@ import {
 type Props = {
   question: Question;
   theme?: Theme;
-  onAnswered: (questionId: string | number, answer: number) => void;
+  onAnswered: (answers: SurveyAnswer[]) => void;
+};
+
+const smileyOptions = [
+  <AngryEmoji />,
+  <SadEmoji />,
+  <NeutralEmoji />,
+  <SatisfiedEmoji />,
+  <HappyEmoji />,
+];
+
+const getCountBasedIndex = (count: number, optionIndex: number): number => {
+  if (count === 3) {
+    return optionIndex * 2;
+  } else if (count === 5) {
+    return optionIndex;
+  }
+  return 0;
+};
+
+const renderSmiley = (count: number, optionIndex: number) => {
+  const smileyIndex = getCountBasedIndex(count, optionIndex);
+  return smileyOptions[smileyIndex];
 };
 
 export const SmileyResponse = ({ question, theme, onAnswered }: Props) => {
-  const smileyOptions = [
-    <AngryEmoji />,
-    <SadEmoji />,
-    <NeutralEmoji />,
-    <SatisfiedEmoji />,
-    <HappyEmoji />,
-  ];
-
-  const getCountBasedIndex = (count: number, optionIndex: number): number => {
-    if (count === 3) {
-      return optionIndex * 2;
-    } else if (count === 5) {
-      return optionIndex;
-    }
-    return 0;
-  };
-
-  const renderSmiley = (count: number, optionIndex: number) => {
-    const smileyIndex = getCountBasedIndex(count, optionIndex);
-    return smileyOptions[smileyIndex];
-  };
-
   return (
     <div>
       <Header
-        title={question?.label ? question.label : ''}
+        title={question?.label ?? ''}
         description={question?.description}
-        color={theme?.question ? theme?.question : '#050505'}
+        color={theme?.question ?? '#050505'}
         centered
       />
       <div>
@@ -51,7 +51,7 @@ export const SmileyResponse = ({ question, theme, onAnswered }: Props) => {
           {question.options?.map((option, index) => (
             <button
               key={option.id}
-              onClick={() => onAnswered(question.id, option.orderNumber)}
+              onClick={() => onAnswered([{ answerId: option.id, answer: option.label }])}
               className={'cursor-pointer block p-2 rounded-full bg-[#EFF0F6]'}
             >
               {renderSmiley(
@@ -64,14 +64,14 @@ export const SmileyResponse = ({ question, theme, onAnswered }: Props) => {
         <div className={'flex gap-12 justify-between w-full '}>
           <span
             style={{
-              color: theme?.question ? theme?.question : '#050505',
+              color: theme?.answer ?? '#050505',
             }}
           >
             {(question?.settings as RangeSettings).leftText}
           </span>
           <span
             style={{
-              color: theme?.question ? theme?.question : '#050505',
+              color: theme?.answer ?? '#050505',
             }}
           >
             {(question?.settings as RangeSettings).rightText}
