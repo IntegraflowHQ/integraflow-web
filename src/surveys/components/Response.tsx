@@ -1,11 +1,12 @@
 import { h } from 'preact';
 
-import { AnswerType, ID, Question, SurveyAnswer, Theme } from '../../types';
-import TextResponse from './TextResponse';
-import { SmileyResponse } from './SmileyResponse';
-import DateResponse from './DateResponse';
+import { AnswerType, Question, SurveyAnswer, Theme } from '../../types';
 import { CTAResponse } from './CTAResponse';
+import DateResponse from './DateResponse';
+import RangeResponse from './RangeResponse';
 import SingleResponse from './SingleResponse';
+import { SmileyResponse } from './SmileyResponse';
+import TextResponse from './TextResponse';
 
 interface ResponseProps {
   question: Question;
@@ -18,46 +19,66 @@ export default function Response({
   question,
   onAnswered,
   theme,
-  submitText
+  submitText,
 }: ResponseProps) {
   let element: h.JSX.Element;
 
   switch (question.type) {
     case AnswerType.TEXT:
-      element = <TextResponse
-        question={question}
-        onAnswered={onAnswered}
-        theme={theme}
-        submitText={submitText}
-      />;
+      element = (
+        <TextResponse
+          question={question}
+          onAnswered={onAnswered}
+          theme={theme}
+          submitText={submitText}
+        />
+      );
       break;
     case AnswerType.SMILEY_SCALE:
-      element = <SmileyResponse
-        question={question}
-        onAnswered={onAnswered}
-        theme={theme}
-      />;
+      element = (
+        <SmileyResponse
+          question={question}
+          onAnswered={onAnswered}
+          theme={theme}
+        />
+      );
       break;
     case AnswerType.DATE:
-      element = <DateResponse
-        question={question}
-        onAnswered={onAnswered}
-        theme={theme}
-        submitText={submitText}
-      />;
+      element = (
+        <DateResponse
+          question={question}
+          onAnswered={onAnswered}
+          theme={theme}
+          submitText={submitText}
+        />
+      );
       break;
     case AnswerType.CTA:
-      element = <CTAResponse
-        question={question}
-        onAnswered={onAnswered}
-        theme={theme}
-      />;
+      element = (
+        <CTAResponse
+          question={question}
+          onAnswered={onAnswered}
+          theme={theme}
+        />
+      );
       break;
     case AnswerType.NPS:
-      element = <div>NPS</div>;
+      element = (
+        <RangeResponse
+          question={question}
+          onAnswered={onAnswered}
+          theme={theme}
+        />
+      );
       break;
     case AnswerType.RATING:
-      element = <div>Rating</div>;
+      element = (
+        <RangeResponse
+          question={question}
+          onAnswered={onAnswered}
+          theme={theme}
+        />
+      );
       break;
     case AnswerType.CSAT:
       element = <div>CSAT</div>;
@@ -66,17 +87,19 @@ export default function Response({
       element = <div>Multiple</div>;
       break;
     case AnswerType.SINGLE:
-      element = <SingleResponse
-        question={question}
-        onAnswered={onAnswered}
-        theme={theme}
-      />;
+      element = (
+        <SingleResponse
+          question={question}
+          onAnswered={onAnswered}
+          theme={theme}
+        />
+      );
       break;
     case AnswerType.FORM:
-      element = <div>Form</div>
+      element = <div>Form</div>;
       break;
     case AnswerType.NUMERICAL_SCALE:
-      element = <div>Numerical</div>
+      element = <div>Numerical</div>;
       break;
   }
 

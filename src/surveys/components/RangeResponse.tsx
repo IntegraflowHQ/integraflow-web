@@ -10,11 +10,12 @@ import {
   SurveyAnswer,
   Theme,
 } from '../../types';
+import { hexToRgba } from '../../utils';
 import RatingIcon from './RatingIcon';
 
 interface RangeResponseProps {
   question: Question;
-  onAnswered: (answers: SurveyAnswer[], nextQuestionId: ID | null) => void;
+  onAnswered: (answers: SurveyAnswer[]) => void;
   theme?: Theme;
 }
 
@@ -22,8 +23,7 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
   const [value, setValue] = useState(0);
   const [answerId, setAnswerId] = useState<ID | null>(null);
 
-  const lightAnswerColor = theme?.answer && `${theme.answer}1A`; // 1A is 10% opacity of the color hex code
-  const mediumAnswerColor = theme?.answer && `${theme.answer}33`; // 33 is 20% opacity of the color hex code
+  const lightAnswerColor = theme?.answer && hexToRgba(theme.answer, 0.1);
 
   useEffect(() => {
     const answerQuestion = () => {
@@ -33,7 +33,7 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
         ? { type: question.type, answerId: answerId }
         : { type: question.type, answer: value.toString() };
 
-      onAnswered([answer], question.id);
+      onAnswered([answer]);
     };
 
     const timeoutId = setTimeout(answerQuestion, 500);
@@ -61,10 +61,10 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
           label={`${index + 1}`}
           size='sm'
           onClick={handleOptionClick}
-          color={isSelected ? mediumAnswerColor : lightAnswerColor}
-          hoverColor={mediumAnswerColor}
-          textColor={theme?.answer}
-          classname='border w-14 h-[52px]'
+          color={theme?.answer}
+          classname='border w-[56px] h-[52px]'
+          variant='surveyInput'
+          isActive={isSelected}
         />
       );
     } else if (question.type === 'rating') {
