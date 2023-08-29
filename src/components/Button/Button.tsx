@@ -1,32 +1,50 @@
-import classNames from 'classnames';
-import { h, FunctionComponent } from 'preact';
+import { FunctionComponent, h } from 'preact';
+import { useMemo, useState } from 'preact/hooks';
+import { calculateTextColor, cn, hexToRgba } from '../../utils';
 
 interface ButtonProps {
   label?: string;
-  size?: 'md' | 'sm' | 'full';
   onClick?: () => void;
+  type?: 'submit' | 'button' | 'reset';
+  size?: 'md' | 'sm' | 'full';
+  isActive?: boolean;
   classname?: string;
   color?: string;
   position?: 'left' | 'right' | 'center';
-  type?: 'button' | 'submit' | 'reset';
+  variant?: 'default' | 'surveyInput';
 }
 
 export const Button: FunctionComponent<ButtonProps> = ({
-  label,
+  type = 'submit',
+  isActive = false,
+  color = '#050505',
   size = 'md',
-  onClick,
-  classname,
-  type,
-  color,
   position = 'left',
+  variant = 'default',
+  ...props
 }) => {
-  const onClickHandler = () => {
-    if (onClick) {
-      onClick();
-    }
-  };
-  let widthClasses = 'w-auto';
+  const [isHovered, setIsHovered] = useState(false);
 
+  const fontColor = useMemo(() => {
+    if (variant === 'default') {
+      return calculateTextColor(color);
+    }
+    return color;
+  }, [variant, color]);
+
+  const backgroundColor = useMemo(() => {
+    if (variant === 'default') {
+      return color;
+    }
+
+    if (isActive || isHovered) {
+      return hexToRgba(color, 0.2);
+    }
+
+    return hexToRgba(color, 0.1);
+  }, [variant, color, isActive, isHovered]);
+
+  let widthClasses = 'w-auto';
   if (size === 'md') {
     widthClasses = 'w-32';
   } else if (size === 'sm') {
@@ -36,25 +54,26 @@ export const Button: FunctionComponent<ButtonProps> = ({
   }
 
   const buttonPositionClasses =
-    position === 'center'
-      ? 'mx-auto'
-      : position === 'right'
-      ? 'ml-auto'
-      : 'mr-auto';
+    position === 'center' ? 'mx-auto' : position === 'right' ? 'ml-auto' : '';
 
   return (
     <button
       type={type}
-      onClick={onClickHandler}
-      style={{ backgroundColor: color ? color : '#050505' }}
-      className={classNames(
-        classname,
+      onClick={props.onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        backgroundColor: backgroundColor,
+        color: fontColor,
+      }}
+      className={cn(
+        `block font-semibold py-2 px-4 rounded-lg`,
         widthClasses,
         buttonPositionClasses,
-        `block text-white font-semibold  py-2 px-4 rounded-lg`
+        props.classname ?? ''
       )}
     >
-      {label}
+      {props.label}
     </button>
   );
 };

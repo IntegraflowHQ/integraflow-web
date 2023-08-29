@@ -1,19 +1,24 @@
 import { h } from 'preact';
-import { CTASettings, CTAType, Question, Theme } from '../../types';
-import { Button } from '../../components/Button/Button';
+
 import { Header } from '../../components';
+import { Button } from '../../components/Button/Button';
+import {
+  CTASettings,
+  CTAType,
+  Question,
+  SurveyAnswer,
+  Theme,
+} from '../../types';
 
 type Props = {
   question: Question;
   theme?: Theme;
-  onAnswered: () => void;
+  onAnswered: (answers: SurveyAnswer[]) => void;
 };
 
 export const CTAResponse = ({ question, theme, onAnswered }: Props) => {
   const onClickHandler = () => {
-    if (onAnswered) {
-      onAnswered();
-    }
+    onAnswered([{ ctaSuccess: true }]);
   };
 
   return (
@@ -21,16 +26,16 @@ export const CTAResponse = ({ question, theme, onAnswered }: Props) => {
       <Header
         title={question?.label}
         description={question?.description}
-        color={theme?.question ? theme?.question : '#050505'}
+        color={theme?.question}
       />
 
       {(question?.settings as CTASettings).type === CTAType.HIDDEN ? null : (
         <Button
           label={(question?.settings as CTASettings).text}
           onClick={onClickHandler}
-          classname="mt-3"
-          position="right"
-          type={'submit'}
+          classname='mt-3'
+          position='right'
+          color={theme?.button}
         />
       )}
     </div>

@@ -1,7 +1,8 @@
 import classnames from 'classnames';
 import { XIcon } from 'lucide-preact';
 import { h } from 'preact';
-import { PlacementType } from '../types';
+import { PlacementType, Theme } from '../types';
+import Progress from './Progress';
 
 interface ContainerProps {
   children: preact.ComponentChildren;
@@ -9,6 +10,9 @@ interface ContainerProps {
   placement?: PlacementType;
   close?: () => void;
   background?: string;
+  progress: number;
+  showProgressBar?: boolean;
+  theme?: Theme;
 }
 
 export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
@@ -17,7 +21,12 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
   placement,
   close,
   background = '#FFFFFF',
+  progress,
+  showProgressBar,
+  theme,
 }) => {
+  const showTopBar = showProgressBar || !fullScreen;
+
   return (
     <div
       className={
@@ -38,27 +47,36 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
         >
           <div
             className={classnames(
-              'p-6 flex gap-6 flex-col justify-center items-center relative',
+              'p-6 flex flex-col justify-center items-center',
               fullScreen ? 'w-screen h-screen' : 'rounded-2xl w-fit'
             )}
             style={{ backgroundColor: background }}
           >
-            {!fullScreen && (
-              <button className={'absolute right-6 top-6'} onClick={close}>
-                <XIcon />
-              </button>
+            {showTopBar && (
+              <div
+                className={classnames(
+                  'flex items-center gap-2 w-full',
+                  !fullScreen && !showProgressBar && 'justify-end' // Set forceClose button to the right.
+                )}
+              >
+                {showProgressBar && (
+                  <Progress bgColor={theme?.progressBar} progress={progress} />
+                )}
+                {!fullScreen && (
+                  <button onClick={close}>
+                    <XIcon />
+                  </button>
+                )}
+              </div>
             )}
 
             <div
-              className={classnames(
-                'flex-1',
-                fullScreen ? 'overflow-y-auto' : 'pt-6'
-              )}
+              className={classnames('flex-1', fullScreen && 'overflow-y-auto')}
             >
               {children}
             </div>
 
-            <footer>
+            <footer class={'mt-6'}>
               Powered by <b>Formily</b>
             </footer>
           </div>

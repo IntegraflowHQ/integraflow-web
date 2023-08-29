@@ -1,23 +1,23 @@
 import { h } from 'preact';
-import { CTASettings, Question, TextSettings, Theme } from '../../types';
+import { Question, SurveyAnswer, TextSettings, Theme } from '../../types';
 import { useState } from 'preact/hooks';
 import { Button, Header } from '../../components';
 type Props = {
   question: Question;
   theme?: Theme;
-  onAnswered: (questionId: string | number, answer: string) => void;
+  submitText?: string;
+  onAnswered: (answer: SurveyAnswer[]) => void;
 };
 
-const TextResponse = ({ theme, question, onAnswered }: Props) => {
+const TextResponse = ({ theme, question, submitText, onAnswered }: Props) => {
   const [answer, setAnswer] = useState('');
 
   const onSubmitHandler = (
     event: h.JSX.TargetedEvent<HTMLFormElement, Event>
   ) => {
     event.preventDefault();
-    if (onAnswered) {
-      onAnswered(question?.id, answer);
-    }
+
+    onAnswered([{ answer }]);
   };
 
   return (
@@ -74,7 +74,7 @@ const TextResponse = ({ theme, question, onAnswered }: Props) => {
           )}
           <Button
             color={theme?.button}
-            label={(question?.settings as CTASettings).text}
+            label={submitText ?? 'Submit'}
             type="submit"
             size="full"
             classname="mt-3"

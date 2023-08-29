@@ -1,5 +1,5 @@
 import { Event, FilterOperator, FilterValue, LogicOperator, Survey, UserAttributes } from '../types';
-import { escapeRegExp } from '../utils';
+import { escapeRegExp, propConditionsMatched } from '../utils';
 import { Context, SdkEvent } from './context';
 
 type TargetingEvent = {
@@ -58,6 +58,9 @@ function filterMatched(operator: FilterOperator, filterValue: FilterValue, value
   let isFilterMatched = false;
 
   switch (operator) {
+    case FilterOperator.IN:
+      isFilterMatched = propIn(filterValue, value);
+      break;
     case FilterOperator.IS:
       isFilterMatched = propEq(filterValue, value);
       break;
@@ -99,15 +102,6 @@ function filterMatched(operator: FilterOperator, filterValue: FilterValue, value
   }
 
   return isFilterMatched;
-}
-
-function propConditionsMatched(conditions: boolean[], operator: LogicOperator) {
-  let conditionMatched = conditions.some(matched => matched);
-  if (operator === LogicOperator.AND) {
-    conditionMatched = conditions.every(matched => matched);
-  }
-
-  return conditionMatched;
 }
 
 export class TargetingEngine {
