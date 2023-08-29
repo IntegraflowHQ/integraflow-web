@@ -71,7 +71,10 @@ function shuffle(options: QuestionOption[]) {
   }
 }
 
-export function shuffleArray(options: QuestionOption[], shuffleOption: string) {
+export function shuffleArray(
+  options: QuestionOption[],
+  shuffleOption: 'all' | 'exceptLast'
+) {
   const optionsCopy = [...options];
 
   if (shuffleOption === 'all') {
