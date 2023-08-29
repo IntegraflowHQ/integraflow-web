@@ -10,6 +10,8 @@ export enum AnswerType {
   NPS = 'nps',
   FORM = 'form',
   CTA = 'cta',
+  BOOLEAN = 'boolean',
+  DROPDOWN = 'dropdown',
 }
 
 export enum FormFieldType {
@@ -78,6 +80,12 @@ export enum LogicTextCondition {
 export enum LogicSingleCondition {
   IS = 'is',
   IS_NOT = 'is_not',
+  HAS_ANY_VALUE = 'any_value',
+}
+
+export enum LogicBooleanCondition {
+  IS_TRUE = 'is_true',
+  IS_FALSE = 'is_false',
   HAS_ANY_VALUE = 'any_value',
 }
 
@@ -162,6 +170,10 @@ export interface TextLogic extends QuestionLogic {
   values?: string[];
 }
 
+export interface BooleanLogic extends QuestionLogic {
+  condition: LogicBooleanCondition;
+}
+
 export interface QuestionSettings<T> {
   logic?: T[];
 }
@@ -202,6 +214,12 @@ export interface TextSettings extends QuestionSettings<TextLogic> {
   singleLine?: boolean;
 }
 
+export interface BooleanSettings extends QuestionSettings<BooleanLogic> {
+  positiveText?: string;
+  negativeText?: string;
+  shape?: 'button' | 'thumb';
+}
+
 export interface Question {
   id: string | number;
   orderNumber: number;
@@ -217,7 +235,8 @@ export interface Question {
     | DateSettings
     | MultipleSettings
     | SingleSettings
-    | TextSettings;
+    | TextSettings
+    | BooleanSettings;
 }
 
 export enum FilterOperator {
