@@ -14,8 +14,8 @@ export default function BooleanResponse({
   onAnswered,
   theme,
 }: BooleanResponseProps): VNode {
-  const answerPositive = () => onAnswered([{ answerId: 1 }]);
-  const answerNegative = () => onAnswered([{ answerId: 0 }]);
+  const answerPositive = () => onAnswered([{ answer: '1' }]);
+  const answerNegative = () => onAnswered([{ answer: '0' }]);
 
   return (
     <div className={'max-w-[304px] space-y-4'}>
