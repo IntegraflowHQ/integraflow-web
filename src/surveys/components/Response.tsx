@@ -1,6 +1,7 @@
 import { h } from 'preact';
 
 import { AnswerType, Question, SurveyAnswer, Theme } from '../../types';
+import BooleanResponse from './BooleanResponse';
 import { CTAResponse } from './CTAResponse';
 import DateResponse from './DateResponse';
 import RangeResponse from './RangeResponse';
@@ -21,7 +22,7 @@ export default function Response({
   theme,
   submitText,
 }: ResponseProps) {
-  let element: h.JSX.Element;
+  let element: h.JSX.Element | null = null;
 
   switch (question.type) {
     case AnswerType.TEXT:
@@ -100,6 +101,15 @@ export default function Response({
       break;
     case AnswerType.NUMERICAL_SCALE:
       element = <div>Numerical</div>;
+      break;
+    case AnswerType.BOOLEAN:
+      element = (
+        <BooleanResponse
+          question={question}
+          onAnswered={onAnswered}
+          theme={theme}
+        />
+      );
       break;
   }
 
