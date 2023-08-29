@@ -44,12 +44,10 @@ export default function ChoiceResponse({
     if (!selectedOption) return;
     onAnswered(
       selectedOption.map((option) => ({
-        questionId: question.id,
         answerId: option.id,
       }))
     );
   };
-  console.log(selectedOption);
 
   const questionOptions = useMemo(() => {
     if ((question.settings as MultipleSettings | SingleSettings).randomize) {
@@ -87,6 +85,12 @@ export default function ChoiceResponse({
               }}
             >
               <input
+                style={{
+                  padding: '3rem',
+                  width: '20px',
+                  height: '20px',
+                  accentColor: theme?.answer ?? '#050505',
+                }}
                 type={
                   question.type === AnswerType.MULTIPLE ? 'checkbox' : 'radio'
                 }
