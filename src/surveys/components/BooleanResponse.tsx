@@ -47,7 +47,6 @@ export default function BooleanResponse({
               <ThumbsDown size={32} color={theme?.answer} />
             </button>
             <button onClick={answerPositive}>
-              {/* make the icon outside color different from the inside color */}
               <ThumbsUp size={32} color={theme?.answer} fill={theme?.answer} />
             </button>
           </Fragment>
