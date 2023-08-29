@@ -87,7 +87,7 @@ export function shuffleArray(options: QuestionOption[], shuffleOption: string) {
 }
 
 export function calculateTextColor(color: string) {
-  let r, g, b;
+  let r: number, g: number, b: number;
   if (color.length === 4) {
     r = parseInt(color[1] + color[1], 16);
     g = parseInt(color[2] + color[2], 16);
