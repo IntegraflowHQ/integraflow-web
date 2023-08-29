@@ -3,72 +3,67 @@ import { useMemo, useState } from 'preact/hooks';
 import { Button, Header } from '../../components';
 import {
   AnswerType,
-  ID,
   MultipleSettings,
   Question,
   QuestionOption,
   SingleSettings,
+  SurveyAnswer,
   Theme,
 } from '../../types';
+import { hexToRgba, shuffleArray } from '../../utils';
 
 interface SingleResponseProps {
   question: Question;
-  onAnswered: (questionId: ID, answerId: ID | ID[]) => void;
-  submitText?: string;
+  onAnswered: (answers: SurveyAnswer[]) => void;
   theme?: Theme;
+  submitText?: string;
 }
 
-export default function SelectResponse({
+export default function ChoiceResponse({
   question,
   onAnswered,
   submitText,
   theme,
 }: SingleResponseProps): VNode {
-  const [selectedOption, setSelectedOption] = useState<ID | ID[]>(
-    question.type === AnswerType.MULTIPLE ? [] : ''
-  );
+  const [selectedOption, setSelectedOption] = useState<QuestionOption[]>();
 
-  const handleOptionChange = (optionId: ID) => {
-    if ((selectedOption as ID[]).includes(optionId)) {
+  const handleOptionChange = (option: QuestionOption) => {
+    if (question.type === AnswerType.MULTIPLE) {
       setSelectedOption((prevState) =>
-        (prevState as ID[]).filter((id) => id !== optionId)
+        prevState?.includes(option)
+          ? prevState.filter((id) => id !== option)
+          : [...(prevState ?? []), option]
       );
     } else {
-      setSelectedOption((prevState) => [...(prevState as ID[]), optionId]);
+      setSelectedOption([option]);
     }
   };
 
   const handleSubmit = (e: h.JSX.TargetedEvent<HTMLFormElement, Event>) => {
     e.preventDefault();
     if (!selectedOption) return;
-
-    onAnswered(question.id, selectedOption);
+    onAnswered(
+      selectedOption.map((option) => ({
+        questionId: question.id,
+        answerId: option.id,
+      }))
+    );
   };
+  console.log(selectedOption);
 
-  const shuffle = (options: QuestionOption[]) => {
-    for (let i = 0; i < options.length; i++) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [options[i], options[j]] = [options[j], options[i]];
+  const questionOptions = useMemo(() => {
+    if ((question.settings as MultipleSettings | SingleSettings).randomize) {
+      return shuffleArray(question.options as QuestionOption[], 'all');
     }
-  };
-
-  const shuffleArray = (options: QuestionOption[], randomizeAnser: boolean) => {
-    const optionsCopy = [...options];
-    if (randomizeAnser) {
-      shuffle(optionsCopy);
+    if (
+      (question.settings as MultipleSettings | SingleSettings)
+        .randomizeExceptLast
+    ) {
+      return shuffleArray(question.options as QuestionOption[], 'exceptLast');
     }
-    return optionsCopy;
-  };
 
-  const questionOptions = useMemo(
-    () =>
-      shuffleArray(
-        question.options ?? [],
-        (question.settings as MultipleSettings | SingleSettings)
-          ?.randomizeAnswer ?? false
-      ),
-    [question.options]
-  );
+    return question.options;
+  }, [question.options]);
 
   return (
     <form className={'max-w-sm space-y-4'} onSubmit={handleSubmit}>
@@ -79,31 +74,31 @@ export default function SelectResponse({
       />
 
       <div className={'space-y-2 min-w-[381px]'}>
-        {questionOptions.map((option) => (
-          <label
-            key={option.id}
-            className={'rounded-xl py-3 px-4 flex gap-2 items-center'}
-            style={{ backgroundColor: theme?.answer ?? '#F0F0F0' }}
-          >
-            <input
-              type={
-                question.type === AnswerType.MULTIPLE ? 'checkbox' : 'radio'
-              }
-              value={option.id}
-              checked={
-                question.type === AnswerType.MULTIPLE
-                  ? (selectedOption as ID[]).includes(option.id)
-                  : selectedOption === option.id
-              }
-              onChange={() =>
-                question.type === AnswerType.MULTIPLE
-                  ? handleOptionChange(option.id)
-                  : setSelectedOption(option.id)
-              }
-            />
-            <span>{option.label}</span>
-          </label>
-        ))}
+        {questionOptions &&
+          questionOptions.map((option) => (
+            <label
+              key={option.id}
+              className={'rounded-xl py-3 px-4 flex gap-2 items-center'}
+              style={{
+                backgroundColor: theme?.answer
+                  ? hexToRgba(theme.answer, 0.1)
+                  : '#F0F0F0',
+                color: theme?.answer ?? '#050505',
+              }}
+            >
+              <input
+                type={
+                  question.type === AnswerType.MULTIPLE ? 'checkbox' : 'radio'
+                }
+                value={option.id}
+                checked={selectedOption?.includes(option)}
+                onChange={() => {
+                  handleOptionChange(option);
+                }}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
       </div>
       <Button
         label={submitText ?? 'Submit'}
