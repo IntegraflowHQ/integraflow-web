@@ -9,6 +9,7 @@ import DateResponse from './DateResponse';
 import RangeResponse from './RangeResponse';
 import { SmileyResponse } from './SmileyResponse';
 import TextResponse from './TextResponse';
+import { ContactFormResponse } from './ContactFormResponse';
 
 interface ResponseProps {
   question: Question;
@@ -118,6 +119,18 @@ export default function Response({
     case AnswerType.SINGLE:
       element = (
         <ChoiceResponse
+          question={question}
+          label={label}
+          description={description}
+          onAnswered={onAnswered}
+          theme={theme}
+          submitText={submitText}
+        />
+      );
+      break;
+    case AnswerType.FORM:
+      element = (
+        <ContactFormResponse
           question={question}
           label={label}
           description={description}
