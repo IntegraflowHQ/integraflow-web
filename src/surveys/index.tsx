@@ -1,9 +1,17 @@
 import { h, render } from 'preact';
 
 import Formily from '..';
-import { Context, RootFrame, RootFrameContainer, SdkEvent } from '../core';
+import {
+  Context,
+  RootFrame,
+  RootFrameContainer,
+  SdkEvent,
+  TagManager,
+  TargetingEngine
+} from '../core';
 import {
   AnswerType,
+  BooleanLogic,
   DateLogic,
   FormLogic,
   ID,
@@ -17,9 +25,8 @@ import {
   TextLogic
 } from '../types';
 import { deferSurveyActivation } from '../utils';
+
 import App from './App';
-import { TargetingEngine } from '../core/targeting';
-import { getState } from '../core/storage';
 import { SurveyLogic } from './logic';
 
 export type SurveyManagerState =
@@ -33,6 +40,7 @@ export class SurveyManager {
   private readonly rootFrame: RootFrame;
   private readonly targetingEngine: TargetingEngine;
   private readonly surveyLogic: SurveyLogic;
+  private readonly tagManager: TagManager;
 
   private surveyContainer: RootFrameContainer;
   private state?: SurveyManagerState;
@@ -50,6 +58,7 @@ export class SurveyManager {
 
     this.targetingEngine = new TargetingEngine(ctx, this.onEventTracked);
     this.surveyLogic = new SurveyLogic();
+    this.tagManager = new TagManager(ctx);
 
     this.setState('loading');
   }
@@ -85,25 +94,19 @@ export class SurveyManager {
   }
 
   private onQuestionAnswered = async (surveyId: ID, questionId: ID, answers: SurveyAnswer[]) => {
-    // TODO: Perform some async actions.
-    this.context.listeners.onQuestionAnswered?.(surveyId, questionId, answers);
+    await this.formilyClient.persistSurveyAnswers(surveyId, questionId, answers);
   }
 
   private onSurveyDisplayed = async (surveyId: ID) => {
-    // TODO: Perform some async actions.
-    this.context.listeners.onSurveyDisplayed?.(surveyId);
+    await this.formilyClient.markSurveyAsSeen(surveyId);
   }
 
   private onSurveyClosed = async (surveyId: ID) => {
-    // TODO: Perform some async actions. Probably display a new survey, if available
-    this.context.listeners.onSurveyClosed?.(surveyId);
-
-    this.hideSurvey(surveyId);
+    await this.formilyClient.closeSurvey(surveyId);
   }
 
-  private onSurveyCompleted = (surveyId: ID) => {
-    // TODO: Perform some async actions. Probably display a new survey, if available
-    this.context.listeners.onSurveyCompleted?.(surveyId);
+  private onSurveyCompleted = async (surveyId: ID) => {
+    await this.formilyClient.markSurveyAsCompleted(surveyId);
   }
 
   private getNextQuestionId = (question: Question, answers: SurveyAnswer[]): ID | null => {
@@ -128,6 +131,9 @@ export class SurveyManager {
         break;
       case AnswerType.DATE:
         nextQuestionId = this.surveyLogic.getDateQuestionDestination(answers[0].answer ?? null, (logic as DateLogic[]));
+        break;
+      case AnswerType.BOOLEAN:
+        nextQuestionId = this.surveyLogic.getBooleanQuestionDestination(answers[0].answer ? parseInt(answers[0].answer) : null, (logic as BooleanLogic[]));
         break;
       case AnswerType.FORM:
         const answerMap: { [key: ID]: string | null; } = {};
@@ -158,7 +164,7 @@ export class SurveyManager {
     this.onEnter(state);
   }
 
-  private hideSurvey(surveyId: ID) {
+  hideSurvey(surveyId: ID) {
     const name = this.surveyContainer.name;
     this.rootFrame.removeContainer(name);
     this.surveyContainer = this.rootFrame.createContainer(name)
@@ -171,7 +177,6 @@ export class SurveyManager {
 
     this.activeSurveys.splice(idx, 1);
 
-    console.log('hideSurvey', this.activeSurveys);
     this.setState('ready');
   }
 
@@ -187,7 +192,6 @@ export class SurveyManager {
   }
 
   private render(survey: Survey) {
-    console.log('Rendering', this.state, survey);
     if (!this.state || !survey) {
       return;
     }
@@ -204,6 +208,7 @@ export class SurveyManager {
     render(
       <App
         survey={survey}
+        replaceTags={this.tagManager.replaceTags}
         getNextQuestionId={this.getNextQuestionId}
         onQuestionAnswered={this.onQuestionAnswered}
         onSurveyDisplayed={this.onSurveyDisplayed}
@@ -215,14 +220,14 @@ export class SurveyManager {
   }
 
   private async loadSurveys(): Promise<void> {
-    const state = await getState(this.context);
+    const state = this.context.state;
 
-    if (state.surveys?.length === 0) {
+    if (state?.surveys?.length === 0) {
       return Promise.resolve();
     }
 
-    for (let survey of (state.surveys || [])) {
-      const isMatched = this.targetingEngine.evaluateAttributes(survey, state.user);
+    for (let survey of (state?.surveys || [])) {
+      const isMatched = this.targetingEngine.evaluateAttributes(survey, state?.user);
       if (isMatched) {
         this.surveys.push(survey);
       }
@@ -232,8 +237,6 @@ export class SurveyManager {
   }
 
   private evaluateTriggers() {
-    console.info('Evaluating survey triggers');
-
     const matchedSurveys = this.targetingEngine.filterSurveys(this.surveys);
 
     this.activateSurveys(matchedSurveys);

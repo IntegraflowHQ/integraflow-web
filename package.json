@@ -51,6 +51,7 @@
     "jest-preset-preact": "^4.1.0",
     "postcss": "^8.4.28",
     "postcss-loader": "^7.3.3",
+    "postcss-prefix-selector": "^1.16.0",
     "postcss-preset-env": "^9.1.1",
     "preact-cli": "^3.5.0",
     "preact-render-to-string": "^6.2.0",
@@ -68,7 +69,6 @@
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {
-    "classnames": "^2.3.2",
     "lucide-preact": "^0.268.0",
     "preact": "10.16.0",
     "react-date-picker": "^10.5.0"

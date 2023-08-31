@@ -1,34 +1,44 @@
 import { h } from 'preact';
+import { useMemo } from 'preact/hooks';
 
 import { AnswerType, Question, SurveyAnswer, Theme } from '../../types';
 import BooleanResponse from './BooleanResponse';
 import { CTAResponse } from './CTAResponse';
+import ChoiceResponse from './ChoiceResponse';
 import DateResponse from './DateResponse';
 import RangeResponse from './RangeResponse';
 import { SmileyResponse } from './SmileyResponse';
 import TextResponse from './TextResponse';
-import { ContactFormResponse } from './ContactFormResponse';
 
 interface ResponseProps {
   question: Question;
-  onAnswered: (answers: SurveyAnswer[]) => void;
   theme?: Theme;
   submitText?: string;
+  replaceTags: (content: string) => string;
+  onAnswered: (answers: SurveyAnswer[]) => void;
 }
 
 export default function Response({
   question,
-  onAnswered,
   theme,
   submitText,
+  onAnswered,
+  replaceTags,
 }: ResponseProps) {
   let element: h.JSX.Element | null = null;
+
+  const label = useMemo(() => replaceTags(question.label), [question]);
+  const description = useMemo(() => replaceTags(question.description ?? ''), [
+    question,
+  ]);
 
   switch (question.type) {
     case AnswerType.TEXT:
       element = (
         <TextResponse
           question={question}
+          label={label}
+          description={description}
           onAnswered={onAnswered}
           theme={theme}
           submitText={submitText}
@@ -39,6 +49,8 @@ export default function Response({
       element = (
         <SmileyResponse
           question={question}
+          label={label}
+          description={description}
           onAnswered={onAnswered}
           theme={theme}
         />
@@ -48,6 +60,8 @@ export default function Response({
       element = (
         <DateResponse
           question={question}
+          label={label}
+          description={description}
           onAnswered={onAnswered}
           theme={theme}
           submitText={submitText}
@@ -58,6 +72,8 @@ export default function Response({
       element = (
         <CTAResponse
           question={question}
+          label={label}
+          description={description}
           onAnswered={onAnswered}
           theme={theme}
         />
@@ -67,6 +83,8 @@ export default function Response({
       element = (
         <RangeResponse
           question={question}
+          label={label}
+          description={description}
           onAnswered={onAnswered}
           theme={theme}
         />
@@ -76,6 +94,8 @@ export default function Response({
       element = (
         <RangeResponse
           question={question}
+          label={label}
+          description={description}
           onAnswered={onAnswered}
           theme={theme}
         />
@@ -85,15 +105,22 @@ export default function Response({
       element = <div>CSAT</div>;
       break;
     case AnswerType.MULTIPLE:
-      element = <div>Multiple</div>;
-      break;
-    case AnswerType.SINGLE:
-      element = <div></div>;
-      break;
-    case AnswerType.FORM:
       element = (
-        <ContactFormResponse
+        <ChoiceResponse
           question={question}
+          label={label}
+          description={description}
+          onAnswered={onAnswered}
+          theme={theme}
+          submitText={submitText}
+        />
+      );
+    case AnswerType.SINGLE:
+      element = (
+        <ChoiceResponse
+          question={question}
+          label={label}
+          description={description}
           onAnswered={onAnswered}
           theme={theme}
           submitText={submitText}
@@ -107,6 +134,8 @@ export default function Response({
       element = (
         <BooleanResponse
           question={question}
+          label={label}
+          description={description}
           onAnswered={onAnswered}
           theme={theme}
         />

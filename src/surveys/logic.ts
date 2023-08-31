@@ -1,7 +1,9 @@
 import {
+  BooleanLogic,
   DateLogic,
   FormLogic,
   ID,
+  LogicBooleanCondition,
   LogicDateCondition,
   LogicFormCondition,
   LogicMultipleCondition,
@@ -115,6 +117,34 @@ const resolveRangeLogic = (answerId: ID | null, rangeLogic: RangeLogic): boolean
       break;
 
     case LogicRangeCondition.HAS_ANY_VALUE:
+      conditionMatched = true;
+      break;
+
+    default:
+      conditionMatched = false;
+      break;
+  }
+
+  return conditionMatched;
+};
+
+const resolveBooleanLogic = (answer: number | null, booleanLogic: BooleanLogic): boolean => {
+  const { condition } = booleanLogic;
+  if (!condition) {
+    return false;
+  }
+
+  let conditionMatched = false;
+  switch (condition) {
+    case LogicBooleanCondition.IS_TRUE:
+      conditionMatched = Boolean(answer) === true;
+      break;
+
+    case LogicBooleanCondition.IS_FALSE:
+      conditionMatched = Boolean(answer) === false;
+      break;
+
+    case LogicBooleanCondition.HAS_ANY_VALUE:
       conditionMatched = true;
       break;
 
@@ -313,6 +343,20 @@ export class SurveyLogic {
     for (const rangeLogic of sortedLogic) {
       if (resolveRangeLogic(answerId, rangeLogic)) {
         nextId = rangeLogic.destination;
+        break;
+      }
+    }
+
+    return nextId;
+  }
+
+  getBooleanQuestionDestination(answer: number | null, logic: BooleanLogic[]): ID | null {
+    const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
+
+    let nextId = null;
+    for (const booleanLogic of sortedLogic) {
+      if (resolveBooleanLogic(answer, booleanLogic)) {
+        nextId = booleanLogic.destination;
         break;
       }
     }

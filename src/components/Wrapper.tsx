@@ -1,7 +1,7 @@
-import classnames from 'classnames';
 import { XIcon } from 'lucide-preact';
 import { h } from 'preact';
 import { PlacementType, Theme } from '../types';
+import { cn } from '../utils';
 import Progress from './Progress';
 
 interface ContainerProps {
@@ -13,6 +13,7 @@ interface ContainerProps {
   progress: number;
   showProgressBar?: boolean;
   theme?: Theme;
+  maxWidth?: string;
 }
 
 export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
@@ -24,6 +25,7 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
   progress,
   showProgressBar,
   theme,
+  maxWidth,
 }) => {
   const showTopBar = showProgressBar || !fullScreen;
 
@@ -35,28 +37,34 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
     >
       <div className='relative w-full h-full'>
         <div
-          className={classnames(
+          className={cn(
             'absolute',
-            placement === 'topLeft' && 'top-0 left-0',
-            placement === 'topRight' && 'top-0 right-0',
-            placement === 'bottomLeft' && 'bottom-0 left-0',
-            placement === 'bottomRight' && 'bottom-0 right-0',
-            placement === 'center' &&
-              'left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+            placement === 'topLeft' ? 'top-0 left-0' : '',
+            placement === 'topRight' ? 'top-0 right-0' : '',
+            placement === 'bottomLeft' ? 'bottom-0 left-0' : '',
+            placement === 'bottomRight' ? 'bottom-0 right-0' : '',
+            placement === 'center'
+              ? 'left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+              : ''
           )}
         >
           <div
-            className={classnames(
+            className={cn(
               'p-6 flex flex-col justify-center items-center',
-              fullScreen ? 'w-screen h-screen' : 'rounded-2xl w-fit'
+              fullScreen
+                ? 'w-screen h-screen'
+                : 'rounded-2xl w-fit max-h-[600px]'
             )}
-            style={{ backgroundColor: background }}
+            style={{
+              backgroundColor: background,
+              maxWidth: maxWidth ?? '100%',
+            }}
           >
             {showTopBar && (
               <div
-                className={classnames(
-                  'flex items-center gap-2 w-full',
-                  !fullScreen && !showProgressBar && 'justify-end' // Set forceClose button to the right.
+                className={cn(
+                  'flex items-center gap-2 w-full mb-1',
+                  !fullScreen && !showProgressBar ? 'justify-end' : '' // Set forceClose button to the right.
                 )}
               >
                 {showProgressBar && (
@@ -70,14 +78,20 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
               </div>
             )}
 
-            <div
-              className={classnames('flex-1', fullScreen && 'overflow-y-auto')}
-            >
+            <div className={'flex-1 w-full h-full overflow-auto'}>
               {children}
             </div>
 
-            <footer class={'mt-6'}>
-              Powered by <b>Formily</b>
+            <footer
+              className='mt-6'
+              style={{
+                fontSize: '12px',
+                fontWeight: 400,
+                lineHeight: 1.5,
+              }}
+            >
+              Powered by{' '}
+              <b style={{ fontWeight: 600, fontSize: '14px' }}>Formily</b>
             </footer>
           </div>
         </div>
