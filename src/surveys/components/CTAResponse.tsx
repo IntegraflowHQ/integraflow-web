@@ -13,19 +13,21 @@ import {
 type Props = {
   question: Question;
   theme?: Theme;
+  label: string;
+  description?: string;
   onAnswered: (answers: SurveyAnswer[]) => void;
 };
 
-export const CTAResponse = ({ question, theme, onAnswered }: Props) => {
+export const CTAResponse = ({ question, theme, label, description, onAnswered }: Props) => {
   const onClickHandler = () => {
-    onAnswered([{ ctaSuccess: true }]);
+    onAnswered([{ ctaSuccess: true, answer: '' }]);
   };
 
   return (
     <div>
       <Header
-        title={question?.label}
-        description={question?.description}
+        title={label}
+        description={description}
         color={theme?.question}
       />
 

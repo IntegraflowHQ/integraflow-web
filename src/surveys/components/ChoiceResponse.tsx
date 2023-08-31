@@ -15,6 +15,8 @@ import AnswerContainer from './AnswerContainer';
 
 interface SingleResponseProps {
   question: Question;
+  label: string;
+  description?: string;
   onAnswered: (answers: SurveyAnswer[]) => void;
   theme?: Theme;
   submitText?: string;
@@ -22,9 +24,11 @@ interface SingleResponseProps {
 
 export default function ChoiceResponse({
   question,
-  onAnswered,
+  label,
+  description,
   submitText,
   theme,
+  onAnswered
 }: SingleResponseProps): VNode {
   const [selectedOption, setSelectedOption] = useState<QuestionOption[]>();
 
@@ -46,6 +50,7 @@ export default function ChoiceResponse({
     onAnswered(
       selectedOption.map((option) => ({
         answerId: option.id,
+        answer: option.label
       }))
     );
   };
@@ -67,8 +72,8 @@ export default function ChoiceResponse({
   return (
     <form className={'max-w-sm space-y-4'} onSubmit={handleSubmit}>
       <Header
-        title={question.label}
-        description={question.description}
+        title={label}
+        description={description}
         color={theme?.question}
       />
 

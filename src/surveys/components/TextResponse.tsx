@@ -5,12 +5,21 @@ import { Question, SurveyAnswer, TextSettings, Theme } from '../../types';
 import { hexToRgba } from '../../utils';
 type Props = {
   question: Question;
+  label: string;
+  description?: string;
   theme?: Theme;
   submitText?: string;
   onAnswered: (answer: SurveyAnswer[]) => void;
 };
 
-const TextResponse = ({ theme, question, submitText, onAnswered }: Props) => {
+const TextResponse = ({
+  theme,
+  question,
+  label,
+  description,
+  submitText,
+  onAnswered,
+}: Props) => {
   const [answer, setAnswer] = useState('');
 
   const onSubmitHandler = (
@@ -31,11 +40,7 @@ const TextResponse = ({ theme, question, submitText, onAnswered }: Props) => {
 
   return (
     <div>
-      <Header
-        title={question.label}
-        description={question.description}
-        color={theme?.question}
-      />
+      <Header title={label} description={description} color={theme?.question} />
 
       <form onSubmit={onSubmitHandler}>
         {(question.settings as TextSettings).singleLine === true ? (

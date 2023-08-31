@@ -11,7 +11,7 @@ export enum AnswerType {
   FORM = 'form',
   CTA = 'cta',
   BOOLEAN = 'boolean',
-  DROPDOWN = 'dropdown',
+  DROPDOWN = 'dropdown'
 }
 
 export enum FormFieldType {
@@ -55,6 +55,12 @@ export enum LogicRangeCondition {
   HAS_ANY_VALUE = 'any_value',
 }
 
+export enum LogicBooleanCondition {
+  IS_TRUE = 'is_true',
+  IS_FALSE = 'is_false',
+  HAS_ANY_VALUE = 'any_value',
+}
+
 export enum LogicDateCondition {
   HAS_ANY_VALUE = 'any_value',
   QUESTION_IS_ANSWERED = 'answered',
@@ -80,12 +86,6 @@ export enum LogicTextCondition {
 export enum LogicSingleCondition {
   IS = 'is',
   IS_NOT = 'is_not',
-  HAS_ANY_VALUE = 'any_value',
-}
-
-export enum LogicBooleanCondition {
-  IS_TRUE = 'is_true',
-  IS_FALSE = 'is_false',
   HAS_ANY_VALUE = 'any_value',
 }
 
@@ -146,6 +146,10 @@ export interface RangeLogic extends QuestionLogic {
   values?: ID[];
 }
 
+export interface BooleanLogic extends QuestionLogic {
+  condition: LogicBooleanCondition;
+}
+
 export interface DateLogic extends QuestionLogic {
   condition: LogicDateCondition;
   operator?: LogicOperator;
@@ -190,6 +194,12 @@ export interface RangeSettings extends QuestionSettings<RangeLogic> {
   leftText?: string;
   count?: number;
   shape?: 'star' | 'thumb' | 'heart';
+}
+
+export interface BooleanSettings extends QuestionSettings<BooleanLogic> {
+  positiveText?: string;
+  negativeText?: string;
+  shape?: 'button' | 'thumb';
 }
 
 export interface CTASettings {
@@ -338,6 +348,8 @@ export interface State {
   surveys?: Survey[];
   installId?: string;
   user?: UserAttributes;
+  seenSurveyIds?: Set<ID>;
+  surveyAnswers?: { [surveyId: ID]: Map<ID, SurveyAnswer[]>; }
 }
 
 export interface Listeners {
@@ -358,26 +370,4 @@ export interface Configuration extends Listeners {
   appKey?: string;
   surveys?: Survey[];
   debug?: boolean;
-}
-
-export type Objective =
-  | 'increase_user_adoption'
-  | 'increase_conversion'
-  | 'support_sales'
-  | 'sharpen_marketing_messaging'
-  | 'improve_user_retention'
-  | 'other';
-
-export interface Template {
-  name: string;
-  description: string;
-  icon?: any;
-  category?:
-    | 'Product Experience'
-    | 'Exploration'
-    | 'Growth'
-    | 'Increase Revenue'
-    | 'Customer Success';
-  objectives?: [Objective, Objective?, Objective?];
-  survey: Survey;
 }

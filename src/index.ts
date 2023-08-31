@@ -1,7 +1,6 @@
-import { Context, RootFrame } from './core';
-import { SyncManager } from './core/sync';
+import { Context, RootFrame, SyncManager } from './core';
 import { SurveyManager } from './surveys';
-import { Configuration, EventProperties, ID, UserAttributes } from './types';
+import { Configuration, EventProperties, ID, SurveyAnswer, UserAttributes } from './types';
 
 export default class Formily {
   private readonly config: Configuration;
@@ -9,7 +8,6 @@ export default class Formily {
   private readonly surveyManager: SurveyManager;
   private readonly syncManager: SyncManager;
 
-  private static initialized: boolean = false;
   private readonly context: Context;
 
   private readonly rootFrame: RootFrame;
@@ -32,18 +30,37 @@ export default class Formily {
   static init(config: Configuration) {
     if (!this.instance) {
       this.instance = new Formily(config);
-      this.initialized = true;
     }
 
     return this.instance;
   }
 
+  async getInstallId(): Promise<string | undefined> {
+    let installId = this.context.state?.installId;
+    if (!installId) {
+      installId = await this.syncManager.getInstallId();
+    }
+
+    return installId;
+  }
+
+  async getUserId(): Promise<ID | undefined> {
+    let userId = this.context.state?.user?.id;
+    if (!userId) {
+      userId = await this.syncManager.getUserId();
+    }
+
+    return userId;
+  }
+
   async identify(identifier: string, attributes?: UserAttributes): Promise<void> {
-    await this.syncManager.identifyUser(identifier, attributes);
+    const user = await this.syncManager.identifyUser(identifier, attributes);
+    this.context.listeners.onAudienceChanged?.(user);
   }
 
   async updateUserAttribute(attributes: UserAttributes): Promise<void> {
-    await this.syncManager.updateUserAttribute(attributes);
+    const user = await this.syncManager.updateUserAttribute(attributes);
+    this.context.listeners.onAudienceChanged?.(user);
   }
 
   async reset(resetInstallId?: boolean): Promise<void> {
@@ -51,7 +68,8 @@ export default class Formily {
   }
 
   async track(event: string, properties?: EventProperties): Promise<void> {
-    await this.syncManager.trackEvent(event, properties);
+    const trackedEvent = await this.syncManager.trackEvent(event, properties);
+    this.context.listeners.onEventTracked?.(trackedEvent);
   }
 
   async trackRouteChange() {
@@ -75,5 +93,27 @@ export default class Formily {
 
   showSurvey(surveyId: ID) {
     this.surveyManager.showSurvey(surveyId);
+  }
+
+  async closeSurvey(surveyId: ID) {
+    this.surveyManager.hideSurvey(surveyId);
+
+    await this.syncManager.clearSurveyAnswers(surveyId);
+    this.context.listeners.onSurveyClosed?.(surveyId);
+  }
+
+  async markSurveyAsSeen(surveyId: ID) {
+    await this.syncManager.markSurveyAsSeen(surveyId);
+    this.context.listeners.onSurveyDisplayed?.(surveyId);
+  }
+
+  async markSurveyAsCompleted(surveyId: ID) {
+    await this.syncManager.markSurveyAsCompleted(surveyId);
+    this.context.listeners.onSurveyCompleted?.(surveyId);
+  }
+
+  async persistSurveyAnswers(surveyId: ID, questionId: ID, answers: SurveyAnswer[]) {
+    await this.syncManager.persistSurveyAnswers(surveyId, questionId, answers);
+    this.context.listeners.onQuestionAnswered?.(surveyId, questionId, answers);
   }
 }

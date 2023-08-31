@@ -90,7 +90,7 @@ export function shuffleArray(
 }
 
 export function calculateTextColor(color: string) {
-  let r: number, g: number, b: number;
+  let r: number = 0, g: number = 0, b: number = 0;
   if (color.length === 4) {
     r = parseInt(color[1] + color[1], 16);
     g = parseInt(color[2] + color[2], 16);
@@ -101,7 +101,7 @@ export function calculateTextColor(color: string) {
     b = parseInt(color[5] + color[6], 16);
   }
 
-  const luminance = r! * 0.299 + g! * 0.587 + b! * 0.114 > 128;
+  const luminance = r * 0.299 + g * 0.587 + b * 0.114 > 128;
   return luminance ? '#000' : '#fff';
 }
 

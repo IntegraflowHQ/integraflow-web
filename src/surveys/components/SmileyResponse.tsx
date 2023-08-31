@@ -12,6 +12,8 @@ import AnswerContainer from './AnswerContainer';
 
 type Props = {
   question: Question;
+  label: string;
+  description?: string;
   theme?: Theme;
   onAnswered: (answers: SurveyAnswer[]) => void;
 };
@@ -38,14 +40,19 @@ const renderSmiley = (count: number, optionIndex: number) => {
   return smileyOptions[smileyIndex];
 };
 
-export const SmileyResponse = ({ question, theme, onAnswered }: Props) => {
+export const SmileyResponse = ({
+  question,
+  label,
+  description,
+  theme,
+  onAnswered,
+}: Props) => {
   return (
     <AnswerContainer>
       <Header
-        title={question?.label ?? ''}
-        description={question?.description}
+        title={label ?? ''}
+        description={description}
         color={theme?.question ?? '#050505'}
-        centered
       />
 
       <div>
