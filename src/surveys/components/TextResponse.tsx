@@ -1,7 +1,8 @@
 import { h } from 'preact';
-import { Question, SurveyAnswer, TextSettings, Theme } from '../../types';
 import { useState } from 'preact/hooks';
 import { Button, Header } from '../../components';
+import { Question, SurveyAnswer, TextSettings, Theme } from '../../types';
+import { hexToRgba } from '../../utils';
 type Props = {
   question: Question;
   theme?: Theme;
@@ -20,67 +21,59 @@ const TextResponse = ({ theme, question, submitText, onAnswered }: Props) => {
     onAnswered([{ answer }]);
   };
 
+  const colorStyles: h.JSX.CSSProperties = {
+    color: theme?.answer ?? '#050505',
+    backgroundColor: hexToRgba(theme?.answer ?? '#050505', 0.1),
+    fontSize: '14px',
+    fontWeight: 400,
+    lineHeight: 'normal',
+  };
+
   return (
-    <div className={'max-w-[440px]'}>
+    <div>
       <Header
         title={question.label}
         description={question.description}
         color={theme?.question}
       />
-      <div>
-        <form onSubmit={onSubmitHandler}>
-          {(question.settings as TextSettings).singleLine === true ? (
-            <input
-              type="text"
-              className={
-                'w-full mt-3 border border-gray-300 rounded-xl p-3 bg-formily-grey focus:outline-none focus:ring-1 focus:border-transparent'
-              }
-              style={{
-                color: theme?.answer,
-                backgroundColor: `${theme?.answer}1A`,
-                // 1A is 10% opacity of the color hex code
-              }}
-              name={question.id.toString()}
-              id={question.id.toString()}
-              placeholder={'Type your answer here...'}
-              value={answer}
-              onChange={(e: h.JSX.TargetedEvent<HTMLInputElement, Event>) => {
-                setAnswer(e.currentTarget.value);
-              }}
-            />
-          ) : (
-            <div>
-              <textarea
-                name={question.id.toString()}
-                id={question.id.toString()}
-                cols={20}
-                rows={5}
-                placeholder={'Type your answer here...'}
-                value={answer}
-                onChange={(
-                  e: h.JSX.TargetedEvent<HTMLTextAreaElement, Event>
-                ) => {
-                  setAnswer(e.currentTarget.value);
-                }}
-                className={
-                  'w-full mt-3 resize-none border border-gray-300 rounded-xl p-4 bg-formily-grey focus:outline-none focus:ring-1 focus:border-transparent'
-                }
-                style={{
-                  color: theme?.answer,
-                  backgroundColor: `${theme?.answer}1A`,
-                }}
-              ></textarea>
-            </div>
-          )}
-          <Button
-            color={theme?.button}
-            label={submitText ?? 'Submit'}
-            type="submit"
-            size="full"
-            classname="mt-3"
+
+      <form onSubmit={onSubmitHandler}>
+        {(question.settings as TextSettings).singleLine === true ? (
+          <input
+            type='text'
+            className={'w-full mt-3 border rounded-xl p-3 '}
+            style={colorStyles}
+            name={question.id.toString()}
+            id={question.id.toString()}
+            placeholder={'Type your answer here...'}
+            value={answer}
+            onChange={(e: h.JSX.TargetedEvent<HTMLInputElement, Event>) => {
+              setAnswer(e.currentTarget.value);
+            }}
           />
-        </form>
-      </div>
+        ) : (
+          <textarea
+            name={question.id.toString()}
+            id={question.id.toString()}
+            cols={20}
+            rows={5}
+            placeholder={'Type your answer here...'}
+            value={answer}
+            onChange={(e: h.JSX.TargetedEvent<HTMLTextAreaElement, Event>) => {
+              setAnswer(e.currentTarget.value);
+            }}
+            className={'w-full h-full mt-3 resize-none border rounded-xl p-4'}
+            style={colorStyles}
+          ></textarea>
+        )}
+        <Button
+          color={theme?.button}
+          label={submitText ?? 'Submit'}
+          type='submit'
+          size='full'
+          classname='mt-3'
+        />
+      </form>
     </div>
   );
 };

@@ -70,6 +70,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
         `block font-semibold py-2 px-4 rounded-lg`,
         widthClasses,
         buttonPositionClasses,
+        variant === 'default' ? 'text-sm font-semibold leading-[1.15]' : '',
         props.classname ?? ''
       )}
     >

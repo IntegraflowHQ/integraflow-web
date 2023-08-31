@@ -33,6 +33,9 @@ const CustomDatePicker: FunctionComponent<Props> = ({
           .formily-date-picker .react-date-picker__inputGroup > input, .react-date-picker__inputGroup__divider, .react-date-picker__inputGroup__leadingZero  {
             color: ${color}
           }
+          .formily-date-picker .react-date-picker__inputGroup__leadingZero {
+            align-self: center;
+          }
           .formily-date-picker .react-date-picker__inputGroup > input::placeholder {
             color: ${color}5A;
           }

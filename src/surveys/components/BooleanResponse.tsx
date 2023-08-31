@@ -2,6 +2,7 @@ import { ThumbsDown, ThumbsUp } from 'lucide-preact';
 import { Fragment, VNode, h } from 'preact';
 import { Button, Header } from '../../components';
 import { BooleanSettings, Question, SurveyAnswer, Theme } from '../../types';
+import AnswerContainer from './AnswerContainer';
 
 interface BooleanResponseProps {
   question: Question;
@@ -18,13 +19,14 @@ export default function BooleanResponse({
   const answerNegative = () => onAnswered([{ answer: '0' }]);
 
   return (
-    <div className={'max-w-[304px] space-y-4'}>
+    <AnswerContainer className='space-y-4'>
       <Header
         title={question?.label}
         description={question?.description}
         color={theme?.question}
         centered
       />
+
       <div className='flex justify-between gap-2'>
         {(question?.settings as BooleanSettings).shape === 'button' ? (
           <Fragment>
@@ -52,6 +54,6 @@ export default function BooleanResponse({
           </Fragment>
         )}
       </div>
-    </div>
+    </AnswerContainer>
   );
 }

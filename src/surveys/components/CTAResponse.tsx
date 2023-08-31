@@ -22,7 +22,7 @@ export const CTAResponse = ({ question, theme, onAnswered }: Props) => {
   };
 
   return (
-    <div className={'max-w-[489px]'}>
+    <div>
       <Header
         title={question?.label}
         description={question?.description}

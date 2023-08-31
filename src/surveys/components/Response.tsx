@@ -3,9 +3,9 @@ import { h } from 'preact';
 import { AnswerType, Question, SurveyAnswer, Theme } from '../../types';
 import BooleanResponse from './BooleanResponse';
 import { CTAResponse } from './CTAResponse';
+import ChoiceResponse from './ChoiceResponse';
 import DateResponse from './DateResponse';
 import RangeResponse from './RangeResponse';
-import SingleResponse from './SingleResponse';
 import { SmileyResponse } from './SmileyResponse';
 import TextResponse from './TextResponse';
 
@@ -85,11 +85,17 @@ export default function Response({
       element = <div>CSAT</div>;
       break;
     case AnswerType.MULTIPLE:
-      element = <div>Multiple</div>;
+      element = (
+        <ChoiceResponse
+          question={question}
+          onAnswered={onAnswered}
+          theme={theme}
+        />
+      );
       break;
     case AnswerType.SINGLE:
       element = (
-        <SingleResponse
+        <ChoiceResponse
           question={question}
           onAnswered={onAnswered}
           theme={theme}
@@ -100,7 +106,13 @@ export default function Response({
       element = <div>Form</div>;
       break;
     case AnswerType.NUMERICAL_SCALE:
-      element = <div>Numerical</div>;
+      element = (
+        <SmileyResponse
+          question={question}
+          onAnswered={onAnswered}
+          theme={theme}
+        />
+      );
       break;
     case AnswerType.BOOLEAN:
       element = (

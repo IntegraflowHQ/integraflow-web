@@ -13,6 +13,7 @@ interface ContainerProps {
   progress: number;
   showProgressBar?: boolean;
   theme?: Theme;
+  maxWidth?: string;
 }
 
 export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
@@ -24,6 +25,7 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
   progress,
   showProgressBar,
   theme,
+  maxWidth,
 }) => {
   const showTopBar = showProgressBar || !fullScreen;
 
@@ -48,9 +50,14 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
           <div
             className={classnames(
               'p-6 flex flex-col justify-center items-center',
-              fullScreen ? 'w-screen h-screen' : 'rounded-2xl w-fit'
+              fullScreen
+                ? 'w-screen h-screen'
+                : 'rounded-2xl w-fit max-h-[600px]'
             )}
-            style={{ backgroundColor: background }}
+            style={{
+              backgroundColor: background,
+              maxWidth: maxWidth ?? '100%',
+            }}
           >
             {showTopBar && (
               <div
@@ -70,14 +77,20 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
               </div>
             )}
 
-            <div
-              className={classnames('flex-1', fullScreen && 'overflow-y-auto')}
-            >
+            <div className={'flex-1 w-full h-full overflow-auto'}>
               {children}
             </div>
 
-            <footer class={'mt-6'}>
-              Powered by <b>Formily</b>
+            <footer
+              className='mt-6'
+              style={{
+                fontSize: '12px',
+                fontWeight: 400,
+                lineHeight: 1.5,
+              }}
+            >
+              Powered by{' '}
+              <b style={{ fontWeight: 600, fontSize: '14px' }}>Formily</b>
             </footer>
           </div>
         </div>
