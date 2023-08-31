@@ -63,7 +63,7 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
             {showTopBar && (
               <div
                 className={cn(
-                  'flex items-center gap-2 w-full',
+                  'flex items-center gap-2 w-full mb-1',
                   !fullScreen && !showProgressBar ? 'justify-end' : '' // Set forceClose button to the right.
                 )}
               >
