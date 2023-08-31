@@ -30,7 +30,7 @@ const TextResponse = ({
     onAnswered([{ answer }]);
   };
 
-  const colorStyles: h.JSX.CSSProperties = {
+  const styles: h.JSX.CSSProperties = {
     color: theme?.answer ?? '#050505',
     backgroundColor: hexToRgba(theme?.answer ?? '#050505', 0.1),
     fontSize: '14px',
@@ -47,7 +47,7 @@ const TextResponse = ({
           <input
             type='text'
             className={'w-full mt-3 border rounded-xl p-3 '}
-            style={colorStyles}
+            style={styles}
             name={question.id.toString()}
             id={question.id.toString()}
             placeholder={'Type your answer here...'}
@@ -68,7 +68,7 @@ const TextResponse = ({
               setAnswer(e.currentTarget.value);
             }}
             className={'w-full h-full mt-3 resize-none border rounded-xl p-4'}
-            style={colorStyles}
+            style={styles}
           ></textarea>
         )}
         <Button
