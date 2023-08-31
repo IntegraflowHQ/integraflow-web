@@ -5,9 +5,9 @@ import BooleanResponse from './BooleanResponse';
 import { CTAResponse } from './CTAResponse';
 import DateResponse from './DateResponse';
 import RangeResponse from './RangeResponse';
-import SingleResponse from './SingleResponse';
 import { SmileyResponse } from './SmileyResponse';
 import TextResponse from './TextResponse';
+import { ContactFormResponse } from './ContactFormResponse';
 
 interface ResponseProps {
   question: Question;
@@ -88,16 +88,17 @@ export default function Response({
       element = <div>Multiple</div>;
       break;
     case AnswerType.SINGLE:
+      element = <div></div>;
+      break;
+    case AnswerType.FORM:
       element = (
-        <SingleResponse
+        <ContactFormResponse
           question={question}
           onAnswered={onAnswered}
           theme={theme}
+          submitText={submitText}
         />
       );
-      break;
-    case AnswerType.FORM:
-      element = <div>Form</div>;
       break;
     case AnswerType.NUMERICAL_SCALE:
       element = <div>Numerical</div>;
