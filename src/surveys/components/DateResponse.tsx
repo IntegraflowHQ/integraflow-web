@@ -28,7 +28,7 @@ export default function DateResponse({
   };
 
   return (
-    <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+    <form className='flex flex-col gap-4 min-w-[220px]' onSubmit={handleSubmit}>
       <div className='mr-6'>
         <Header
           title={question.label}
@@ -37,7 +37,7 @@ export default function DateResponse({
         />
       </div>
 
-      <AnswerContainer>
+      <AnswerContainer className='w-full'>
         <DatePicker
           color={theme?.answer}
           clearIcon={null}
