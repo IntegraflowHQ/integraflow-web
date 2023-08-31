@@ -1,15 +1,17 @@
 import { h } from 'preact';
 import { Question, SurveyAnswer, TextSettings, Theme } from '../../types';
-import { useState } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 import { Button, Header } from '../../components';
 type Props = {
   question: Question;
+  label: string;
+  description?: string;
   theme?: Theme;
   submitText?: string;
   onAnswered: (answer: SurveyAnswer[]) => void;
 };
 
-const TextResponse = ({ theme, question, submitText, onAnswered }: Props) => {
+const TextResponse = ({ theme, question, label, description, submitText, onAnswered }: Props) => {
   const [answer, setAnswer] = useState('');
 
   const onSubmitHandler = (
@@ -23,8 +25,8 @@ const TextResponse = ({ theme, question, submitText, onAnswered }: Props) => {
   return (
     <div className={'max-w-[440px]'}>
       <Header
-        title={question.label}
-        description={question.description}
+        title={label}
+        description={description}
         color={theme?.question}
       />
       <div>

@@ -1,18 +1,21 @@
-import { Configuration, Listeners, Survey } from '../types';
+import { Configuration, Listeners, Survey, State } from '../types';
 
 type SdkEventType = 'eventTracked' | 'audienceUpdated';
 export type SdkEvent<T = any> = { type: SdkEventType; data: T };
 type SdkEventHandler = (event: SdkEvent) => void;
 
 export class Context {
-  readonly surveys: Survey[];
   readonly debug: boolean;
   readonly listeners: Listeners;
 
   private readonly subscribers: { [key: string]: SdkEventHandler[] };
 
+  surveys: Survey[];
+  state: State | null;
+
   constructor(config: Configuration) {
-    this.surveys = config.surveys || [];
+    this.surveys = config.surveys ?? [];
+
     this.debug = config.debug || false;
     this.listeners = {
       onAudienceChanged: config.onAudienceChanged,
@@ -23,7 +26,12 @@ export class Context {
       onSurveyCompleted: config.onSurveyCompleted
     };
 
-    this.subscribers = {};
+    this.subscribers = {};  
+    this.state = null;
+  }
+
+  setState(state: State) {
+    this.state = state;
   }
 
   subscribe(event: SdkEventType, handler: SdkEventHandler) {

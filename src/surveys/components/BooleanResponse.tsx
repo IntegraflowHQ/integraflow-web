@@ -5,14 +5,18 @@ import { BooleanSettings, Question, SurveyAnswer, Theme } from '../../types';
 
 interface BooleanResponseProps {
   question: Question;
-  onAnswered: (answers: SurveyAnswer[]) => void;
   theme?: Theme;
+  label: string;
+  description?: string;
+  onAnswered: (answers: SurveyAnswer[]) => void;
 }
 
 export default function BooleanResponse({
   question,
-  onAnswered,
+  label,
+  description,
   theme,
+  onAnswered,
 }: BooleanResponseProps): VNode {
   const answerPositive = () => onAnswered([{ answer: '1' }]);
   const answerNegative = () => onAnswered([{ answer: '0' }]);
@@ -20,8 +24,8 @@ export default function BooleanResponse({
   return (
     <div className={'max-w-[304px] space-y-4'}>
       <Header
-        title={question?.label}
-        description={question?.description}
+        title={label}
+        description={description}
         color={theme?.question}
         centered
       />
@@ -47,7 +51,7 @@ export default function BooleanResponse({
               <ThumbsDown size={32} color={theme?.answer} />
             </button>
             <button onClick={answerPositive}>
-              <ThumbsUp size={32} color={theme?.answer} fill={theme?.answer} />
+              <ThumbsUp size={32} color={theme?.answer} />
             </button>
           </Fragment>
         )}

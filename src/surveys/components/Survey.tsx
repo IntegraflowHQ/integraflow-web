@@ -16,12 +16,13 @@ interface SurveyProps {
   survey: Survey;
   close: (force?: boolean) => void;
   getNextQuestionId: (question: Question, answers: SurveyAnswer[]) => ID | null;
+  replaceTags: (surveyId: ID, content: string) => string;
   onQuestionAnswered?: (
     surveyId: ID,
     questionId: ID,
     answers: SurveyAnswer[]
-  ) => void;
-  onSurveyCompleted?: (surveyId: ID) => void;
+  ) => Promise<void>;
+  onSurveyCompleted?: (surveyId: ID) => Promise<void>;
 }
 
 export default function Survey({
@@ -30,6 +31,7 @@ export default function Survey({
   onQuestionAnswered,
   onSurveyCompleted,
   getNextQuestionId,
+  replaceTags
 }: SurveyProps): VNode {
   const [activeQuestion, setActiveQuestion] = useState(survey.questions[0]);
   const [progress, setProgress] = useState(0);
@@ -46,8 +48,6 @@ export default function Survey({
 
   useEffect(() => {
     setProgress(calculateProgress());
-
-    console.log('Here');
 
     function calculateProgress() {
       const index = survey.questions.findIndex(
@@ -68,18 +68,19 @@ export default function Survey({
       }
 
       const nextQuestionId = getNextQuestionId(activeQuestion, answers);
+      if (nextQuestionId === -1) {
+        return null;
+      }
 
       let nextQuestion = null;
       if (nextQuestionId) {
         nextQuestion = survey.questions.find(
           (question) => question.id === nextQuestionId
         );
-        console.log('resolveNextQuestion', nextQuestionId, nextQuestion);
       } else {
         const index = survey.questions.findIndex(
           (question) => question.id === activeQuestion.id
         );
-        console.log('resolveNextQuestion', activeQuestion.id, index);
 
         if (index >= 0 && index + 1 < survey.questions.length) {
           nextQuestion = survey.questions[index + 1];
@@ -99,7 +100,7 @@ export default function Survey({
   );
 
   const onAnswered = useCallback(
-    (answers: SurveyAnswer[]) => {
+    async (answers: SurveyAnswer[]) => {
       if (!survey) {
         return;
       }
@@ -113,12 +114,12 @@ export default function Survey({
         answers[answers.length - 1].finished = finished;
       }
 
-      onQuestionAnswered?.(survey.id, activeQuestion.id, answers);
+      await onQuestionAnswered?.(survey.id, activeQuestion.id, answers);
 
       setLoading(false);
 
       if (finished || !nextQuestion) {
-        onSurveyCompleted?.(survey.id);
+        await onSurveyCompleted?.(survey.id);
 
         close();
         return;
@@ -151,6 +152,7 @@ export default function Survey({
               <Response
                 key={question.id}
                 onAnswered={onAnswered}
+                replaceTags={(content) => replaceTags(survey.id, content)}
                 question={question}
                 theme={survey.theme}
                 submitText={survey.settings.submitText}

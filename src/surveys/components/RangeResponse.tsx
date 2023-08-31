@@ -15,11 +15,13 @@ import RatingIcon from './RatingIcon';
 
 interface RangeResponseProps {
   question: Question;
+  label: string;
+  description?: string;
   onAnswered: (answers: SurveyAnswer[]) => void;
   theme?: Theme;
 }
 
-function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
+function RangeResponse({ question, label, description, onAnswered, theme }: RangeResponseProps) {
   const [value, setValue] = useState(0);
   const [answerId, setAnswerId] = useState<ID | null>(null);
 
@@ -28,7 +30,7 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
   useEffect(() => {
     if (value === 0) return;
 
-    onAnswered([{ answerId: answerId ?? value }]);
+    onAnswered([{ answerId: answerId ?? value, answer: String(answerId ?? value) }]);
   }, [value, answerId]);
 
   const renderOption = (
@@ -87,10 +89,9 @@ function RangeResponse({ question, onAnswered, theme }: RangeResponseProps) {
   return (
     <div className='space-y-3 w-[504px] overflow-x-auto'>
       <Header
-        title={question.label}
-        description={question.description}
+        title={label}
+        description={description}
         color={theme?.question}
-        centered={question.type === 'rating'}
       />
 
       <div
