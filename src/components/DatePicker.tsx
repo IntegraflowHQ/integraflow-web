@@ -3,6 +3,7 @@ import 'react-calendar/dist/Calendar.css';
 import DatePicker from 'react-date-picker';
 import { DatePickerProps } from 'react-date-picker/';
 import 'react-date-picker/dist/DatePicker.css';
+import { hexToRgba } from '../utils';
 
 type Props = DatePickerProps & {
   color?: string;
@@ -12,32 +13,35 @@ const CustomDatePicker: FunctionComponent<Props> = ({
   color = '#050505',
   ...props
 }) => {
-  const background = color ? `${color}1A` : '#F0F0F0';
+  const background = hexToRgba(color, 0.1);
 
   return (
     <Fragment>
       <style>
         {`
-          .formily-date-picker .react-date-picker__wrapper {
+          #formily-container .formily-date-picker {
+            flex: 1;
+            width: 100%;
+          }
+          #formily-container .formily-date-picker .react-date-picker__wrapper {
             background-color: ${background};
             border-color: ${background};
             border-radius: 12px;
           }
-          .formily-date-picker .react-date-picker__inputGroup {
+          #formily-container .formily-date-picker .react-date-picker__inputGroup {
             display: flex;
             justify-content: center;
             gap: 8px;
-            width: 100%;
             padding: 12px 16px;
           }
-          .formily-date-picker .react-date-picker__inputGroup > input, .react-date-picker__inputGroup__divider, .react-date-picker__inputGroup__leadingZero  {
-            color: ${color}
+          #formily-container .formily-date-picker .react-date-picker__inputGroup > input, .react-date-picker__inputGroup__divider, .react-date-picker__inputGroup__leadingZero  {
+            color: ${color};
           }
-          .formily-date-picker .react-date-picker__inputGroup__leadingZero {
+          #formily-container .formily-date-picker .react-date-picker__inputGroup__leadingZero {
             align-self: center;
           }
-          .formily-date-picker .react-date-picker__inputGroup > input::placeholder {
-            color: ${color}5A;
+          #formily-container .formily-date-picker .react-date-picker__inputGroup > input::placeholder {
+            color: ${hexToRgba(color, 0.35)};
           }
         `}
       </style>
