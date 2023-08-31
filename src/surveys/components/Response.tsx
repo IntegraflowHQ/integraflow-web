@@ -104,6 +104,16 @@ export default function Response({
     case AnswerType.CSAT:
       element = <div>CSAT</div>;
       break;
+    case AnswerType.MULTIPLE:
+      element = (
+        <ChoiceResponse
+          question={question}
+          label={label}
+          description={description}
+          onAnswered={onAnswered}
+          theme={theme}
+        />
+      );
     case AnswerType.SINGLE:
       element = (
         <ChoiceResponse
