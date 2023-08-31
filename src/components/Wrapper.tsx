@@ -1,7 +1,7 @@
-import classnames from 'classnames';
 import { XIcon } from 'lucide-preact';
 import { h } from 'preact';
 import { PlacementType, Theme } from '../types';
+import { cn } from '../utils';
 import Progress from './Progress';
 
 interface ContainerProps {
@@ -37,18 +37,19 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
     >
       <div className='relative w-full h-full'>
         <div
-          className={classnames(
+          className={cn(
             'absolute',
-            placement === 'topLeft' && 'top-0 left-0',
-            placement === 'topRight' && 'top-0 right-0',
-            placement === 'bottomLeft' && 'bottom-0 left-0',
-            placement === 'bottomRight' && 'bottom-0 right-0',
-            placement === 'center' &&
-              'left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+            placement === 'topLeft' ? 'top-0 left-0' : '',
+            placement === 'topRight' ? 'top-0 right-0' : '',
+            placement === 'bottomLeft' ? 'bottom-0 left-0' : '',
+            placement === 'bottomRight' ? 'bottom-0 right-0' : '',
+            placement === 'center'
+              ? 'left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+              : ''
           )}
         >
           <div
-            className={classnames(
+            className={cn(
               'p-6 flex flex-col justify-center items-center',
               fullScreen
                 ? 'w-screen h-screen'
@@ -61,9 +62,9 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
           >
             {showTopBar && (
               <div
-                className={classnames(
+                className={cn(
                   'flex items-center gap-2 w-full',
-                  !fullScreen && !showProgressBar && 'justify-end' // Set forceClose button to the right.
+                  !fullScreen && !showProgressBar ? 'justify-end' : '' // Set forceClose button to the right.
                 )}
               >
                 {showProgressBar && (
