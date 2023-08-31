@@ -4,9 +4,9 @@ import { useMemo } from 'preact/hooks';
 import { AnswerType, Question, SurveyAnswer, Theme } from '../../types';
 import BooleanResponse from './BooleanResponse';
 import { CTAResponse } from './CTAResponse';
+import ChoiceResponse from './ChoiceResponse';
 import DateResponse from './DateResponse';
 import RangeResponse from './RangeResponse';
-import ChoiceResponse from './ChoiceResponse';
 import { SmileyResponse } from './SmileyResponse';
 import TextResponse from './TextResponse';
 
@@ -28,7 +28,9 @@ export default function Response({
   let element: h.JSX.Element | null = null;
 
   const label = useMemo(() => replaceTags(question.label), [question]);
-  const description = useMemo(() => replaceTags(question.description ?? ''), [question]);
+  const description = useMemo(() => replaceTags(question.description ?? ''), [
+    question,
+  ]);
 
   switch (question.type) {
     case AnswerType.TEXT:
@@ -103,6 +105,15 @@ export default function Response({
       element = <div>CSAT</div>;
       break;
     case AnswerType.MULTIPLE:
+      element = (
+        <ChoiceResponse
+          question={question}
+          label={label}
+          description={description}
+          onAnswered={onAnswered}
+          theme={theme}
+        />
+      );
     case AnswerType.SINGLE:
       element = (
         <ChoiceResponse
@@ -116,9 +127,6 @@ export default function Response({
       break;
     case AnswerType.FORM:
       element = <div>Form</div>;
-      break;
-    case AnswerType.NUMERICAL_SCALE:
-      element = <div>Numerical</div>;
       break;
     case AnswerType.BOOLEAN:
       element = (

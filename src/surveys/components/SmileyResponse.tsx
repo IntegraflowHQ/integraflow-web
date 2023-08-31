@@ -1,6 +1,4 @@
 import { h } from 'preact';
-import { Header } from '../../components';
-import { Question, RangeSettings, SurveyAnswer, Theme } from '../../types';
 import {
   AngryEmoji,
   HappyEmoji,
@@ -8,6 +6,9 @@ import {
   SadEmoji,
   SatisfiedEmoji,
 } from '../../assets';
+import { Header } from '../../components';
+import { Question, RangeSettings, SurveyAnswer, Theme } from '../../types';
+import AnswerContainer from './AnswerContainer';
 
 type Props = {
   question: Question;
@@ -39,21 +40,29 @@ const renderSmiley = (count: number, optionIndex: number) => {
   return smileyOptions[smileyIndex];
 };
 
-export const SmileyResponse = ({ question, label, description, theme, onAnswered }: Props) => {
+export const SmileyResponse = ({
+  question,
+  label,
+  description,
+  theme,
+  onAnswered,
+}: Props) => {
   return (
-    <div>
+    <AnswerContainer>
       <Header
         title={label ?? ''}
         description={description}
         color={theme?.question ?? '#050505'}
-        centered
       />
+
       <div>
-        <div className={'flex justify-around max-w-[317px] my-2 mx-auto'}>
+        <div className={'flex justify-around my-2 mx-auto'}>
           {question.options?.map((option, index) => (
             <button
               key={option.id}
-              onClick={() => onAnswered([{ answerId: option.id, answer: option.label }])}
+              onClick={() =>
+                onAnswered([{ answerId: option.id, answer: option.label }])
+              }
               className={'cursor-pointer block p-2 rounded-full bg-[#EFF0F6]'}
             >
               {renderSmiley(
@@ -80,6 +89,6 @@ export const SmileyResponse = ({ question, label, description, theme, onAnswered
           </span>
         </div>
       </div>
-    </div>
+    </AnswerContainer>
   );
 };

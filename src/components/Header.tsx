@@ -15,10 +15,14 @@ export function Header({
 }: HeaderProps): VNode {
   return (
     <header className={`spacey-2 ${centered && 'text-center'}`}>
-      <h2 style={{ color }} className='text-xl font-medium'>
+      <h2 style={{ color }} className='text-sm font-semibold leading-[22px]'>
         {title}
       </h2>
-      {description && <span style={{ color }}>{description}</span>}
+      {description && (
+        <span style={{ color }} className='text-xs font-normal leading-[19px]'>
+          {description}
+        </span>
+      )}
     </header>
   );
 }

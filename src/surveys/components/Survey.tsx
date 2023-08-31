@@ -138,13 +138,17 @@ export default function Survey({
       showProgressBar={survey.settings.showProgressBar}
       progress={progress}
       theme={survey.theme}
+      maxWidth={
+        ['rating', 'nps', 'smiley_scale', 'numerical_scale'].includes(
+          activeQuestion.type
+        )
+          ? '504px'
+          : '304px'
+      }
     >
       <div
         ref={contentRef}
-        className={cn(
-          loading ? 'animate-pulse opacity-60' : '',
-          'text-slate-800 font-sans px-4 py-6 sm:p-6 max-h-[80vh] overflow-y-auto'
-        )}
+        className={cn(loading ? 'animate-pulse opacity-60' : '')}
       >
         {survey.questions.map(
           (question, idx) =>

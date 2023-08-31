@@ -11,6 +11,7 @@ import {
   Theme,
 } from '../../types';
 import { hexToRgba, shuffleArray } from '../../utils';
+import AnswerContainer from './AnswerContainer';
 
 interface SingleResponseProps {
   question: Question;
@@ -76,7 +77,7 @@ export default function ChoiceResponse({
         color={theme?.question}
       />
 
-      <div className={'space-y-2 min-w-[381px]'}>
+      <AnswerContainer className={'space-y-2'}>
         {questionOptions &&
           questionOptions.map((option) => (
             <label
@@ -108,11 +109,12 @@ export default function ChoiceResponse({
               <span>{option.label}</span>
             </label>
           ))}
-      </div>
+      </AnswerContainer>
+
       <Button
         label={submitText ?? 'Submit'}
         color={theme?.button}
-        size="full"
+        size='full'
       />
     </form>
   );

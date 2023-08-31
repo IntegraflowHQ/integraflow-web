@@ -1,4 +1,3 @@
-import classnames from 'classnames';
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { Button, Header } from '../../components';
@@ -10,7 +9,8 @@ import {
   SurveyAnswer,
   Theme,
 } from '../../types';
-import { hexToRgba } from '../../utils';
+import { cn, hexToRgba } from '../../utils';
+import AnswerContainer from './AnswerContainer';
 import RatingIcon from './RatingIcon';
 
 interface RangeResponseProps {
@@ -49,10 +49,9 @@ function RangeResponse({ question, label, description, onAnswered, theme }: Rang
         <Button
           key={index}
           label={`${index + 1}`}
-          size='sm'
           onClick={handleOptionClick}
           color={theme?.answer}
-          classname='border w-[45px] h-[42px] flex justify-center items-center'
+          classname='border flex justify-center items-center w-[45px] h-[42px] px-0 py-0'
           variant='surveyInput'
           isActive={isSelected}
         />
@@ -87,7 +86,7 @@ function RangeResponse({ question, label, description, onAnswered, theme }: Rang
   };
 
   return (
-    <div className='space-y-3 w-[504px] overflow-x-auto'>
+    <AnswerContainer className='space-y-3'>
       <Header
         title={label}
         description={description}
@@ -95,10 +94,10 @@ function RangeResponse({ question, label, description, onAnswered, theme }: Rang
       />
 
       <div
-        className={classnames(
+        className={cn(
           'flex',
-          question.type === 'nps' ? 'justify-between' : 'gap-6',
-          question.type === 'rating' && 'px-6 justify-center'
+          question.type === 'nps' ? 'gap-1' : 'gap-6',
+          question.type === 'rating' ? 'px-6 justify-center' : ''
         )}
       >
         {renderRangeContent()}
@@ -112,7 +111,7 @@ function RangeResponse({ question, label, description, onAnswered, theme }: Rang
           {(question.settings as RangeSettings).rightText ?? 'Very unsatisfied'}
         </span>
       </div>
-    </div>
+    </AnswerContainer>
   );
 }
 

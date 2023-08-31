@@ -18,25 +18,26 @@ type Props = {
   onAnswered: (answers: SurveyAnswer[]) => void;
 };
 
-export const CTAResponse = ({ question, theme, label, description, onAnswered }: Props) => {
+export const CTAResponse = ({
+  question,
+  theme,
+  label,
+  description,
+  onAnswered,
+}: Props) => {
   const onClickHandler = () => {
     onAnswered([{ ctaSuccess: true, answer: '' }]);
   };
 
   return (
-    <div className={'max-w-[489px]'}>
-      <Header
-        title={label}
-        description={description}
-        color={theme?.question}
-      />
+    <div className={'w-screen max-w-full space-y-3'}>
+      <Header title={label} description={description} color={theme?.question} />
 
       {(question?.settings as CTASettings).type === CTAType.HIDDEN ? null : (
         <Button
           label={(question?.settings as CTASettings).text}
           onClick={onClickHandler}
-          classname='mt-3'
-          position='right'
+          size='full'
           color={theme?.button}
         />
       )}

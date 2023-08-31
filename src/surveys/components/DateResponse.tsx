@@ -1,9 +1,10 @@
 import { h } from 'preact';
 import { Button, Header } from '../../components';
-import { AnswerType, ID, Question, SurveyAnswer, Theme } from '../../types';
+import { Question, SurveyAnswer, Theme } from '../../types';
 
 import { useState } from 'preact/hooks';
 import { DatePicker } from '../../components';
+import AnswerContainer from './AnswerContainer';
 
 interface DateResponseProps {
   question: Question;
@@ -30,7 +31,10 @@ export default function DateResponse({
   };
 
   return (
-    <form className='flex flex-col gap-4 w-96' onSubmit={handleSubmit}>
+    <form
+      className='flex flex-col w-screen max-w-full gap-4'
+      onSubmit={handleSubmit}
+    >
       <div className='mr-6'>
         <Header
           title={label}
@@ -39,17 +43,19 @@ export default function DateResponse({
         />
       </div>
 
-      <DatePicker
-        color={theme?.answer}
-        clearIcon={null}
-        calendarIcon={null}
-        dayPlaceholder='DD'
-        monthPlaceholder='MM'
-        yearPlaceholder='YYYY'
-        format='dd/MM/yyyy'
-        value={selectedDate}
-        onChange={(value) => setSelectedDate(value as Date)}
-      />
+      <AnswerContainer className='w-full'>
+        <DatePicker
+          color={theme?.answer}
+          clearIcon={null}
+          calendarIcon={null}
+          dayPlaceholder='DD'
+          monthPlaceholder='MM'
+          yearPlaceholder='YYYY'
+          format='dd/MM/yyyy'
+          value={selectedDate}
+          onChange={(value) => setSelectedDate(value as Date)}
+        />
+      </AnswerContainer>
 
       <Button
         label={submitText ?? 'Submit'}
