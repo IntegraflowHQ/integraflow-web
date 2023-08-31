@@ -7,18 +7,20 @@ import SurveyView from './components/Survey';
 interface AppProps {
   survey: Survey;
   getNextQuestionId: (question: Question, answers: SurveyAnswer[]) => ID | null;
-  onSurveyDisplayed?: (surveyId: ID) => void;
+  replaceTags: (surveyId: ID, content: string) => string;
+  onSurveyDisplayed?: (surveyId: ID) => Promise<void>;
   onSurveyClosed?: (surveyId: ID) => Promise<void>;
   onQuestionAnswered?: (
     surveyId: ID,
     questionId: ID,
     answers: SurveyAnswer[]
-  ) => void;
-  onSurveyCompleted?: (surveyId: ID) => void;
+  ) => Promise<void>;
+  onSurveyCompleted?: (surveyId: ID) => Promise<void>;
 }
 
 export default function App({
   survey,
+  replaceTags,
   getNextQuestionId,
   onSurveyDisplayed,
   onSurveyClosed,
@@ -45,6 +47,7 @@ export default function App({
     <SurveyView
       survey={survey}
       close={close}
+      replaceTags={replaceTags}
       getNextQuestionId={getNextQuestionId}
       onQuestionAnswered={onQuestionAnswered}
       onSurveyCompleted={onSurveyCompleted}

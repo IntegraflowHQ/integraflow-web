@@ -7,13 +7,16 @@ import { DatePicker } from '../../components';
 
 interface DateResponseProps {
   question: Question;
+  label: string;
+  description?: string;
   onAnswered: (answers: SurveyAnswer[]) => void;
   submitText?: string;
   theme?: Theme;
 }
 
 export default function DateResponse({
-  question,
+  label,
+  description,
   onAnswered,
   submitText,
   theme,
@@ -30,9 +33,9 @@ export default function DateResponse({
     <form className='flex flex-col gap-4 w-96' onSubmit={handleSubmit}>
       <div className='mr-6'>
         <Header
-          title={question.label}
+          title={label}
           color={theme?.question}
-          description={question.description ?? 'Date'}
+          description={description ?? 'Date'}
         />
       </div>
 

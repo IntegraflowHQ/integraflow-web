@@ -8,11 +8,11 @@ import { State } from '../../types';
 import { Context } from '../context';
 import { uuidv4 } from '../../utils';
 
-const store = new Store('formify', 'default');
+const store = new Store('formily', 'default');
 
 const getCacheKeys = (key: string) => ({
-  STATE_CACHE_KEY: `${key}State`,
-  STATE_CACHE_KEY_UPDATED: `${key}StateUpdated`
+  STATE_CACHE_KEY: `${key}Cache`,
+  STATE_CACHE_KEY_UPDATED: `${key}CacheUpdated`
 });
 
 const MAX_CACHE_AGE_MS = 1 * 60 * 60 * 1000;
@@ -50,6 +50,8 @@ export async function getState(
         surveys: ctx.surveys ?? [],
         installId,
         user: state.user ?? { id: installId },
+        seenSurveyIds: state.seenSurveyIds ?? new Set(),
+        surveyAnswers: state.surveyAnswers ?? {}
       };
 
       updatedRemoteState = true;
@@ -90,6 +92,8 @@ export async function resetState(
   const state = await getState(ctx);
 
   state.user = undefined;
+  state.seenSurveyIds = undefined;
+  state.surveyAnswers = undefined;
 
   if (resetInstallId) {
     state.installId = undefined;
