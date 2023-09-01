@@ -1,6 +1,7 @@
 import { FunctionComponent, h } from 'preact';
 import { useMemo, useState } from 'preact/hooks';
 import { calculateTextColor, cn, hexToRgba } from '../../utils';
+import { JSXInternal } from 'preact/src/jsx';
 
 interface ButtonProps {
   label?: string;
@@ -12,6 +13,7 @@ interface ButtonProps {
   color?: string;
   position?: 'left' | 'right' | 'center';
   variant?: 'default' | 'surveyInput';
+  disabled?: boolean;
 }
 
 export const Button: FunctionComponent<ButtonProps> = ({
@@ -21,6 +23,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
   size = 'md',
   position = 'left',
   variant = 'default',
+  disabled = false,
   ...props
 }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -34,6 +37,9 @@ export const Button: FunctionComponent<ButtonProps> = ({
 
   const backgroundColor = useMemo(() => {
     if (variant === 'default') {
+      if (disabled) {
+        return hexToRgba(color, 0.7);
+      }
       return color;
     }
 
@@ -42,7 +48,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
     }
 
     return hexToRgba(color, 0.1);
-  }, [variant, color, isActive, isHovered]);
+  }, [variant, color, isActive, disabled, isHovered]);
 
   let widthClasses = 'w-auto';
   if (size === 'md') {
@@ -58,6 +64,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
 
   return (
     <button
+      disabled={disabled}
       type={type}
       onClick={props.onClick}
       onMouseEnter={() => setIsHovered(true)}
