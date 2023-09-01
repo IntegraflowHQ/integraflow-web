@@ -9,6 +9,7 @@ import DateResponse from './DateResponse';
 import RangeResponse from './RangeResponse';
 import { SmileyResponse } from './SmileyResponse';
 import TextResponse from './TextResponse';
+import { ContactFormResponse } from './ContactFormResponse';
 
 interface ResponseProps {
   question: Question;
@@ -112,6 +113,7 @@ export default function Response({
           description={description}
           onAnswered={onAnswered}
           theme={theme}
+          submitText={submitText}
         />
       );
     case AnswerType.SINGLE:
@@ -122,11 +124,24 @@ export default function Response({
           description={description}
           onAnswered={onAnswered}
           theme={theme}
+          submitText={submitText}
         />
       );
       break;
     case AnswerType.FORM:
-      element = <div>Form</div>;
+      element = (
+        <ContactFormResponse
+          question={question}
+          label={label}
+          description={description}
+          onAnswered={onAnswered}
+          theme={theme}
+          submitText={submitText}
+        />
+      );
+      break;
+    case AnswerType.NUMERICAL_SCALE:
+      element = <div>Numerical</div>;
       break;
     case AnswerType.BOOLEAN:
       element = (
