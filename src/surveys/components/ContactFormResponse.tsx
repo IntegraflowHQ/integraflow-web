@@ -2,6 +2,7 @@ import { h } from 'preact';
 import {
   FormField,
   FormSettings,
+  ID,
   Question,
   SurveyAnswer,
   Theme,
@@ -29,7 +30,7 @@ export const ContactFormResponse = ({
   onAnswered,
   submitText,
 }: Props) => {
-  const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
+  const [inputValues, setInputValues] = useState<{ [key: ID]: string }>({});
   const handleInputChange = (fieldId: string, value: string) => {
     setInputValues((prevValues) => ({
       ...prevValues,
@@ -76,55 +77,57 @@ export const ContactFormResponse = ({
             </div>
           );
         })}
-        <Button
-          label={submitText ?? 'Submit'}
-          size="full"
-          type="submit"
-          disabled={!checked}
-        />
-        {(question.settings as FormSettings).consent && (
-          <label
-            className={
-              'rounded-md mt-3 flex p-2 px-4 gap-2 items-center text-sm'
-            }
-            style={{
-              color: theme?.answer ?? '#050505',
-              backgroundColor: theme?.answer
-                ? hexToRgba(theme?.answer, 0.1)
-                : '#F0F0F0',
-            }}
-          >
-            <input
+        <div className={'space-y-2'}>
+          {(question.settings as FormSettings).consent && (
+            <label
+              className={
+                'rounded-md mt-3 flex p-2 px-4 gap-2 items-center text-sm'
+              }
               style={{
-                width: '15px',
-                height: '15px',
-                accentColor: theme?.answer ?? '#050505',
+                color: theme?.answer ?? '#050505',
+                backgroundColor: theme?.answer
+                  ? hexToRgba(theme?.answer, 0.1)
+                  : '#F0F0F0',
               }}
-              type="checkbox"
-              value=""
-              checked={checked}
-              onChange={handleChange}
-            />
-            <span>{(question.settings as FormSettings).consentText}</span>
-          </label>
-        )}
-        {(question.settings as FormSettings).disclaimer && (
-          <p
-            className={'flex items-center rounded-sm p-2 px-4 gap-2 mt-3'}
-            style={{
-              color: theme?.answer ?? '#050505',
-              fontSize: '14px',
-              backgroundColor: theme?.answer
-                ? hexToRgba(theme?.answer, 0.1)
-                : '#F0F0F0',
-            }}
-          >
-            <span>
-              <LockIcon size={13} />
-            </span>
-            <span>{(question.settings as FormSettings).disclaimerText}</span>
-          </p>
-        )}
+            >
+              <input
+                style={{
+                  width: '15px',
+                  height: '15px',
+                  accentColor: theme?.answer ?? '#050505',
+                }}
+                type="checkbox"
+                value=""
+                checked={checked}
+                onChange={handleChange}
+              />
+              <span>{(question.settings as FormSettings).consentText}</span>
+            </label>
+          )}
+          {(question.settings as FormSettings).disclaimer && (
+            <p
+              className={'flex items-center rounded-md p-2 px-4 gap-2'}
+              style={{
+                color: theme?.answer ?? '#050505',
+                fontSize: '14px',
+                backgroundColor: theme?.answer
+                  ? hexToRgba(theme?.answer, 0.1)
+                  : '#F0F0F0',
+              }}
+            >
+              <span>
+                <LockIcon size={13} />
+              </span>
+              <span>{(question.settings as FormSettings).disclaimerText}</span>
+            </p>
+          )}
+          <Button
+            label={submitText ?? 'Submit'}
+            size="full"
+            type="submit"
+            disabled={!checked}
+          />
+        </div>
       </form>
     </AnswerContainer>
   );

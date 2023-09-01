@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { FormField, FormFieldType, ID } from '../types';
 import { hexToRgba } from '../utils';
 import { JSXInternal } from 'preact/src/jsx';
+import { useMemo } from 'preact/hooks';
 
 type Props = {
   option: FormField;
@@ -26,20 +27,16 @@ export const Input = ({
   required,
   onChange,
 }: Props) => {
-  let inputType: JSXInternal.HTMLAttributes<
-    HTMLInputElement
-  >['type'] = undefined;
-  switch (option.type) {
-    case FormFieldType.EMAIL:
-      inputType = 'email';
-      break;
-    case FormFieldType.WEBSITE:
-      inputType = 'url';
-      break;
-    default:
-      inputType = 'text';
-      break;
-  }
+  const inputType = useMemo(() => {
+    switch (option.type) {
+      case FormFieldType.EMAIL:
+        return 'email';
+      case FormFieldType.WEBSITE:
+        return 'url';
+      default:
+        return 'text';
+    }
+  }, [option.type]);
 
   return (
     <div>

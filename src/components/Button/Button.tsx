@@ -13,7 +13,7 @@ interface ButtonProps {
   color?: string;
   position?: 'left' | 'right' | 'center';
   variant?: 'default' | 'surveyInput';
-  disabled?: JSXInternal.HTMLAttributes<HTMLButtonElement>['disabled'];
+  disabled?: boolean;
 }
 
 export const Button: FunctionComponent<ButtonProps> = ({
