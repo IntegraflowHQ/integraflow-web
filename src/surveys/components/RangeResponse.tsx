@@ -30,7 +30,9 @@ function RangeResponse({ question, label, description, onAnswered, theme }: Rang
   useEffect(() => {
     if (value === 0) return;
 
-    onAnswered([{ answerId: answerId ?? value, answer: String(answerId ?? value) }]);
+    onAnswered([
+      { answerId: answerId ?? value, answer: String(answerId ?? value) },
+    ]);
   }, [value, answerId]);
 
   const renderOption = (
@@ -44,15 +46,15 @@ function RangeResponse({ question, label, description, onAnswered, theme }: Rang
       setValue(index + 1);
     };
 
-    if (question.type === 'nps') {
+    if (question.type === 'nps' || question.type === 'numerical_scale') {
       return (
         <Button
           key={index}
           label={`${index + 1}`}
           onClick={handleOptionClick}
           color={theme?.answer}
-          classname='border flex justify-center items-center w-[45px] h-[42px] px-0 py-0'
-          variant='surveyInput'
+          classname="border flex justify-center items-center w-[45px] h-[42px] px-0 py-0"
+          variant="surveyInput"
           isActive={isSelected}
         />
       );
@@ -71,7 +73,11 @@ function RangeResponse({ question, label, description, onAnswered, theme }: Rang
   };
 
   const renderRangeContent = () => {
-    if (question.options && question.options.length > 0) {
+    if (question.type === 'nps') {
+      return Array.from({ length: 10 }, (_, index) => index).map((_, index) =>
+        renderOption(index)
+      );
+    } else if (question.options && question.options.length > 0) {
       return question.options
         .sort((a, b) => a.orderNumber - b.orderNumber)
         .map((option, index) => renderOption(index, option));
@@ -96,8 +102,8 @@ function RangeResponse({ question, label, description, onAnswered, theme }: Rang
       <div
         className={cn(
           'flex',
-          question.type === 'nps' ? 'gap-1' : 'gap-6',
-          question.type === 'rating' ? 'px-6 justify-center' : ''
+          question.type === 'nps' || 'numerical_scale' ? 'gap-1' : '',
+          question.type === 'rating' ? 'px-6 justify-center gap-6' : ''
         )}
       >
         {renderRangeContent()}
