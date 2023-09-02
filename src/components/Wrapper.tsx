@@ -32,17 +32,18 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
   return (
     <div
       className={
-        'fixed top-0 bottom-0 left-0 right-0 bg-[#14171A33] bg-opacity-20 p-5'
+        'fixed top-0 bottom-0 left-0 right-0 bg-[#14171A33] bg-opacity-20'
       }
+      id={'formily-content-wrapper'}
     >
       <div className='relative w-full h-full'>
         <div
           className={cn(
             'absolute',
-            placement === 'topLeft' ? 'top-0 left-0' : '',
-            placement === 'topRight' ? 'top-0 right-0' : '',
-            placement === 'bottomLeft' ? 'bottom-0 left-0' : '',
-            placement === 'bottomRight' ? 'bottom-0 right-0' : '',
+            placement === 'topLeft' ? 'top-5 left-5' : '',
+            placement === 'topRight' ? 'top-5 right-5' : '',
+            placement === 'bottomLeft' ? 'bottom-5 left-5' : '',
+            placement === 'bottomRight' ? 'bottom-5 right-5' : '',
             placement === 'center'
               ? 'left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
               : ''
