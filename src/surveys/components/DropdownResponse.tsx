@@ -67,6 +67,7 @@ export default function DropdownResponse({
     const inputRect = inputRef.current.getBoundingClientRect();
     const windowHeight = window.innerHeight;
 
+    setDropdownWidth(inputRef.current.clientWidth);
     setInputRectLeft(inputRect.left);
     setInputRectTop(windowHeight - inputRect.top);
     setInputRectBottom(inputRect.bottom);
@@ -82,8 +83,6 @@ export default function DropdownResponse({
   };
 
   useEffect(() => {
-    if (!inputRef.current) return;
-    setDropdownWidth(inputRef.current.clientWidth);
     calculatePosition();
   }, [inputRef.current?.clientWidth]);
 
@@ -100,7 +99,7 @@ export default function DropdownResponse({
     ? { top: `${inputRectBottom}px` }
     : { bottom: `${inputRectTop}px` };
 
-  const dropdownStyles: h.JSX.CSSProperties = {
+  const dropdownStyle: h.JSX.CSSProperties = {
     width: `${dropdownWidth}px`,
     maxHeight: `${dropDownMaxHeight}px`,
     backgroundColor: theme?.background ?? '#FFFFFF',
@@ -110,7 +109,7 @@ export default function DropdownResponse({
     ...dropDownPositionY,
   };
 
-  const dropdownChildStyles: h.JSX.CSSProperties = {
+  const dropdownChildStyle: h.JSX.CSSProperties = {
     padding: '8px',
     color: questionColor,
     backgroundColor: hexToRgba(questionColor, 0.1),
@@ -156,7 +155,7 @@ export default function DropdownResponse({
 
         {isOpen &&
           createPortal(
-            <AnswerContainer style={dropdownStyles}>
+            <AnswerContainer style={dropdownStyle}>
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option) => (
                   <div
@@ -164,14 +163,14 @@ export default function DropdownResponse({
                     onClick={() => handleOptionClick(option)}
                     onMouseEnter={darkenBg}
                     onMouseLeave={resetBg}
-                    style={dropdownChildStyles}
+                    style={dropdownChildStyle}
                   >
                     {option.label}
                   </div>
                 ))
               ) : (
                 <div
-                  style={dropdownChildStyles}
+                  style={dropdownChildStyle}
                   onMouseEnter={darkenBg}
                   onMouseLeave={resetBg}
                 >
