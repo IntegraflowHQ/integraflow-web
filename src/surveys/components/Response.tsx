@@ -142,8 +142,16 @@ export default function Response({
       );
       break;
     case AnswerType.NUMERICAL_SCALE:
-      element = <div>Numerical</div>;
-      break;
+        element = (
+          <RangeResponse
+            question={question}
+            label={label}
+            description={description}
+            onAnswered={onAnswered}
+            theme={theme}
+          />
+        );
+        break;
     case AnswerType.BOOLEAN:
       element = (
         <BooleanResponse
