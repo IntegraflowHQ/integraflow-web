@@ -1,7 +1,7 @@
 import { XIcon } from 'lucide-preact';
 import { h } from 'preact';
 import { PlacementType, Theme } from '../types';
-import { cn } from '../utils';
+import { calculateTextColor, cn } from '../utils';
 import Progress from './Progress';
 
 interface ContainerProps {
@@ -73,7 +73,9 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
                 )}
                 {!fullScreen && (
                   <button onClick={close}>
-                    <XIcon />
+                    <XIcon
+                      color={calculateTextColor(theme?.background ?? '#FFFFFF')}
+                    />
                   </button>
                 )}
               </div>
@@ -89,6 +91,7 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
                 fontSize: '12px',
                 fontWeight: 400,
                 lineHeight: 1.5,
+                color: calculateTextColor(theme?.background ?? '#FFFFFF'),
               }}
             >
               Powered by{' '}

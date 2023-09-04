@@ -1,7 +1,6 @@
 import { FunctionComponent, h } from 'preact';
 import { useMemo, useState } from 'preact/hooks';
 import { calculateTextColor, cn, hexToRgba } from '../../utils';
-import { JSXInternal } from 'preact/src/jsx';
 
 interface ButtonProps {
   label?: string;
@@ -74,7 +73,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
         color: fontColor,
       }}
       className={cn(
-        `block font-semibold py-2 px-4 rounded-lg min-h-[40px]`,
+        `block py-2 px-4 rounded-lg min-h-[40px]`,
         widthClasses,
         buttonPositionClasses,
         variant === 'default' ? 'text-sm font-semibold leading-[1.15]' : '',
