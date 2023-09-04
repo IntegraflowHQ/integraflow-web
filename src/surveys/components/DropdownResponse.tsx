@@ -38,7 +38,8 @@ export default function DropdownResponse({
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const questionColor = theme?.question ?? '#050505';
+  const answerColor = theme?.answer ?? '#050505';
+  const backgroundColor = theme?.background ?? '#FFFFFF';
   const dropDownMaxHeight = 200;
 
   const handleInputChange = (
@@ -102,7 +103,7 @@ export default function DropdownResponse({
   const dropdownStyle: h.JSX.CSSProperties = {
     width: `${dropdownWidth}px`,
     maxHeight: `${dropDownMaxHeight}px`,
-    backgroundColor: theme?.background ?? '#FFFFFF',
+    backgroundColor,
     position: 'absolute',
     overflowY: 'auto',
     left: `${inputRectLeft}px`,
@@ -111,16 +112,16 @@ export default function DropdownResponse({
 
   const dropdownChildStyle: h.JSX.CSSProperties = {
     padding: '8px',
-    color: questionColor,
-    backgroundColor: hexToRgba(questionColor, 0.1),
+    color: answerColor,
+    backgroundColor,
   };
 
   const darkenBg = (e: h.JSX.TargetedMouseEvent<HTMLDivElement>) => {
-    e.currentTarget.style.backgroundColor = hexToRgba(questionColor, 0.2);
+    e.currentTarget.style.backgroundColor = hexToRgba(answerColor, 0.1);
   };
 
   const resetBg = (e: h.JSX.TargetedMouseEvent<HTMLDivElement>) => {
-    e.currentTarget.style.backgroundColor = hexToRgba(questionColor, 0.1);
+    e.currentTarget.style.backgroundColor = backgroundColor;
   };
 
   const handleSubmit = (e: h.JSX.TargetedEvent<HTMLFormElement, Event>) => {
@@ -148,8 +149,8 @@ export default function DropdownResponse({
           onClick={toggleDropdown}
           className={'w-full border rounded-md p-2'}
           style={{
-            color: questionColor,
-            backgroundColor: hexToRgba(questionColor, 0.1),
+            color: answerColor,
+            backgroundColor: hexToRgba(answerColor, 0.1),
           }}
         />
 
