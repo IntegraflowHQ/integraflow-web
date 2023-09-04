@@ -21,11 +21,19 @@ interface RangeResponseProps {
   theme?: Theme;
 }
 
-function RangeResponse({ question, label, description, onAnswered, theme }: RangeResponseProps) {
+function RangeResponse({
+  question,
+  label,
+  description,
+  onAnswered,
+  theme,
+}: RangeResponseProps) {
   const [value, setValue] = useState(0);
   const [answerId, setAnswerId] = useState<ID | null>(null);
 
-  const lightAnswerColor = theme?.answer && hexToRgba(theme.answer, 0.1);
+  const [hoveredRatingValue, setHoveredRatingValue] = useState(0);
+
+  const answerColor = theme?.answer ?? '#050505';
 
   useEffect(() => {
     if (value === 0) return;
@@ -53,17 +61,25 @@ function RangeResponse({ question, label, description, onAnswered, theme }: Rang
           label={`${index + 1}`}
           onClick={handleOptionClick}
           color={theme?.answer}
-          classname="border flex justify-center items-center w-[45px] h-[42px] px-0 py-0"
-          variant="surveyInput"
+          classname='w-[42px] h-[42px] shrink-0'
+          variant='surveyInput'
           isActive={isSelected}
         />
       );
     } else if (question.type === 'rating') {
       return (
-        <button onClick={handleOptionClick} key={index}>
+        <button
+          onClick={handleOptionClick}
+          key={index}
+          onMouseOver={() => setHoveredRatingValue(index + 1)}
+        >
           <RatingIcon
             shape={(question.settings as RangeSettings).shape}
-            color={index + 1 <= value ? theme?.answer : lightAnswerColor}
+            color={
+              index + 1 <= hoveredRatingValue
+                ? answerColor
+                : hexToRgba(answerColor, 0.1)
+            }
           />
         </button>
       );
@@ -93,27 +109,25 @@ function RangeResponse({ question, label, description, onAnswered, theme }: Rang
 
   return (
     <AnswerContainer className='space-y-3'>
-      <Header
-        title={label}
-        description={description}
-        color={theme?.question}
-      />
+      <Header title={label} description={description} color={theme?.question} />
 
       <div
         className={cn(
-          'flex',
-          question.type === 'nps' || question.type === 'numerical_scale'  ? 'gap-1' : '',
-          question.type === 'rating' ? 'px-6 justify-center gap-6' : ''
+          'flex gap-1 overflow-y-auto',
+          question.type === 'rating' ? 'justify-center' : ''
         )}
+        onMouseLeave={() => {
+          if (question.type === 'rating') setHoveredRatingValue(0);
+        }}
       >
         {renderRangeContent()}
       </div>
 
       <div className='flex justify-between'>
-        <span style={{ color: theme?.answer ?? '#050505' }}>
+        <span style={{ color: answerColor }}>
           {(question.settings as RangeSettings).leftText ?? 'Very satisfied'}
         </span>
-        <span style={{ color: theme?.answer ?? '#050505' }}>
+        <span style={{ color: answerColor }}>
           {(question.settings as RangeSettings).rightText ?? 'Very unsatisfied'}
         </span>
       </div>

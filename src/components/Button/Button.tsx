@@ -73,10 +73,12 @@ export const Button: FunctionComponent<ButtonProps> = ({
         color: fontColor,
       }}
       className={cn(
-        `block py-2 px-4 rounded-lg min-h-[40px]`,
+        `rounded-lg min-h-[40px]`,
         widthClasses,
         buttonPositionClasses,
-        variant === 'default' ? 'text-sm font-semibold leading-[1.15]' : '',
+        variant === 'default'
+          ? 'text-sm font-semibold px-4 leading-[1.15]'
+          : '',
         props.classname ?? ''
       )}
     >
