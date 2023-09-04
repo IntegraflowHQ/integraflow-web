@@ -6,6 +6,7 @@ import BooleanResponse from './BooleanResponse';
 import { CTAResponse } from './CTAResponse';
 import ChoiceResponse from './ChoiceResponse';
 import DateResponse from './DateResponse';
+import DropdownResponse from './DropdownResponse';
 import RangeResponse from './RangeResponse';
 import { SmileyResponse } from './SmileyResponse';
 import TextResponse from './TextResponse';
@@ -154,6 +155,17 @@ export default function Response({
         />
       );
       break;
+    case AnswerType.DROPDOWN:
+      element = (
+        <DropdownResponse
+          question={question}
+          label={label}
+          description={description}
+          onAnswered={onAnswered}
+          theme={theme}
+          submitText={submitText}
+        />
+      );
   }
 
   return element;
