@@ -33,7 +33,7 @@ function RangeResponse({
 
   const [hoveredRatingValue, setHoveredRatingValue] = useState(0);
 
-  const lightAnswerColor = theme?.answer && hexToRgba(theme.answer, 0.1);
+  const answerColor = theme?.answer ?? '#050505';
 
   useEffect(() => {
     if (value === 0) return;
@@ -76,7 +76,9 @@ function RangeResponse({
           <RatingIcon
             shape={(question.settings as RangeSettings).shape}
             color={
-              index + 1 <= hoveredRatingValue ? theme?.answer : lightAnswerColor
+              index + 1 <= hoveredRatingValue
+                ? answerColor
+                : hexToRgba(answerColor, 0.1)
             }
           />
         </button>
@@ -122,10 +124,10 @@ function RangeResponse({
       </div>
 
       <div className='flex justify-between'>
-        <span style={{ color: theme?.answer ?? '#050505' }}>
+        <span style={{ color: answerColor }}>
           {(question.settings as RangeSettings).leftText ?? 'Very satisfied'}
         </span>
-        <span style={{ color: theme?.answer ?? '#050505' }}>
+        <span style={{ color: answerColor }}>
           {(question.settings as RangeSettings).rightText ?? 'Very unsatisfied'}
         </span>
       </div>
