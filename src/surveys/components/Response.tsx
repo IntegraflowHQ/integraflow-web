@@ -3,14 +3,15 @@ import { useMemo } from 'preact/hooks';
 
 import { AnswerType, Question, SurveyAnswer, Theme } from '../../types';
 import BooleanResponse from './BooleanResponse';
+import CSATResponse from './CSATResponse';
 import { CTAResponse } from './CTAResponse';
 import ChoiceResponse from './ChoiceResponse';
+import { ContactFormResponse } from './ContactFormResponse';
 import DateResponse from './DateResponse';
 import DropdownResponse from './DropdownResponse';
 import RangeResponse from './RangeResponse';
 import { SmileyResponse } from './SmileyResponse';
 import TextResponse from './TextResponse';
-import { ContactFormResponse } from './ContactFormResponse';
 
 interface ResponseProps {
   question: Question;
@@ -104,7 +105,15 @@ export default function Response({
       );
       break;
     case AnswerType.CSAT:
-      element = <div>CSAT</div>;
+      element = (
+        <CSATResponse
+          question={question}
+          label={label}
+          description={description}
+          onAnswered={onAnswered}
+          theme={theme}
+        />
+      );
       break;
     case AnswerType.MULTIPLE:
       element = (
@@ -142,16 +151,16 @@ export default function Response({
       );
       break;
     case AnswerType.NUMERICAL_SCALE:
-        element = (
-          <RangeResponse
-            question={question}
-            label={label}
-            description={description}
-            onAnswered={onAnswered}
-            theme={theme}
-          />
-        );
-        break;
+      element = (
+        <RangeResponse
+          question={question}
+          label={label}
+          description={description}
+          onAnswered={onAnswered}
+          theme={theme}
+        />
+      );
+      break;
     case AnswerType.BOOLEAN:
       element = (
         <BooleanResponse
