@@ -102,7 +102,7 @@ function RangeResponse({ question, label, description, onAnswered, theme }: Rang
       <div
         className={cn(
           'flex',
-          question.type === 'nps' || 'numerical_scale' ? 'gap-1' : '',
+          question.type === 'nps' || question.type === 'numerical_scale'  ? 'gap-1' : '',
           question.type === 'rating' ? 'px-6 justify-center gap-6' : ''
         )}
       >
