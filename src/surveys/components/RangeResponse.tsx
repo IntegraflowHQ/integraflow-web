@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { Button, Header } from '../../components';
+import useIsMobile from '../../hooks/useIsMobile';
 import {
   ID,
   Question,
@@ -30,10 +31,16 @@ function RangeResponse({
 }: RangeResponseProps) {
   const [value, setValue] = useState(0);
   const [answerId, setAnswerId] = useState<ID | null>(null);
-
   const [hoveredRatingValue, setHoveredRatingValue] = useState(0);
+  const isMobile = useIsMobile();
 
   const answerColor = theme?.answer ?? '#050505';
+  const maxCount =
+    question.type === 'nps'
+      ? 10
+      : (question.settings as RangeSettings).count ??
+        question.options?.length ??
+        0;
 
   useEffect(() => {
     if (value === 0) return;
@@ -55,15 +62,26 @@ function RangeResponse({
     };
 
     if (question.type === 'nps' || question.type === 'numerical_scale') {
+      const getLabel = () => {
+        if (isMobile && index === 0)
+          return `${index + 1} - ${(question.settings as RangeSettings)
+            ?.leftText ?? 'Not likely'}`;
+        if (isMobile && index === maxCount - 1)
+          return `${index + 1} - ${(question.settings as RangeSettings)
+            ?.rightText ?? 'Very likely'}`;
+        return `${index + 1}`;
+      };
+
       return (
         <Button
           key={index}
-          label={`${index + 1}`}
+          label={getLabel()}
           onClick={handleOptionClick}
           color={theme?.answer}
-          classname='w-[42px] h-[42px] shrink-0'
+          classname={!isMobile ? 'w-[42px] h-[42px] shrink-0' : undefined}
           variant='surveyInput'
           isActive={isSelected}
+          size={isMobile ? 'full' : undefined}
         />
       );
     } else if (question.type === 'rating') {
@@ -113,8 +131,9 @@ function RangeResponse({
 
       <div
         className={cn(
-          'flex gap-1 overflow-y-auto',
-          question.type === 'rating' ? 'justify-center' : ''
+          'flex gap-1 overflow-auto',
+          isMobile && question.type === 'nps' ? 'flex-col' : '',
+          question.type === 'rating' ? 'mx-auto w-fit max-w-full' : ''
         )}
         onMouseLeave={() => {
           if (question.type === 'rating') setHoveredRatingValue(0);
@@ -123,14 +142,17 @@ function RangeResponse({
         {renderRangeContent()}
       </div>
 
-      <div className='flex justify-between'>
-        <span style={{ color: answerColor }}>
-          {(question.settings as RangeSettings).leftText ?? 'Very satisfied'}
-        </span>
-        <span style={{ color: answerColor }}>
-          {(question.settings as RangeSettings).rightText ?? 'Very unsatisfied'}
-        </span>
-      </div>
+      {!isMobile || question.type === 'rating' ? (
+        <div className='flex justify-between'>
+          <span style={{ color: answerColor }}>
+            {(question.settings as RangeSettings).leftText ?? 'Very satisfied'}
+          </span>
+          <span style={{ color: answerColor }}>
+            {(question.settings as RangeSettings).rightText ??
+              'Very unsatisfied'}
+          </span>
+        </div>
+      ) : null}
     </AnswerContainer>
   );
 }
