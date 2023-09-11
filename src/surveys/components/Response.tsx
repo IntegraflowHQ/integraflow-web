@@ -116,16 +116,6 @@ export default function Response({
       );
       break;
     case AnswerType.MULTIPLE:
-      element = (
-        <ChoiceResponse
-          question={question}
-          label={label}
-          description={description}
-          onAnswered={onAnswered}
-          theme={theme}
-          submitText={submitText}
-        />
-      );
     case AnswerType.SINGLE:
       element = (
         <ChoiceResponse

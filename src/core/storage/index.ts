@@ -51,6 +51,7 @@ export async function getState(
         installId,
         user: state.user ?? { id: installId },
         seenSurveyIds: state.seenSurveyIds ?? new Set(),
+        lastPresentationTimes: state.lastPresentationTimes ?? new Map(),
         surveyAnswers: state.surveyAnswers ?? {}
       };
 

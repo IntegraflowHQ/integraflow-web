@@ -73,9 +73,7 @@ export class SyncManager {
     await persistState(this.context, state);
 
     this.context.setState(state);
-    this.context.broadcast('audienceUpdated', {
-      attributes: state.user
-    });
+    this.context.broadcast('audienceUpdated', state.user);
 
     return state.user;
   }
@@ -107,10 +105,7 @@ export class SyncManager {
       userId: state.user?.id
     };
 
-    this.context.broadcast('eventTracked', {
-      event,
-      attributes: state.user
-    });
+    this.context.broadcast('eventTracked', event);
 
     this.context.setState(state);
 
@@ -119,12 +114,23 @@ export class SyncManager {
     return event;
   }
 
-  async markSurveyAsSeen(surveyId: ID) {
+  async markSurveyAsSeen(surveyId: ID, presentationTime: Date = new Date(), isRecurring: boolean = false) {
     const state = await getState(this.context);
 
-    const { seenSurveyIds = new Set() } = state;
+    const { seenSurveyIds = new Set(), lastPresentationTimes = new Map<ID, Date>() } = state;
+    if (!isRecurring && seenSurveyIds.has(surveyId)) {
+      return;
+    }
+
+    if (lastPresentationTimes.has(surveyId)) {
+      lastPresentationTimes.delete(surveyId);
+    }
+
+    lastPresentationTimes.set(surveyId, presentationTime);
     seenSurveyIds.add(surveyId);
 
+    state.seenSurveyIds = seenSurveyIds;
+    state.lastPresentationTimes = lastPresentationTimes;
     await persistState(this.context, state);
 
     this.context.setState(state);
@@ -142,6 +148,7 @@ export class SyncManager {
     }
 
     surveyAnswers[surveyId].set(questionId, answers);
+    state.surveyAnswers = surveyAnswers;
 
     await persistState(this.context, state);
     this.context.setState(state);
@@ -159,6 +166,7 @@ export class SyncManager {
       delete surveyAnswers[surveyId];
     }
 
+    state.surveyAnswers = surveyAnswers;
     await persistState(this.context, state);
     this.context.setState(state);
   }

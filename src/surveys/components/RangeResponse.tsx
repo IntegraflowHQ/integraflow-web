@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { Button, Header } from '../../components';
 import {
+  AnswerType,
   ID,
   Question,
   QuestionOption,
@@ -54,7 +55,7 @@ function RangeResponse({
       setValue(index + 1);
     };
 
-    if (question.type === 'nps' || question.type === 'numerical_scale') {
+    if (question.type === AnswerType.NPS || question.type === AnswerType.NUMERICAL_SCALE) {
       return (
         <Button
           key={index}
@@ -66,7 +67,7 @@ function RangeResponse({
           isActive={isSelected}
         />
       );
-    } else if (question.type === 'rating') {
+    } else if (question.type === AnswerType.RATING) {
       return (
         <button
           onClick={handleOptionClick}
@@ -89,7 +90,7 @@ function RangeResponse({
   };
 
   const renderRangeContent = () => {
-    if (question.type === 'nps') {
+    if (question.type === AnswerType.NPS) {
       return Array.from({ length: 10 }, (_, index) => index).map((_, index) =>
         renderOption(index)
       );
@@ -114,10 +115,10 @@ function RangeResponse({
       <div
         className={cn(
           'flex gap-1 overflow-y-auto',
-          question.type === 'rating' ? 'justify-center' : ''
+          question.type === AnswerType.RATING ? 'justify-center' : ''
         )}
         onMouseLeave={() => {
-          if (question.type === 'rating') setHoveredRatingValue(0);
+          if (question.type === AnswerType.RATING) setHoveredRatingValue(0);
         }}
       >
         {renderRangeContent()}

@@ -9,21 +9,7 @@ import {
   TagManager,
   TargetingEngine
 } from '../core';
-import {
-  AnswerType,
-  BooleanLogic,
-  DateLogic,
-  FormLogic,
-  ID,
-  MultipleLogic,
-  Question,
-  QuestionSettings,
-  RangeLogic,
-  SingleLogic,
-  Survey,
-  SurveyAnswer,
-  TextLogic
-} from '../types';
+import { ID, Survey, SurveyAnswer } from '../types';
 import { deferSurveyActivation } from '../utils';
 
 import App from './App';
@@ -72,7 +58,8 @@ export class SurveyManager {
     }
 
     if (event.type === 'audienceUpdated') {
-      return this.loadSurveys();
+      this.loadSurveys();
+      return;
     }
 
     this.evaluateTriggers();
@@ -97,8 +84,8 @@ export class SurveyManager {
     await this.formilyClient.persistSurveyAnswers(surveyId, questionId, answers);
   }
 
-  private onSurveyDisplayed = async (surveyId: ID) => {
-    await this.formilyClient.markSurveyAsSeen(surveyId);
+  private onSurveyDisplayed = async (survey: Survey) => {
+    await this.formilyClient.markSurveyAsSeen(survey.id, new Date(), survey.settings?.recurring);
   }
 
   private onSurveyClosed = async (surveyId: ID) => {
@@ -107,55 +94,6 @@ export class SurveyManager {
 
   private onSurveyCompleted = async (surveyId: ID) => {
     await this.formilyClient.markSurveyAsCompleted(surveyId);
-  }
-
-  private getNextQuestionId = (question: Question, answers: SurveyAnswer[]): ID | null => {
-    const { type, settings } = question;
-
-    const logic = (settings as QuestionSettings<any>).logic;
-    if (!logic) {
-      return null;
-    }
-  
-    let nextQuestionId = null;
-    switch (type) {
-      case AnswerType.TEXT:
-        nextQuestionId = this.surveyLogic.getTextQuestionDestination(answers[0].answer ?? null, (logic as TextLogic[]));
-        break;
-      case AnswerType.SINGLE:
-        nextQuestionId = this.surveyLogic.getSingleQuestionDestination(answers[0].answerId ?? null, (logic as SingleLogic[]));
-        break;
-      case AnswerType.MULTIPLE:
-        const answerIds = (answers || []).map(answer => answer.answerId!).filter(answer => !!answer);
-        nextQuestionId = this.surveyLogic.getMultipleQuestionDestination(answerIds ?? null, (logic as MultipleLogic[]));
-        break;
-      case AnswerType.DATE:
-        nextQuestionId = this.surveyLogic.getDateQuestionDestination(answers[0].answer ?? null, (logic as DateLogic[]));
-        break;
-      case AnswerType.BOOLEAN:
-        nextQuestionId = this.surveyLogic.getBooleanQuestionDestination(answers[0].answer ? parseInt(answers[0].answer) : null, (logic as BooleanLogic[]));
-        break;
-      case AnswerType.FORM:
-        const answerMap: { [key: ID]: string | null; } = {};
-        for (const ans of answers) {
-          const { answer, answerId } = ans;
-          if (answerId) {
-            answerMap[answerId] = answer ?? null;
-          }
-        }
-
-        nextQuestionId = this.surveyLogic.getFormQuestionDestination(answerMap, (logic as FormLogic[]));
-        break;
-      case AnswerType.CSAT:
-      case AnswerType.NPS:
-      case AnswerType.NUMERICAL_SCALE:
-      case AnswerType.RATING:
-      case AnswerType.SMILEY_SCALE:
-        nextQuestionId = this.surveyLogic.getRangeQuestionDestination((answers[0].answerId as number) ?? null, (logic as RangeLogic[]));
-        break;
-    }
-
-    return nextQuestionId;
   }
 
   private setState(state: SurveyManagerState) {
@@ -209,7 +147,7 @@ export class SurveyManager {
       <App
         survey={survey}
         replaceTags={this.tagManager.replaceTags}
-        getNextQuestionId={this.getNextQuestionId}
+        getNextQuestionId={this.surveyLogic.getNextQuestionId}
         onQuestionAnswered={this.onQuestionAnswered}
         onSurveyDisplayed={this.onSurveyDisplayed}
         onSurveyClosed={this.onSurveyClosed}

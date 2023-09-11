@@ -63,11 +63,12 @@ export const ContactFormResponse = ({
       <form onSubmit={onSubmit}>
         {(question.options as FormField[]).map((option) => {
           return (
-            <div className={'mb-2'}>
+            <div className={'mb-2 mt-3'}>
               <Input
                 option={option}
                 required={option.required}
                 value={inputValues[option.id] || ''}
+                color={theme?.answer}
                 name={option.id + ''}
                 id={option.id}
                 label={option.label}
@@ -123,6 +124,7 @@ export const ContactFormResponse = ({
           )}
           <Button
             label={submitText ?? 'Submit'}
+            color={theme?.button}
             size="full"
             type="submit"
             disabled={!checked}

@@ -102,8 +102,8 @@ export default class Formily {
     this.context.listeners.onSurveyClosed?.(surveyId);
   }
 
-  async markSurveyAsSeen(surveyId: ID) {
-    await this.syncManager.markSurveyAsSeen(surveyId);
+  async markSurveyAsSeen(surveyId: ID, presentationTime?: Date, isRecurring?: boolean) {
+    await this.syncManager.markSurveyAsSeen(surveyId, presentationTime, isRecurring);
     this.context.listeners.onSurveyDisplayed?.(surveyId);
   }
 
