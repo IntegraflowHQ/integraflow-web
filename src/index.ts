@@ -2,9 +2,9 @@ import { Context, RootFrame, SyncManager } from './core';
 import { SurveyManager } from './surveys';
 import { Configuration, EventProperties, ID, SurveyAnswer, UserAttributes } from './types';
 
-export default class Formily {
+export default class IntegraFlow {
   private readonly config: Configuration;
-  private static instance: Formily;
+  private static instance: IntegraFlow;
   private readonly surveyManager: SurveyManager;
   private readonly syncManager: SyncManager;
 
@@ -29,7 +29,7 @@ export default class Formily {
 
   static init(config: Configuration) {
     if (!this.instance) {
-      this.instance = new Formily(config);
+      this.instance = new IntegraFlow(config);
     }
 
     return this.instance;

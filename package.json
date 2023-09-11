@@ -1,11 +1,12 @@
 {
-  "name": "@formily/web",
+  "name": "@integralflow/web",
   "license": "MIT",
   "version": "1.0.0",
-  "description": "Formily sdk allows you to integrate your app to Formily, display surveys and trigger events.",
+  "description": "IntegraFlow web sdk allows you to integrate your app to IntegralFlow, display surveys and trigger events.",
   "keywords": [
-    "Formily",
+    "IntegralFlow",
     "surveys",
+    "customer experience",
     "experience management"
   ],
   "main": "dist/index.js",
@@ -32,7 +33,7 @@
       "build/"
     ]
   },
-  "author": "Formily <dev@formily.com>",
+  "author": "IntegraFlow <dev@useintegraflow.com>",
   "devDependencies": {
     "@types/jest": "^27.0.3",
     "@typescript-eslint/eslint-plugin": "^6.2.1",

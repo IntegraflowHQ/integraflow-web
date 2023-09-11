@@ -3,11 +3,11 @@ module.exports = {
     tailwindcss: {},
     autoprefixer: {},
     'postcss-prefix-selector': {
-      prefix: '#formily-container',
+      prefix: '#integraflow-container',
       transform: function(prefix, selector, prefixedSelector) {
         if (selector.match(/^(html|body)/)) {
           return selector.replace(/^([^\s]*)/, prefix); // Prefix html and body
-        } else if (selector === '#formily-container') {
+        } else if (selector === '#integraflow-container') {
           return selector;
         }
         return prefixedSelector;

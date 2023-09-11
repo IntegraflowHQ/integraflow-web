@@ -76,7 +76,7 @@ module.exports = [
     module: moduleCfg,
     resolve,
     optimization,
-    output: { ...output, library: 'formily', libraryTarget: 'umd' },
+    output: { ...output, library: 'integraflow', libraryTarget: 'umd' },
   },
   {
     target: ['web', 'es5'],

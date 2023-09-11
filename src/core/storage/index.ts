@@ -8,7 +8,7 @@ import { State } from '../../types';
 import { Context } from '../context';
 import { uuidv4 } from '../../utils';
 
-const store = new Store('formily', 'default');
+const store = new Store('integraflow', 'default');
 
 const getCacheKeys = (key: string) => ({
   STATE_CACHE_KEY: `${key}Cache`,

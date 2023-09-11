@@ -34,7 +34,7 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
       className={
         'fixed top-0 bottom-0 left-0 right-0 bg-[#14171A33] bg-opacity-20'
       }
-      id={'formily-content-wrapper'}
+      id={'integraflow-content-wrapper'}
     >
       <div className='relative w-full h-full'>
         <div
@@ -95,7 +95,9 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
               }}
             >
               Powered by{' '}
-              <b style={{ fontWeight: 600, fontSize: '14px' }}>Formily</b>
+              <a href="https://useintegraflow.com" target="_blank">
+                <b style={{ fontWeight: 600, fontSize: '14px' }}>IntegraFlow</b>
+              </a>
             </footer>
           </div>
         </div>

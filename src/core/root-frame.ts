@@ -13,7 +13,7 @@ export class RootFrame {
   
   constructor() {
     this.element = document.createElement('div');
-    this.element.id = 'formily-container';
+    this.element.id = 'integraflow-container';
     this.containers = [];
     
     onDOMReady(() => document.body.appendChild(this.element));
@@ -25,7 +25,7 @@ export class RootFrame {
       element: document.createElement('div')
     };
     
-    container.element.id = `formily-container-${name}`;
+    container.element.id = `integraflow-container-${name}`;
     this.element.appendChild(container.element);
     
     this.containers.push(container);

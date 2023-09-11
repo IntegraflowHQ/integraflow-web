@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 
-import Formily from '..';
+import IntegraFlow from '..';
 import {
   Context,
   RootFrame,
@@ -21,7 +21,7 @@ export type SurveyManagerState =
   | 'running';
 
 export class SurveyManager {
-  private readonly formilyClient: Formily;
+  private readonly client: IntegraFlow;
   private readonly context: Context;
   private readonly rootFrame: RootFrame;
   private readonly targetingEngine: TargetingEngine;
@@ -33,13 +33,13 @@ export class SurveyManager {
   private surveys: Survey[];
   private activeSurveys: Survey[];
 
-  constructor(client: Formily, ctx: Context, rootFrame: RootFrame) {
+  constructor(client: IntegraFlow, ctx: Context, rootFrame: RootFrame) {
     this.surveys = [];
     this.activeSurveys = [];
 
     this.rootFrame = rootFrame;
     this.surveyContainer = rootFrame.createContainer('survey');
-    this.formilyClient = client;
+    this.client = client;
     this.context = ctx;
 
     this.targetingEngine = new TargetingEngine(ctx, this.onEventTracked);
@@ -81,19 +81,19 @@ export class SurveyManager {
   }
 
   private onQuestionAnswered = async (surveyId: ID, questionId: ID, answers: SurveyAnswer[]) => {
-    await this.formilyClient.persistSurveyAnswers(surveyId, questionId, answers);
+    await this.client.persistSurveyAnswers(surveyId, questionId, answers);
   }
 
   private onSurveyDisplayed = async (survey: Survey) => {
-    await this.formilyClient.markSurveyAsSeen(survey.id, new Date(), survey.settings?.recurring);
+    await this.client.markSurveyAsSeen(survey.id, new Date(), survey.settings?.recurring);
   }
 
   private onSurveyClosed = async (surveyId: ID) => {
-    await this.formilyClient.closeSurvey(surveyId);
+    await this.client.closeSurvey(surveyId);
   }
 
   private onSurveyCompleted = async (surveyId: ID) => {
-    await this.formilyClient.markSurveyAsCompleted(surveyId);
+    await this.client.markSurveyAsCompleted(surveyId);
   }
 
   private setState(state: SurveyManagerState) {
