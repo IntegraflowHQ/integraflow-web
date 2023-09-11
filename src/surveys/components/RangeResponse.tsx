@@ -133,6 +133,7 @@ function RangeResponse({
         className={cn(
           'flex gap-1 overflow-auto',
           isMobile && question.type === 'nps' ? 'flex-col' : '',
+          isMobile && question.type === 'numerical_scale' ? 'flex-col' : '',
           question.type === 'rating' ? 'mx-auto w-fit max-w-full' : ''
         )}
         onMouseLeave={() => {
