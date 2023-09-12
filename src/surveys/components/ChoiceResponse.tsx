@@ -70,7 +70,7 @@ export default function ChoiceResponse({
   }, [question.options]);
 
   return (
-    <form className={'max-w-sm space-y-4'} onSubmit={handleSubmit}>
+    <form className={'space-y-4'} onSubmit={handleSubmit}>
       <Header
         title={label}
         description={description}
