@@ -96,7 +96,7 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
             >
               Powered by{' '}
               <a href="https://useintegraflow.com" target="_blank">
-                <b style={{ fontWeight: 600, fontSize: '14px' }}>IntegraFlow</b>
+                <b style={{ fontWeight: 600, fontSize: '14px' }}>Integraflow</b>
               </a>
             </footer>
           </div>

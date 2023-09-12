@@ -1,10 +1,10 @@
 {
-  "name": "@integralflow/web",
+  "name": "@integraflow/web",
   "license": "MIT",
   "version": "1.0.0",
-  "description": "IntegraFlow web sdk allows you to integrate your app to IntegralFlow, display surveys and trigger events.",
+  "description": "Integraflow provides tools to redefine customer experience with organic feedback and behavioural data in real-time.",
   "keywords": [
-    "IntegralFlow",
+    "Integraflow",
     "surveys",
     "customer experience",
     "experience management"
@@ -33,7 +33,7 @@
       "build/"
     ]
   },
-  "author": "IntegraFlow <dev@useintegraflow.com>",
+  "author": "Integraflow <dev@useintegraflow.com>",
   "devDependencies": {
     "@types/jest": "^27.0.3",
     "@typescript-eslint/eslint-plugin": "^6.2.1",

@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 
-import IntegraFlow from '..';
+import Integraflow from '..';
 import {
   Context,
   RootFrame,
@@ -21,7 +21,7 @@ export type SurveyManagerState =
   | 'running';
 
 export class SurveyManager {
-  private readonly client: IntegraFlow;
+  private readonly client: Integraflow;
   private readonly context: Context;
   private readonly rootFrame: RootFrame;
   private readonly targetingEngine: TargetingEngine;
@@ -33,7 +33,7 @@ export class SurveyManager {
   private surveys: Survey[];
   private activeSurveys: Survey[];
 
-  constructor(client: IntegraFlow, ctx: Context, rootFrame: RootFrame) {
+  constructor(client: Integraflow, ctx: Context, rootFrame: RootFrame) {
     this.surveys = [];
     this.activeSurveys = [];
 
