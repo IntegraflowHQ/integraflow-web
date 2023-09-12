@@ -357,7 +357,7 @@ export interface Listeners {
   onEventTracked?: (payload: Event) => void;
   onAudienceChanged?: (audience: UserAttributes) => void;
   onSurveyDisplayed?: (surveyId: ID) => void;
-  onSurveyClosed?: (surveyId: ID) => Promise<void>;
+  onSurveyClosed?: (surveyId: ID) => void;
   onQuestionAnswered?: (
     surveyId: ID,
     questionId: ID,

@@ -1,8 +1,8 @@
-import IntegraFlow from '../index';
+import Integraflow from '../index';
 import { templates } from './templates';
 
 (function() {
-  const integraFlow = IntegraFlow.init({
+  const integraflow = Integraflow.init({
     surveys: templates.map(t => t.survey),
     debug: true,
     onQuestionAnswered(surveyId, questionId, answers) {
@@ -10,5 +10,5 @@ import { templates } from './templates';
     },
   });
 
-  integraFlow.showSurvey(1);
+  integraflow.showSurvey(1);
 })();

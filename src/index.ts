@@ -2,9 +2,9 @@ import { Context, RootFrame, SyncManager } from './core';
 import { SurveyManager } from './surveys';
 import { Configuration, EventProperties, ID, SurveyAnswer, UserAttributes } from './types';
 
-export default class IntegraFlow {
+export default class Integraflow {
   private readonly config: Configuration;
-  private static instance: IntegraFlow;
+  private static instance: Integraflow;
   private readonly surveyManager: SurveyManager;
   private readonly syncManager: SyncManager;
 
@@ -29,7 +29,7 @@ export default class IntegraFlow {
 
   static init(config: Configuration) {
     if (!this.instance) {
-      this.instance = new IntegraFlow(config);
+      this.instance = new Integraflow(config);
     }
 
     return this.instance;
