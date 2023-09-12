@@ -108,7 +108,7 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
             </div>
 
             <footer
-              className='mt-6'
+              className={cn(isMobile ? "mt-3" : "mt-6")}
               style={{
                 fontSize: '12px',
                 fontWeight: 400,
