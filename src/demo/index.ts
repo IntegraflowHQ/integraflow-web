@@ -1,8 +1,8 @@
-import Formily from '../index';
+import IntegraFlow from '../index';
 import { templates } from './templates';
 
 (function() {
-  const formily = Formily.init({
+  const integraFlow = IntegraFlow.init({
     surveys: templates.map(t => t.survey),
     debug: true,
     onQuestionAnswered(surveyId, questionId, answers) {
@@ -10,5 +10,5 @@ import { templates } from './templates';
     },
   });
 
-  formily.showSurvey(1);
+  integraFlow.showSurvey(1);
 })();

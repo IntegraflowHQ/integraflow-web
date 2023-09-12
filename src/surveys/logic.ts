@@ -1,4 +1,5 @@
 import {
+  AnswerType,
   BooleanLogic,
   DateLogic,
   FormLogic,
@@ -12,8 +13,11 @@ import {
   LogicSingleCondition,
   LogicTextCondition,
   MultipleLogic,
+  Question,
+  QuestionSettings,
   RangeLogic,
   SingleLogic,
+  SurveyAnswer,
   TextLogic
 } from '../types';
 import { propConditionsMatched } from '../utils';
@@ -308,7 +312,56 @@ const resolveHasAnyValueFormLogic = (answers: { [key: ID]: string | null }, grou
 }
 
 export class SurveyLogic {
-  getTextQuestionDestination(answer: string | null, logic: TextLogic[]): ID | null {
+  getNextQuestionId = (question: Question, answers: SurveyAnswer[]): ID | null => {
+    const { type, settings } = question;
+
+    const logic = (settings as QuestionSettings<any>).logic;
+    if (!logic) {
+      return null;
+    }
+  
+    let nextQuestionId = null;
+    switch (type) {
+      case AnswerType.TEXT:
+        nextQuestionId = this.getTextQuestionDestination(answers[0].answer ?? null, (logic as TextLogic[]));
+        break;
+      case AnswerType.SINGLE:
+        nextQuestionId = this.getSingleQuestionDestination(answers[0].answerId ?? null, (logic as SingleLogic[]));
+        break;
+      case AnswerType.MULTIPLE:
+        const answerIds = (answers || []).map(answer => answer.answerId!).filter(answer => !!answer);
+        nextQuestionId = this.getMultipleQuestionDestination(answerIds ?? null, (logic as MultipleLogic[]));
+        break;
+      case AnswerType.DATE:
+        nextQuestionId = this.getDateQuestionDestination(answers[0].answer ?? null, (logic as DateLogic[]));
+        break;
+      case AnswerType.BOOLEAN:
+        nextQuestionId = this.getBooleanQuestionDestination(answers[0].answer ? parseInt(answers[0].answer) : null, (logic as BooleanLogic[]));
+        break;
+      case AnswerType.FORM:
+        const answerMap: { [key: ID]: string | null; } = {};
+        for (const ans of answers) {
+          const { answer, answerId } = ans;
+          if (answerId) {
+            answerMap[answerId] = answer ?? null;
+          }
+        }
+
+        nextQuestionId = this.getFormQuestionDestination(answerMap, (logic as FormLogic[]));
+        break;
+      case AnswerType.CSAT:
+      case AnswerType.NPS:
+      case AnswerType.NUMERICAL_SCALE:
+      case AnswerType.RATING:
+      case AnswerType.SMILEY_SCALE:
+        nextQuestionId = this.getRangeQuestionDestination((answers[0].answerId as number) ?? null, (logic as RangeLogic[]));
+        break;
+    }
+
+    return nextQuestionId;
+  }
+
+  private getTextQuestionDestination(answer: string | null, logic: TextLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;
@@ -322,7 +375,7 @@ export class SurveyLogic {
     return nextId;
   }
 
-  getDateQuestionDestination(answer: string | null, logic: DateLogic[]): ID | null {
+  private getDateQuestionDestination(answer: string | null, logic: DateLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;
@@ -336,7 +389,7 @@ export class SurveyLogic {
     return nextId;
   }
 
-  getRangeQuestionDestination(answerId: ID | null, logic: RangeLogic[]): ID | null {
+  private getRangeQuestionDestination(answerId: ID | null, logic: RangeLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;
@@ -350,7 +403,7 @@ export class SurveyLogic {
     return nextId;
   }
 
-  getBooleanQuestionDestination(answer: number | null, logic: BooleanLogic[]): ID | null {
+  private getBooleanQuestionDestination(answer: number | null, logic: BooleanLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;
@@ -364,7 +417,7 @@ export class SurveyLogic {
     return nextId;
   }
 
-  getSingleQuestionDestination(answerId: ID | null, logic: SingleLogic[]): ID | null {
+  private getSingleQuestionDestination(answerId: ID | null, logic: SingleLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;
@@ -378,7 +431,7 @@ export class SurveyLogic {
     return nextId;
   }
 
-  getMultipleQuestionDestination(answerIds: ID[] | null, logic: MultipleLogic[]): ID | null {
+  private getMultipleQuestionDestination(answerIds: ID[] | null, logic: MultipleLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;
@@ -392,7 +445,7 @@ export class SurveyLogic {
     return nextId;
   }
 
-  getFormQuestionDestination(answers: { [key: ID]: string | null }, logic: FormLogic[]): ID | null {
+  private getFormQuestionDestination(answers: { [key: ID]: string | null }, logic: FormLogic[]): ID | null {
     const sortedLogic = logic.sort((a, b) => a.orderNumber - b.orderNumber);
 
     let nextId = null;

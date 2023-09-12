@@ -2,11 +2,6 @@ import { Event, FilterOperator, FilterValue, LogicOperator, Survey, UserAttribut
 import { escapeRegExp, propConditionsMatched } from '../utils';
 import { Context, SdkEvent } from './context';
 
-type TargetingEvent = {
-  event?: Event;
-  attributes?: UserAttributes;
-}
-
 function propIn(filterValue: FilterValue, propValue: any): boolean {
   if (!Array.isArray(filterValue)) {
     return false;
@@ -105,10 +100,13 @@ function filterMatched(operator: FilterOperator, filterValue: FilterValue, value
 }
 
 export class TargetingEngine {
-  private eventQueue: TargetingEvent[] = [];
-  private eventReceivedCallback?: (e: SdkEvent) => void;
+  private readonly context: Context;
+  private readonly eventReceivedCallback?: (e: SdkEvent) => void;
+
+  private eventQueue: Event[] = [];
 
   constructor(ctx: Context, eventReceivedCallback?: (e: SdkEvent) => void) {
+    this.context = ctx;
     this.eventReceivedCallback = eventReceivedCallback;
     ctx.subscribe('eventTracked', this.handleSdkEvent);
     ctx.subscribe('audienceUpdated', this.handleSdkEvent);
@@ -116,7 +114,7 @@ export class TargetingEngine {
 
   private handleSdkEvent = (event: SdkEvent) => {
     if (event.type !== 'audienceUpdated') {
-      this.eventQueue.push(event.data as TargetingEvent);
+      this.eventQueue.push(event.data as Event);
     }
 
     this.eventReceivedCallback?.(event);
@@ -125,14 +123,18 @@ export class TargetingEngine {
   filterSurveys(surveys: Survey[]): Survey[] {
     console.info('Evaluating survey triggers');
 
+    const { state } = this.context;
+
     const matchedSurveys = [];
     for (const survey of surveys) {
       for (let i = 0; i < this.eventQueue.length; ++i) {
-        const { event, attributes } = this.eventQueue[i];
-
+        const event = this.eventQueue[i];
+        
+        const lastPresentationTime = state?.lastPresentationTimes?.get(survey.id);
         if (
           this.triggerMatched(survey, event) &&
-          this.evaluateAttributes(survey, attributes)
+          this.evaluateAttributes(survey, state?.user) &&
+          this.isSurveyRecurring(survey, lastPresentationTime)
         ) {
           matchedSurveys.push(survey);
         }
@@ -208,5 +210,20 @@ export class TargetingEngine {
     }
 
     return propConditionsMatched(allAttributesMatch, audience.operator);
+  }
+
+  isSurveyRecurring(survey: Survey, lastPresentationTime?: Date): boolean {
+    const { settings } = survey;
+    if (!settings || !settings.recurring) {
+      return false;
+    }
+
+    let isRecurring = true;
+    if (lastPresentationTime) {
+      const diff = (new Date().getTime() - lastPresentationTime.getTime()) / 1000;
+      isRecurring = settings.recurringPeriod < diff;
+    }
+
+    return isRecurring;
   }
 }

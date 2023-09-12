@@ -8,7 +8,7 @@ import { State } from '../../types';
 import { Context } from '../context';
 import { uuidv4 } from '../../utils';
 
-const store = new Store('formily', 'default');
+const store = new Store('integraflow', 'default');
 
 const getCacheKeys = (key: string) => ({
   STATE_CACHE_KEY: `${key}Cache`,
@@ -51,6 +51,7 @@ export async function getState(
         installId,
         user: state.user ?? { id: installId },
         seenSurveyIds: state.seenSurveyIds ?? new Set(),
+        lastPresentationTimes: state.lastPresentationTimes ?? new Map(),
         surveyAnswers: state.surveyAnswers ?? {}
       };
 

@@ -5,4 +5,4 @@
           w[p].q = w[p].q || [];
           w[p].q.push(arguments);
       };
-})(window, 'Formily');
+})(window, 'IntegraFlow');

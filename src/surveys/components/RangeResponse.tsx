@@ -3,6 +3,7 @@ import { useEffect, useState } from 'preact/hooks';
 import { Button, Header } from '../../components';
 import useIsMobile from '../../hooks/useIsMobile';
 import {
+  AnswerType,
   ID,
   Question,
   QuestionOption,
@@ -61,7 +62,7 @@ function RangeResponse({
       setValue(index + 1);
     };
 
-    if (question.type === 'nps' || question.type === 'numerical_scale') {
+    if (question.type === AnswerType.NPS || question.type === AnswerType.NUMERICAL_SCALE) {
       const getLabel = () => {
         if (isMobile && index === 0)
           return `${index + 1} - ${(question.settings as RangeSettings)
@@ -71,7 +72,7 @@ function RangeResponse({
             ?.rightText ?? 'Very likely'}`;
         return `${index + 1}`;
       };
-
+    
       return (
         <Button
           key={index}
@@ -84,7 +85,7 @@ function RangeResponse({
           size={isMobile ? 'full' : undefined}
         />
       );
-    } else if (question.type === 'rating') {
+    } else if (question.type === AnswerType.RATING) {
       return (
         <button
           onClick={handleOptionClick}
@@ -107,7 +108,7 @@ function RangeResponse({
   };
 
   const renderRangeContent = () => {
-    if (question.type === 'nps') {
+    if (question.type === AnswerType.NPS) {
       return Array.from({ length: 10 }, (_, index) => index).map((_, index) =>
         renderOption(index)
       );
@@ -132,12 +133,12 @@ function RangeResponse({
       <div
         className={cn(
           'flex gap-1 overflow-auto',
-          isMobile && question.type === 'nps' ? 'flex-col' : '',
-          isMobile && question.type === 'numerical_scale' ? 'flex-col' : '',
-          question.type === 'rating' ? 'mx-auto w-fit max-w-full' : ''
+          isMobile && question.type === AnswerType.NPS ? 'flex-col' : '',
+          isMobile && question.type === AnswerType.NUMERICAL_SCALE ? 'flex-col' : '',
+          question.type === AnswerType.RATING ? 'mx-auto w-fit max-w-full' : '',
         )}
         onMouseLeave={() => {
-          if (question.type === 'rating') setHoveredRatingValue(0);
+          if (question.type === AnswerType.RATING) setHoveredRatingValue(0);
         }}
       >
         {renderRangeContent()}

@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'formily-black': '#050505',
+        'integraflow-black': '#050505',
       },
     },
   },
