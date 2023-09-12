@@ -37,7 +37,7 @@ function RangeResponse({
 
   const answerColor = theme?.answer ?? '#050505';
   const maxCount =
-    question.type === 'nps'
+    question.type === AnswerType.NPS
       ? 10
       : (question.settings as RangeSettings).count ??
         question.options?.length ??
@@ -109,7 +109,7 @@ function RangeResponse({
 
   const renderRangeContent = () => {
     if (question.type === AnswerType.NPS) {
-      return Array.from({ length: 10 }, (_, index) => index).map((_, index) =>
+      return Array.from({ length: maxCount }, (_, index) => index).map((_, index) =>
         renderOption(index)
       );
     } else if (question.options && question.options.length > 0) {
@@ -144,7 +144,7 @@ function RangeResponse({
         {renderRangeContent()}
       </div>
 
-      {!isMobile || question.type === 'rating' ? (
+      {!isMobile || question.type === AnswerType.RATING ? (
         <div className='flex justify-between'>
           <span style={{ color: answerColor }}>
             {(question.settings as RangeSettings).leftText ?? 'Very satisfied'}
