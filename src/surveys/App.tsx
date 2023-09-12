@@ -8,7 +8,7 @@ interface AppProps {
   survey: Survey;
   getNextQuestionId: (question: Question, answers: SurveyAnswer[]) => ID | null;
   replaceTags: (surveyId: ID, content: string) => string;
-  onSurveyDisplayed?: (surveyId: ID) => Promise<void>;
+  onSurveyDisplayed?: (survey: Survey) => Promise<void>;
   onSurveyClosed?: (surveyId: ID) => Promise<void>;
   onQuestionAnswered?: (
     surveyId: ID,
@@ -30,7 +30,7 @@ export default function App({
   const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
-    onSurveyDisplayed?.(survey.id);
+    onSurveyDisplayed?.(survey);
   });
 
   const close = (force: boolean = false) => {

@@ -349,6 +349,7 @@ export interface State {
   installId?: string;
   user?: UserAttributes;
   seenSurveyIds?: Set<ID>;
+  lastPresentationTimes?: Map<ID, Date>;
   surveyAnswers?: { [surveyId: ID]: Map<ID, SurveyAnswer[]>; }
 }
 

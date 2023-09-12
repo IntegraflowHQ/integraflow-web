@@ -19,34 +19,34 @@ const CustomDatePicker: FunctionComponent<Props> = ({
     <Fragment>
       <style>
         {`
-          #formily-container .formily-date-picker {
+          #integraflow-container .integraflow-date-picker {
             flex: 1;
             width: 100%;
           }
-          #formily-container .formily-date-picker .react-date-picker__wrapper {
+          #integraflow-container .integraflow-date-picker .react-date-picker__wrapper {
             background-color: ${background};
             border-color: ${background};
             border-radius: 12px;
           }
-          #formily-container .formily-date-picker .react-date-picker__inputGroup {
+          #integraflow-container .integraflow-date-picker .react-date-picker__inputGroup {
             display: flex;
             justify-content: center;
             gap: 8px;
             padding: 12px 16px;
           }
-          #formily-container .formily-date-picker .react-date-picker__inputGroup > input, .react-date-picker__inputGroup__divider, .react-date-picker__inputGroup__leadingZero  {
+          #integraflow-container .integraflow-date-picker .react-date-picker__inputGroup > input, .react-date-picker__inputGroup__divider, .react-date-picker__inputGroup__leadingZero  {
             color: ${color};
           }
-          #formily-container .formily-date-picker .react-date-picker__inputGroup__leadingZero {
+          #integraflow-container .integraflow-date-picker .react-date-picker__inputGroup__leadingZero {
             align-self: center;
           }
-          #formily-container .formily-date-picker .react-date-picker__inputGroup > input::placeholder {
+          #integraflow-container .integraflow-date-picker .react-date-picker__inputGroup > input::placeholder {
             color: ${hexToRgba(color, 0.35)};
           }
         `}
       </style>
 
-      <DatePicker {...props} className={'formily-date-picker'} />
+      <DatePicker {...props} className={'integraflow-date-picker'} />
     </Fragment>
   );
 };
