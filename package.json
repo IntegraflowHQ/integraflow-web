@@ -1,7 +1,7 @@
 {
   "name": "@integraflow/web",
   "license": "MIT",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Integraflow provides tools to redefine customer experience with organic feedback and behavioural data in real-time.",
   "keywords": [
     "Integraflow",
@@ -10,11 +10,10 @@
     "experience management"
   ],
   "main": "dist/index.js",
-  "types": "types/src/index.d.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "src",
-    "types",
-    "dist/index.js"
+    "dist"
   ],
   "scripts": {
     "build": "webpack",
