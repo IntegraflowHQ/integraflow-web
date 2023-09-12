@@ -31,10 +31,7 @@ export default function DateResponse({
   };
 
   return (
-    <form
-      className='flex flex-col w-screen max-w-full gap-4'
-      onSubmit={handleSubmit}
-    >
+    <form className='flex flex-col min-w-[255px] gap-4' onSubmit={handleSubmit}>
       <div className='mr-6'>
         <Header
           title={label}

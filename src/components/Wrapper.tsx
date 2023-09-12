@@ -1,5 +1,6 @@
 import { XIcon } from 'lucide-preact';
 import { h } from 'preact';
+import useIsMobile from '../hooks/useIsMobile';
 import { PlacementType, Theme } from '../types';
 import { calculateTextColor, cn } from '../utils';
 import Progress from './Progress';
@@ -28,6 +29,21 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
   maxWidth,
 }) => {
   const showTopBar = showProgressBar || !fullScreen;
+  const isMobile = useIsMobile();
+
+  let webPositionClasses = '';
+  if (!fullScreen && !isMobile) {
+    webPositionClasses = cn(
+      'absolute',
+      placement === 'topLeft' ? 'top-5 left-5' : '',
+      placement === 'topRight' ? 'top-5 right-5' : '',
+      placement === 'bottomLeft' ? 'bottom-5 left-5' : '',
+      placement === 'bottomRight' ? 'bottom-5 right-5' : '',
+      placement === 'center'
+        ? 'left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
+        : ''
+    );
+  }
 
   return (
     <div
@@ -39,26 +55,23 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
       <div className='relative w-full h-full'>
         <div
           className={cn(
-            'absolute',
-            placement === 'topLeft' ? 'top-5 left-5' : '',
-            placement === 'topRight' ? 'top-5 right-5' : '',
-            placement === 'bottomLeft' ? 'bottom-5 left-5' : '',
-            placement === 'bottomRight' ? 'bottom-5 right-5' : '',
-            placement === 'center'
-              ? 'left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'
-              : ''
+            webPositionClasses,
+            !fullScreen && isMobile ? 'absolute bottom-0' : ''
           )}
         >
           <div
             className={cn(
-              'p-6 flex flex-col justify-center items-center',
-              fullScreen
-                ? 'w-screen h-screen'
-                : 'rounded-2xl w-fit max-h-[600px]'
+              'p-6 flex flex-col items-center',
+              !fullScreen && !isMobile ? 'rounded-2xl w-fit max-h-[600px]' : '',
+              !fullScreen && isMobile
+                ? 'rounded-t-2xl w-screen max-h-[600px]'
+                : '',
+              fullScreen ? 'w-screen h-screen' : ''
             )}
             style={{
               backgroundColor: background,
-              maxWidth: maxWidth ?? '100%',
+              maxWidth:
+                !fullScreen && !isMobile && maxWidth ? maxWidth : '100%',
             }}
           >
             {showTopBar && (
@@ -81,12 +94,21 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
               </div>
             )}
 
-            <div className={'flex-1 w-full h-full overflow-auto'}>
-              {children}
+            <div
+              className={cn(
+                'flex-1 w-full h-full overflow-auto',
+                fullScreen ? 'flex flex-col justify-around' : ''
+              )}
+              style={{
+                maxWidth:
+                  fullScreen && !isMobile && maxWidth ? maxWidth : '100%',
+              }}
+            >
+              <div>{children}</div>
             </div>
 
             <footer
-              className='mt-6'
+              className={cn(isMobile ? "mt-3" : "mt-6")}
               style={{
                 fontSize: '12px',
                 fontWeight: 400,

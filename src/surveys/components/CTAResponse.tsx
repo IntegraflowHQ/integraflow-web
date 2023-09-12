@@ -30,7 +30,7 @@ export const CTAResponse = ({
   };
 
   return (
-    <div className={'w-screen max-w-full space-y-3'}>
+    <div className={'min-w-[255px] space-y-3'}>
       <Header title={label} description={description} color={theme?.question} />
 
       {(question?.settings as CTASettings).type === CTAType.HIDDEN ? null : (

@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { useEffect, useState } from 'preact/hooks';
 import { Button, Header } from '../../components';
+import useIsMobile from '../../hooks/useIsMobile';
 import {
   AnswerType,
   ID,
@@ -31,10 +32,16 @@ function RangeResponse({
 }: RangeResponseProps) {
   const [value, setValue] = useState(0);
   const [answerId, setAnswerId] = useState<ID | null>(null);
-
   const [hoveredRatingValue, setHoveredRatingValue] = useState(0);
+  const isMobile = useIsMobile();
 
   const answerColor = theme?.answer ?? '#050505';
+  const maxCount =
+    question.type === AnswerType.NPS
+      ? 10
+      : (question.settings as RangeSettings).count ??
+        question.options?.length ??
+        0;
 
   useEffect(() => {
     if (value === 0) return;
@@ -56,15 +63,26 @@ function RangeResponse({
     };
 
     if (question.type === AnswerType.NPS || question.type === AnswerType.NUMERICAL_SCALE) {
+      const getLabel = () => {
+        if (isMobile && index === 0)
+          return `${index + 1} - ${(question.settings as RangeSettings)
+            ?.leftText ?? 'Not likely'}`;
+        if (isMobile && index === maxCount - 1)
+          return `${index + 1} - ${(question.settings as RangeSettings)
+            ?.rightText ?? 'Very likely'}`;
+        return `${index + 1}`;
+      };
+    
       return (
         <Button
           key={index}
-          label={`${index + 1}`}
+          label={getLabel()}
           onClick={handleOptionClick}
           color={theme?.answer}
-          classname='w-[42px] h-[42px] shrink-0'
+          classname={!isMobile ? 'w-[42px] h-[42px] shrink-0' : undefined}
           variant='surveyInput'
           isActive={isSelected}
+          size={isMobile ? 'full' : undefined}
         />
       );
     } else if (question.type === AnswerType.RATING) {
@@ -91,7 +109,7 @@ function RangeResponse({
 
   const renderRangeContent = () => {
     if (question.type === AnswerType.NPS) {
-      return Array.from({ length: 10 }, (_, index) => index).map((_, index) =>
+      return Array.from({ length: maxCount }, (_, index) => index).map((_, index) =>
         renderOption(index)
       );
     } else if (question.options && question.options.length > 0) {
@@ -114,8 +132,10 @@ function RangeResponse({
 
       <div
         className={cn(
-          'flex gap-1 overflow-y-auto',
-          question.type === AnswerType.RATING ? 'justify-center' : ''
+          'flex gap-1 overflow-auto',
+          isMobile && question.type === AnswerType.NPS ? 'flex-col' : '',
+          isMobile && question.type === AnswerType.NUMERICAL_SCALE ? 'flex-col' : '',
+          question.type === AnswerType.RATING ? 'mx-auto w-fit max-w-full' : '',
         )}
         onMouseLeave={() => {
           if (question.type === AnswerType.RATING) setHoveredRatingValue(0);
@@ -124,14 +144,17 @@ function RangeResponse({
         {renderRangeContent()}
       </div>
 
-      <div className='flex justify-between'>
-        <span style={{ color: answerColor }}>
-          {(question.settings as RangeSettings).leftText ?? 'Very satisfied'}
-        </span>
-        <span style={{ color: answerColor }}>
-          {(question.settings as RangeSettings).rightText ?? 'Very unsatisfied'}
-        </span>
-      </div>
+      {!isMobile || question.type === AnswerType.RATING ? (
+        <div className='flex justify-between'>
+          <span style={{ color: answerColor }}>
+            {(question.settings as RangeSettings).leftText ?? 'Very satisfied'}
+          </span>
+          <span style={{ color: answerColor }}>
+            {(question.settings as RangeSettings).rightText ??
+              'Very unsatisfied'}
+          </span>
+        </div>
+      ) : null}
     </AnswerContainer>
   );
 }

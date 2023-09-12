@@ -28,7 +28,6 @@ export default function BooleanResponse({
         title={label}
         description={description}
         color={theme?.question}
-        centered
       />
 
       <div className='flex justify-between gap-2'>
@@ -39,12 +38,14 @@ export default function BooleanResponse({
               color={theme?.answer}
               onClick={answerPositive}
               variant='surveyInput'
+              size='full'
             />
             <Button
               label={(question.settings as BooleanSettings).negativeText}
               color={theme?.answer}
               onClick={answerNegative}
               variant='surveyInput'
+              size='full'
             />
           </Fragment>
         ) : (
