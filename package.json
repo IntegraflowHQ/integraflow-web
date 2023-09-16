@@ -1,7 +1,7 @@
 {
   "name": "@integraflow/web",
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Integraflow provides tools to redefine customer experience with organic feedback and behavioural data in real-time.",
   "keywords": [
     "Integraflow",
@@ -12,13 +12,14 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "src",
     "dist"
   ],
   "scripts": {
     "build": "webpack",
+    "clean": "rimraf ./dist",
     "dev": "webpack --watch",
     "dist": "NODE_ENV=production webpack",
+    "semantic-release": "semantic-release",
     "snippet": "tsc -t es5 --outFile dist/snippet.js src/web/snippet.ts && uglifyjs dist/snippet.js -o dist/snippet.js",
     "test": "jest"
   },
@@ -56,8 +57,10 @@
     "preact-cli": "^3.5.0",
     "preact-render-to-string": "^6.2.0",
     "prettier": "^1.19.1",
+    "rimraf": "^5.0.1",
     "sass": "^1.43.5",
     "sass-loader": "^12.3.0",
+    "semantic-release": "^21.1.2",
     "style-loader": "^3.2.1",
     "tailwindcss": "^3.3.3",
     "terser": "^5.7.2",
@@ -84,5 +87,31 @@
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/tests/__mocks__/fileMock.js",
       "\\.(css|less)$": "<rootDir>/tests/__mocks__/styleMock.js"
     }
-  }
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/changelog",
+    [
+      "@semantic-release/npm",
+      {
+        "npmPublish": true
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": [
+          "src/utils/version.ts",
+          "package.json"
+        ],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ],
+    "@semantic-release/github"
+  ]
 }
