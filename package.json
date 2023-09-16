@@ -38,6 +38,10 @@
     ]
   },
   "author": "Integraflow <dev@useintegraflow.com>",
+  "bugs": {
+    "url": "https://github.com/IntegraflowHQ/integraflow-web/issues"
+  },
+  "homepage": "https://github.com/IntegraflowHQ/integraflow-web#readme",
   "devDependencies": {
     "@types/jest": "^27.0.3",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
