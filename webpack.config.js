@@ -76,7 +76,7 @@ module.exports = [
     module: moduleCfg,
     resolve,
     optimization,
-    output: { ...output, library: 'integraflow', libraryTarget: 'umd' },
+    output: { ...output, library: 'integraflow', libraryTarget: 'umd', globalObject: 'this' },
   },
   {
     target: ['web', 'es5'],

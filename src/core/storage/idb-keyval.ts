@@ -46,7 +46,9 @@ export class Store {
 let store: Store;
 
 function getDefaultStore() {
-  if (!store) store = new Store();
+  if (!store) {
+    store = new Store();
+  }
   return store;
 }
 

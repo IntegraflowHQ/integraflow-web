@@ -8,7 +8,10 @@ import { State } from '../../types';
 import { Context } from '../context';
 import { uuidv4 } from '../../utils';
 
-const store = new Store('integraflow', 'default');
+let store: Store;
+if (typeof indexedDB !== 'undefined') {
+  store = new Store('integraflow', 'default');
+}
 
 const getCacheKeys = (key: string) => ({
   STATE_CACHE_KEY: `${key}Cache`,
@@ -18,15 +21,26 @@ const getCacheKeys = (key: string) => ({
 const MAX_CACHE_AGE_MS = 1 * 60 * 60 * 1000;
 
 export function get<T>(key: IDBValidKey): Promise<T> {
+  if (!store) {
+    return Promise.resolve({} as T);
+  }
+
   return idbGet(key, store);
 }
 
 export async function set<T extends any>(key: IDBValidKey, value: T): Promise<T> {
-  await idbSet(key, value, store);
+  if (store) {
+    await idbSet(key, value, store);
+  }
+
   return value;
 }
 
 export function del(key: IDBValidKey): Promise<void> {
+  if (!store) {
+    return Promise.resolve();
+  }
+
   return idbDel(key, store);
 }
 

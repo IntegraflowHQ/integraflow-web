@@ -4,7 +4,8 @@ import { Configuration, EventProperties, ID, SurveyAnswer, UserAttributes } from
 
 export default class Integraflow {
   private readonly config: Configuration;
-  private static instance: Integraflow;
+  private static client: Integraflow;
+  private static initialized: boolean = false;
   private readonly surveyManager: SurveyManager;
   private readonly syncManager: SyncManager;
 
@@ -28,11 +29,20 @@ export default class Integraflow {
   }
 
   static init(config: Configuration) {
-    if (!this.instance) {
-      this.instance = new Integraflow(config);
+    if (!this.client) {
+      this.client = new Integraflow(config);
+      this.initialized = true;
     }
 
-    return this.instance;
+    return this.client;
+  }
+
+  static getClient() {
+    if (!this.client || !this.initialized) {
+      throw new Error('You need to initialise the SDK before using its methods.');
+    }
+
+    return this.client;
   }
 
   async getInstallId(): Promise<string | undefined> {
@@ -117,3 +127,5 @@ export default class Integraflow {
     this.context.listeners.onQuestionAnswered?.(surveyId, questionId, answers);
   }
 }
+
+export * from './types';
