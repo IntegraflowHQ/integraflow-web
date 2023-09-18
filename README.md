@@ -5,7 +5,7 @@
 
 Integraflow provides tools to redefine customer experience with organic feedback and behavioural data in real-time. Enjoy intuitive designs, open source surveys, advanced analytics, seamless collaboration on the go.
 
-## Get Started with CD
+## Get Started with CDN
 
 Start by adding the following snippet to your website:
 
