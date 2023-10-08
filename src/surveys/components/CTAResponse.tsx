@@ -26,6 +26,11 @@ export const CTAResponse = ({
   onAnswered,
 }: Props) => {
   const onClickHandler = () => {
+    const settings = question?.settings as CTASettings
+    if (settings.type === CTAType.LINK && settings.link) {
+      window.open(settings.link, '_blank');
+    }
+
     onAnswered([{ ctaSuccess: true, answer: '' }]);
   };
 

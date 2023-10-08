@@ -8,7 +8,7 @@ import {
   Theme,
 } from '../../types';
 import { Button, Header, Input } from '../../components';
-import { useState } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 import { LockIcon } from 'lucide-preact';
 import { hexToRgba } from '../../utils';
 import AnswerContainer from './AnswerContainer';
@@ -38,10 +38,26 @@ export const ContactFormResponse = ({
     }));
   };
 
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(!(question.settings as FormSettings).consent);
   const handleChange = () => {
     setChecked(!checked);
   };
+
+  const isValid = useMemo(() => {
+    if (!checked) {
+      return false;
+    }
+
+    const valid = (question.options as FormField[])?.every(option => {
+      if (!option.required) {
+        return true;
+      }
+
+      return !!inputValues[option.id];
+    });
+
+    return valid;
+  }, [question, inputValues, checked]);
 
   const onSubmit = (e: h.JSX.TargetedEvent<HTMLFormElement, Event>) => {
     e.preventDefault();
@@ -50,6 +66,7 @@ export const ContactFormResponse = ({
       const answer = inputValues[option.id];
       answers.push({
         fieldType: option.type,
+        answerId: option.id,
         answer,
       });
     });
@@ -78,7 +95,7 @@ export const ContactFormResponse = ({
             </div>
           );
         })}
-        <div className={'space-y-2'}>
+        <div className={'space-y-3'}>
           {(question.settings as FormSettings).consent && (
             <label
               className={
@@ -93,9 +110,13 @@ export const ContactFormResponse = ({
             >
               <input
                 style={{
-                  width: '15px',
-                  height: '15px',
+                  width: '20px',
+                  height: '20px',
                   accentColor: theme?.answer ?? '#050505',
+                  borderWidth: '2px',
+                  borderStyle: 'solid',
+                  borderColor: theme?.answer ?? '#050505',
+                  borderRadius: '4px'
                 }}
                 type="checkbox"
                 value=""
@@ -127,7 +148,8 @@ export const ContactFormResponse = ({
             color={theme?.button}
             size="full"
             type="submit"
-            disabled={!checked}
+            disabled={!isValid}
+            classname='mt-3'
           />
         </div>
       </form>

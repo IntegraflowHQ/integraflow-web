@@ -47,6 +47,8 @@ export const SmileyResponse = ({
   theme,
   onAnswered,
 }: Props) => {
+  const count = question.options?.length ?? (question.settings as RangeSettings).count ?? 0;
+
   return (
     <AnswerContainer>
       <Header
@@ -56,19 +58,16 @@ export const SmileyResponse = ({
       />
 
       <div>
-        <div className={'flex justify-around my-2 mx-auto'}>
+        <div className={'flex justify-center gap-2 my-2 mx-auto'}>
           {question.options?.map((option, index) => (
             <button
               key={option.id}
               onClick={() =>
                 onAnswered([{ answerId: option.id, answer: option.label }])
               }
-              className={'cursor-pointer block p-2 rounded-full bg-[#EFF0F6]'}
+              className={'cursor-pointer block p-2 rounded-full hover:bg-[#EFF0F6]'}
             >
-              {renderSmiley(
-                (question.settings as RangeSettings).count as number,
-                index
-              )}
+              {renderSmiley(count, index)}
             </button>
           ))}
         </div>

@@ -121,3 +121,4 @@ export function hexToRgba(hex: string, opacity: number): string {
   const blue = parseInt(hexWithoutHash.slice(4, 6), 16);
   return `rgba(${red}, ${green}, ${blue}, ${opacity})`;
 }
+

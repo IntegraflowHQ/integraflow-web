@@ -39,8 +39,8 @@ function RangeResponse({
   const maxCount =
     question.type === AnswerType.NPS
       ? 10
-      : (question.settings as RangeSettings).count ??
-        question.options?.length ??
+      : question.options?.length ??
+        (question.settings as RangeSettings).count ??
         0;
 
   useEffect(() => {

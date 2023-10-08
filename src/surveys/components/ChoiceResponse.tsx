@@ -13,7 +13,7 @@ import {
 import { hexToRgba, shuffleArray } from '../../utils';
 import AnswerContainer from './AnswerContainer';
 
-interface SingleResponseProps {
+interface ChoiceResponseProps {
   question: Question;
   label: string;
   description?: string;
@@ -29,8 +29,8 @@ export default function ChoiceResponse({
   submitText,
   theme,
   onAnswered
-}: SingleResponseProps): VNode {
-  const [selectedOption, setSelectedOption] = useState<QuestionOption[]>();
+}: ChoiceResponseProps): VNode {
+  const [selectedOption, setSelectedOption] = useState<QuestionOption[]>([]);
 
   const handleOptionChange = (option: QuestionOption) => {
     if (question.type === AnswerType.MULTIPLE) {
@@ -40,13 +40,16 @@ export default function ChoiceResponse({
           : [...(prevState ?? []), option]
       );
     } else {
-      setSelectedOption([option]);
+      onAnswered([{
+        answerId: option.id,
+        answer: option.label
+      }]);
     }
   };
 
-  const handleSubmit = (e: h.JSX.TargetedEvent<HTMLFormElement, Event>) => {
-    e.preventDefault();
-    if (!selectedOption) return;
+  const handleSubmit = (e?: h.JSX.TargetedEvent<HTMLFormElement, Event>) => {
+    e?.preventDefault();
+
     onAnswered(
       selectedOption.map((option) => ({
         answerId: option.id,
@@ -56,9 +59,6 @@ export default function ChoiceResponse({
   };
 
   const questionOptions = useMemo(() => {
-    if ((question.settings as MultipleSettings | SingleSettings).randomize) {
-      return shuffleArray(question.options as QuestionOption[], 'all');
-    }
     if (
       (question.settings as MultipleSettings | SingleSettings)
         .randomizeExceptLast
@@ -66,8 +66,28 @@ export default function ChoiceResponse({
       return shuffleArray(question.options as QuestionOption[], 'exceptLast');
     }
 
+    if ((question.settings as MultipleSettings | SingleSettings).randomize) {
+      return shuffleArray(question.options as QuestionOption[], 'all');
+    }
+
     return question.options;
   }, [question.options]);
+
+  const isValid = useMemo(() => {
+    if (question.type === AnswerType.SINGLE) {
+      return true;
+    }
+
+    const choice = (question.settings as MultipleSettings).choice;
+    if (!choice) {
+      return true;
+    }
+
+    const minValid = !choice.min || selectedOption.length >= choice.min;
+    const maxValid = !choice.max || choice.max >= selectedOption.length;
+
+    return minValid && maxValid;
+  }, [question, selectedOption]);
 
   return (
     <form className={'space-y-4'} onSubmit={handleSubmit}>
@@ -82,7 +102,7 @@ export default function ChoiceResponse({
           questionOptions.map((option) => (
             <label
               key={option.id}
-              className={'rounded-xl py-3 px-4 flex gap-2 items-center'}
+              className={`rounded-xl py-3 px-4 flex gap-2 items-center cursor-pointer`}
               style={{
                 backgroundColor: theme?.answer
                   ? hexToRgba(theme.answer, 0.1)
@@ -92,30 +112,32 @@ export default function ChoiceResponse({
             >
               <input
                 style={{
-                  padding: '3rem',
                   width: '20px',
                   height: '20px',
                   accentColor: theme?.answer ?? '#050505',
+                  borderWidth: '2px',
+                  borderStyle: 'solid',
+                  borderColor: theme?.answer ?? '#050505',
+                  borderRadius: question.type === AnswerType.MULTIPLE ? '4px' : undefined
                 }}
                 type={
                   question.type === AnswerType.MULTIPLE ? 'checkbox' : 'radio'
                 }
                 value={option.id}
-                checked={selectedOption?.includes(option)}
-                onChange={() => {
-                  handleOptionChange(option);
-                }}
+                checked={selectedOption.some(selected => selected.id === option.id)}
+                onChange={() => handleOptionChange(option)}
               />
               <span>{option.label}</span>
             </label>
           ))}
       </AnswerContainer>
 
-      <Button
+      {question.type === AnswerType.MULTIPLE && <Button
         label={submitText ?? 'Submit'}
         color={theme?.button}
         size='full'
-      />
+        disabled={!isValid}
+      />}
     </form>
   );
 }

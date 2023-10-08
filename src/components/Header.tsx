@@ -1,4 +1,5 @@
 import { h, VNode } from 'preact';
+import { cleanHtml } from '../utils/clean-html';
 
 export interface HeaderProps {
   title: string;
@@ -14,14 +15,18 @@ export function Header({
   color = '#050505',
 }: HeaderProps): VNode {
   return (
-    <header className={`spacey-2 ${centered && 'text-center'}`}>
-      <h2 style={{ color }} className='text-sm font-semibold leading-[22px]'>
-        {title}
-      </h2>
+    <header className={`space-y-2 w-min min-w-full ${centered ? 'text-center' : ''}`}>
+      <div
+        style={{ color }}
+        className='text-sm font-semibold leading-[22px]'
+        dangerouslySetInnerHTML={{ __html: cleanHtml(title) }}
+      />
       {description && (
-        <span style={{ color }} className='text-xs font-normal leading-[19px]'>
-          {description}
-        </span>
+        <div
+          style={{ color }}
+          className='text-xs font-normal leading-[19px]'
+          dangerouslySetInnerHTML={{ __html: cleanHtml(description) }}
+        />
       )}
     </header>
   );
