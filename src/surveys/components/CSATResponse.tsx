@@ -31,11 +31,12 @@ export default function CSATResponse({
                   onAnswered([{ answerId: option.id, answer: option.label }]);
                 }}
                 key={index}
-                label={option.label}
                 variant='surveyInput'
                 color={theme?.answer}
                 size='full'
-              />
+              >
+                {option.label}
+              </Button>
             );
           })}
       </AnswerContainer>

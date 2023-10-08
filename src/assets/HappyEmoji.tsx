@@ -13,8 +13,8 @@ export const HappyEmoji = () => {
       <rect
         x="0.519531"
         y="0.827637"
-        width="30.8772"
-        height="30.3448"
+        width="36.8772"
+        height="36.3448"
         fill="url(#pattern1)"
       />
       <defs>

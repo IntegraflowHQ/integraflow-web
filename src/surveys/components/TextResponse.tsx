@@ -73,11 +73,12 @@ const TextResponse = ({
         )}
         <Button
           color={theme?.button}
-          label={submitText ?? 'Submit'}
           type='submit'
           size='full'
           classname='mt-3'
-        />
+        >
+          {submitText ?? 'Submit'}
+        </Button>
       </form>
     </div>
   );

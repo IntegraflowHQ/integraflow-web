@@ -183,10 +183,11 @@ export default function DropdownResponse({
           )}
 
         <Button
-          label={submitText ?? 'Submit'}
           color={theme?.button}
           size='full'
-        />
+        >
+          {submitText ?? 'Submit'}
+        </Button>
       </AnswerContainer>
     </form>
   );

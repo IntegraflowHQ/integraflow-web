@@ -13,8 +13,8 @@ export const AngryEmoji = () => {
       <rect
         x="0.447266"
         y="0.586426"
-        width="30.1053"
-        height="29.5862"
+        width="37.1053"
+        height="36.5862"
         fill="url(#pattern0)"
       />
       <defs>

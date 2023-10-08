@@ -133,11 +133,12 @@ export default function ChoiceResponse({
       </AnswerContainer>
 
       {question.type === AnswerType.MULTIPLE && <Button
-        label={submitText ?? 'Submit'}
         color={theme?.button}
         size='full'
         disabled={!isValid}
-      />}
+      >
+        {submitText ?? 'Submit'}
+      </Button>}
     </form>
   );
 }

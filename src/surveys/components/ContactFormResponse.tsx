@@ -144,13 +144,14 @@ export const ContactFormResponse = ({
             </p>
           )}
           <Button
-            label={submitText ?? 'Submit'}
             color={theme?.button}
             size="full"
             type="submit"
             disabled={!isValid}
             classname='mt-3'
-          />
+          >
+            {submitText ?? 'Submit'}
+          </Button>
         </div>
       </form>
     </AnswerContainer>

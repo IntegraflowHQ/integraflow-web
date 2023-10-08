@@ -1,9 +1,9 @@
-import { FunctionComponent, h } from 'preact';
+import { ComponentChildren, FunctionComponent, h } from 'preact';
 import { useMemo, useState } from 'preact/hooks';
-import { calculateTextColor, cn, hexToRgba } from '../../utils';
+import { calculateTextColor, cn, hexToRgba } from '../utils';
 
 interface ButtonProps {
-  label?: string;
+  children?: ComponentChildren;
   onClick?: () => void;
   type?: 'submit' | 'button' | 'reset';
   size?: 'md' | 'sm' | 'full';
@@ -11,7 +11,7 @@ interface ButtonProps {
   classname?: string;
   color?: string;
   position?: 'left' | 'right' | 'center';
-  variant?: 'default' | 'surveyInput';
+  variant?: 'default' | 'surveyInput' | 'rounded';
   disabled?: boolean;
 }
 
@@ -46,7 +46,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
       return hexToRgba(color, 0.2);
     }
 
-    return hexToRgba(color, 0.1);
+    return variant === 'surveyInput' ? hexToRgba(color, 0.1) : undefined;
   }, [variant, color, isActive, disabled, isHovered]);
 
   let widthClasses = 'w-auto';
@@ -69,11 +69,12 @@ export const Button: FunctionComponent<ButtonProps> = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{
-        backgroundColor: backgroundColor,
+        backgroundColor,
         color: fontColor,
       }}
       className={cn(
-        `rounded-lg min-h-[40px]`,
+        `min-h-[40px]`,
+        variant === 'rounded' ? 'rounded-full' : 'rounded-lg',
         widthClasses,
         buttonPositionClasses,
         variant === 'default'
@@ -82,7 +83,7 @@ export const Button: FunctionComponent<ButtonProps> = ({
         props.classname ?? ''
       )}
     >
-      {props.label}
+      {props.children}
     </button>
   );
 };

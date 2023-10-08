@@ -76,14 +76,15 @@ function RangeResponse({
       return (
         <Button
           key={index}
-          label={getLabel()}
           onClick={handleOptionClick}
           color={theme?.answer}
           classname={!isMobile ? 'w-[42px] h-[42px] shrink-0' : undefined}
           variant='surveyInput'
           isActive={isSelected}
           size={isMobile ? 'full' : undefined}
-        />
+        >
+          {getLabel()}
+        </Button>
       );
     } else if (question.type === AnswerType.RATING) {
       return (

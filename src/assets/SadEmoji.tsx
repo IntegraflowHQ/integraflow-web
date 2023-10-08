@@ -13,8 +13,8 @@ export const SadEmoji = () => {
       <rect
         x="0.957031"
         y="0.827637"
-        width="29.0847"
-        height="30.3448"
+        width="36.0847"
+        height="36.3448"
         fill="url(#pattern3)"
       />
       <defs>

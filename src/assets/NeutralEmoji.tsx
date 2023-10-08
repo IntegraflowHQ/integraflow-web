@@ -13,8 +13,8 @@ export const NeutralEmoji = () => {
       <rect
         x="0.421875"
         y="0.827637"
-        width="29.9984"
-        height="30.3448"
+        width="36.9984"
+        height="36.3448"
         fill="url(#pattern2)"
       />
       <defs>

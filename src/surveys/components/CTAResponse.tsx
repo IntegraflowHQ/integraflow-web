@@ -1,7 +1,7 @@
 import { h } from 'preact';
 
 import { Header } from '../../components';
-import { Button } from '../../components/Button/Button';
+import { Button } from '../../components/Button';
 import {
   CTASettings,
   CTAType,
@@ -40,11 +40,12 @@ export const CTAResponse = ({
 
       {(question?.settings as CTASettings).type === CTAType.HIDDEN ? null : (
         <Button
-          label={(question?.settings as CTASettings).text}
           onClick={onClickHandler}
           size='full'
           color={theme?.button}
-        />
+        >
+          {(question?.settings as CTASettings).text}
+        </Button>
       )}
     </div>
   );
