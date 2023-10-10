@@ -115,7 +115,7 @@ export default function ChoiceResponse({
                   width: '20px',
                   height: '20px',
                   accentColor: theme?.answer ?? '#050505',
-                  borderWidth: '2px',
+                  borderWidth: '1px',
                   borderStyle: 'solid',
                   borderColor: theme?.answer ?? '#050505',
                   borderRadius: question.type === AnswerType.MULTIPLE ? '4px' : undefined

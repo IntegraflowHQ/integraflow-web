@@ -133,7 +133,7 @@ function RangeResponse({
 
       <div
         className={cn(
-          'flex gap-1 overflow-auto',
+          'flex justify-center gap-1 overflow-auto',
           isMobile && question.type === AnswerType.NPS ? 'flex-col' : '',
           isMobile && question.type === AnswerType.NUMERICAL_SCALE ? 'flex-col' : '',
           question.type === AnswerType.RATING ? 'mx-auto w-fit max-w-full' : '',

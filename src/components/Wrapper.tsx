@@ -1,19 +1,16 @@
 import { XIcon } from 'lucide-preact';
 import { h } from 'preact';
 import useIsMobile from '../hooks/useIsMobile';
-import { PlacementType, Theme } from '../types';
+import { Theme, SurveySettings } from '../types';
 import { calculateTextColor, cn } from '../utils';
 import Progress from './Progress';
 
 interface ContainerProps {
   children: preact.ComponentChildren;
   fullScreen?: boolean;
-  placement?: PlacementType;
   close?: () => void;
-  background?: string;
   progress: number;
-  showProgressBar?: boolean;
-  showBranding?: boolean;
+  settings: SurveySettings;
   theme?: Theme;
   maxWidth?: string;
   minWidth?: string;
@@ -22,16 +19,15 @@ interface ContainerProps {
 export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
   children,
   fullScreen,
-  placement,
   close,
-  background = '#FFFFFF',
   progress,
-  showProgressBar,
-  showBranding = true,
+  settings,
   theme,
   maxWidth,
   minWidth
 }) => {
+  const { placement, showProgressBar, close: showClose, showBranding } = settings;
+
   const showTopBar = showProgressBar || !fullScreen;
   const isMobile = useIsMobile();
 
@@ -67,7 +63,7 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
           fullScreen ? 'w-screen h-screen' : ''
         )}
         style={{
-          backgroundColor: background,
+          backgroundColor: theme?.background ?? '#FFF',
           maxWidth:
             !fullScreen && !isMobile && maxWidth ? maxWidth : '100%',
           minWidth: !fullScreen && !isMobile ? minWidth : undefined
@@ -83,7 +79,7 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
             {showProgressBar && (
               <Progress bgColor={theme?.progressBar} progress={progress} />
             )}
-            {!fullScreen && (
+            {(!fullScreen && showClose) && (
               <button onClick={close}>
                 <XIcon
                   color={calculateTextColor(theme?.background ?? '#FFFFFF')}

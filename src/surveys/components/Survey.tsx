@@ -1,7 +1,6 @@
 import { VNode, h } from 'preact';
 import {
   useCallback,
-  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -130,11 +129,8 @@ export default function Survey({
   return (
     <Wrapper
       close={() => close(true)}
-      placement={survey.settings.placement}
-      background={survey.theme?.background}
-      showProgressBar={survey.settings.showProgressBar}
-      showBranding={survey.settings.showBranding}
       progress={responseCount / (responseCount + activeQuestion.maxPath)}
+      settings={survey.settings}
       theme={survey.theme}
       maxWidth={
         ['rating', 'nps', 'smiley_scale', 'numerical_scale'].includes(
@@ -150,7 +146,7 @@ export default function Survey({
         className={cn(loading ? 'animate-pulse opacity-60' : '')}
       >
         {survey.questions.map(
-          (question, idx) =>
+          (question) =>
             activeQuestion.id === question.id && (
               <Response
                 key={question.id}
