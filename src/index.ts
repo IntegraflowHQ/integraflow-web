@@ -32,6 +32,8 @@ export default class Integraflow {
     if (!this.client) {
       this.client = new Integraflow(config);
       this.initialized = true;
+    } else {
+      this.client.context.surveys = config.surveys ?? [];
     }
 
     return this.client;
