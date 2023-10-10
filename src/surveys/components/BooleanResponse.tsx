@@ -34,19 +34,21 @@ export default function BooleanResponse({
         {(question?.settings as BooleanSettings).shape === 'button' ? (
           <Fragment>
             <Button
-              label={(question.settings as BooleanSettings).positiveText}
               color={theme?.answer}
               onClick={answerPositive}
               variant='surveyInput'
               size='full'
-            />
+            >
+              {(question.settings as BooleanSettings).positiveText}
+            </Button>
             <Button
-              label={(question.settings as BooleanSettings).negativeText}
               color={theme?.answer}
               onClick={answerNegative}
               variant='surveyInput'
               size='full'
-            />
+            >
+              {(question.settings as BooleanSettings).negativeText}
+            </Button>
           </Fragment>
         ) : (
           <Fragment>

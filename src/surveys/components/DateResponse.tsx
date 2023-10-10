@@ -55,10 +55,11 @@ export default function DateResponse({
       </AnswerContainer>
 
       <Button
-        label={submitText ?? 'Submit'}
         color={theme?.button}
         size='full'
-      />
+      >
+        {submitText ?? 'Submit'}
+      </Button>
     </form>
   );
 }

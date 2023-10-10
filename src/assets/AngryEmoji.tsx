@@ -3,9 +3,9 @@ import { h } from 'preact';
 export const AngryEmoji = () => {
   return (
     <svg
-      width="31"
-      height="31"
-      viewBox="0 0 31 31"
+      width="38"
+      height="38"
+      viewBox="0 0 38 38"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -13,8 +13,8 @@ export const AngryEmoji = () => {
       <rect
         x="0.447266"
         y="0.586426"
-        width="30.1053"
-        height="29.5862"
+        width="37.1053"
+        height="36.5862"
         fill="url(#pattern0)"
       />
       <defs>

@@ -3,9 +3,9 @@ import { h } from 'preact';
 export const NeutralEmoji = () => {
   return (
     <svg
-      width="31"
-      height="32"
-      viewBox="0 0 31 32"
+      width="38"
+      height="38"
+      viewBox="0 0 38 38"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -13,8 +13,8 @@ export const NeutralEmoji = () => {
       <rect
         x="0.421875"
         y="0.827637"
-        width="29.9984"
-        height="30.3448"
+        width="36.9984"
+        height="36.3448"
         fill="url(#pattern2)"
       />
       <defs>

@@ -35,6 +35,7 @@ export enum FormFieldType {
   INDUSTRY = 'industry',
   CONFIRMATION = 'confirmation',
   SECURITY_INFO = 'security_info',
+  COMMENT = 'comment'
 }
 
 export enum LogicOperator {
@@ -205,7 +206,7 @@ export interface BooleanSettings extends QuestionSettings<BooleanLogic> {
 export interface CTASettings {
   type: CTAType;
   text?: string;
-  link?: boolean;
+  link?: string;
 }
 
 export interface DateSettings extends QuestionSettings<DateLogic> {}
@@ -213,6 +214,10 @@ export interface DateSettings extends QuestionSettings<DateLogic> {}
 export interface MultipleSettings extends QuestionSettings<MultipleLogic> {
   randomize?: boolean;
   randomizeExceptLast?: boolean;
+  choice?: {
+    min?: number;
+    max?: number;
+  }
 }
 
 export interface SingleSettings extends QuestionSettings<SingleLogic> {
@@ -237,7 +242,7 @@ export interface Question {
   description?: string;
   type: AnswerType;
   options?: (QuestionOption | FormField)[];
-  maxPath?: number;
+  maxPath: number;
   settings:
     | FormSettings
     | RangeSettings
@@ -294,7 +299,9 @@ export interface SurveySettings {
   recurringPeriod: number;
   placement?: PlacementType;
   showProgressBar: boolean;
+  close?: boolean;
   submitText?: string;
+  showBranding?: boolean;
 }
 
 export interface Theme {
@@ -328,7 +335,7 @@ export type Jsonish =
   | undefined;
 
 export interface UserAttributes {
-  id: ID;
+  id?: ID;
   [key: string]: Jsonish;
 }
 

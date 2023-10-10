@@ -109,6 +109,7 @@ export async function resetState(
   state.user = undefined;
   state.seenSurveyIds = undefined;
   state.surveyAnswers = undefined;
+  state.lastPresentationTimes = undefined;
 
   if (resetInstallId) {
     state.installId = undefined;

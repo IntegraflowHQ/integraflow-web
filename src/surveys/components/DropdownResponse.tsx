@@ -104,9 +104,11 @@ export default function DropdownResponse({
     width: `${dropdownWidth}px`,
     maxHeight: `${dropDownMaxHeight}px`,
     backgroundColor,
-    position: 'absolute',
+    position: 'fixed',
     overflowY: 'auto',
-    left: `${inputRectLeft}px`,
+    left: inputRectLeft,
+    zIndex: 2147483650,
+    boxShadow: 'rgba(0, 0, 0, 0.16) 0px 5px 40px',
     ...dropDownPositionY,
   };
 
@@ -179,14 +181,12 @@ export default function DropdownResponse({
                 </div>
               )}
             </AnswerContainer>,
-            document.getElementById('integraflow-content-wrapper') as HTMLElement
+            document.body
           )}
 
-        <Button
-          label={submitText ?? 'Submit'}
-          color={theme?.button}
-          size='full'
-        />
+        <Button color={theme?.button} size='full'>
+          {submitText ?? 'Submit'}
+        </Button>
       </AnswerContainer>
     </form>
   );

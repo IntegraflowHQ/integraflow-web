@@ -39,8 +39,8 @@ function RangeResponse({
   const maxCount =
     question.type === AnswerType.NPS
       ? 10
-      : (question.settings as RangeSettings).count ??
-        question.options?.length ??
+      : question.options?.length ??
+        (question.settings as RangeSettings).count ??
         0;
 
   useEffect(() => {
@@ -76,14 +76,15 @@ function RangeResponse({
       return (
         <Button
           key={index}
-          label={getLabel()}
           onClick={handleOptionClick}
           color={theme?.answer}
           classname={!isMobile ? 'w-[42px] h-[42px] shrink-0' : undefined}
           variant='surveyInput'
           isActive={isSelected}
           size={isMobile ? 'full' : undefined}
-        />
+        >
+          {getLabel()}
+        </Button>
       );
     } else if (question.type === AnswerType.RATING) {
       return (
@@ -132,7 +133,7 @@ function RangeResponse({
 
       <div
         className={cn(
-          'flex gap-1 overflow-auto',
+          'flex justify-center gap-1 overflow-auto',
           isMobile && question.type === AnswerType.NPS ? 'flex-col' : '',
           isMobile && question.type === AnswerType.NUMERICAL_SCALE ? 'flex-col' : '',
           question.type === AnswerType.RATING ? 'mx-auto w-fit max-w-full' : '',

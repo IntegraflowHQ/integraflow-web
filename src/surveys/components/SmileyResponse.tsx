@@ -6,7 +6,7 @@ import {
   SadEmoji,
   SatisfiedEmoji,
 } from '../../assets';
-import { Header } from '../../components';
+import { Button, Header } from '../../components';
 import { Question, RangeSettings, SurveyAnswer, Theme } from '../../types';
 import AnswerContainer from './AnswerContainer';
 
@@ -47,6 +47,8 @@ export const SmileyResponse = ({
   theme,
   onAnswered,
 }: Props) => {
+  const count = question.options?.length ?? (question.settings as RangeSettings).count ?? 0;
+
   return (
     <AnswerContainer>
       <Header
@@ -56,20 +58,20 @@ export const SmileyResponse = ({
       />
 
       <div>
-        <div className={'flex justify-around my-2 mx-auto'}>
+        <div className={'flex justify-center gap-1 my-2 mx-auto'}>
           {question.options?.map((option, index) => (
-            <button
+            <Button
               key={option.id}
+              type='button'
               onClick={() =>
                 onAnswered([{ answerId: option.id, answer: option.label }])
               }
-              className={'cursor-pointer block p-2 rounded-full bg-[#EFF0F6]'}
+              color={theme?.answer}
+              classname={'cursor-pointer block p-2 w-auto h-auto'}
+              variant='rounded'
             >
-              {renderSmiley(
-                (question.settings as RangeSettings).count as number,
-                index
-              )}
-            </button>
+              {renderSmiley(count, index)}
+            </Button>
           ))}
         </div>
         <div className={'flex gap-12 justify-between w-full '}>

@@ -1,14 +1,13 @@
 import { VNode, h } from 'preact';
 import {
   useCallback,
-  useEffect,
   useLayoutEffect,
   useRef,
   useState,
 } from 'preact/hooks';
 
 import { Wrapper } from '../../components';
-import { ID, Question, Survey, SurveyAnswer } from '../../types';
+import { AnswerType, CTASettings, CTAType, ID, Question, Survey, SurveyAnswer } from '../../types';
 import { cn } from '../../utils';
 import Response from './Response';
 
@@ -34,7 +33,7 @@ export default function Survey({
   replaceTags
 }: SurveyProps): VNode {
   const [activeQuestion, setActiveQuestion] = useState(survey.questions[0]);
-  const [progress, setProgress] = useState(0);
+  const [responseCount, setResponseCount] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const contentRef = useRef<HTMLDivElement>(null);
@@ -46,17 +45,6 @@ export default function Survey({
     }
   }, [activeQuestion]);
 
-  useEffect(() => {
-    setProgress(calculateProgress());
-
-    function calculateProgress() {
-      const index = survey.questions.findIndex(
-        (question) => question.id === activeQuestion.id
-      );
-      return index / survey.questions.length;
-    }
-  }, [activeQuestion, survey]);
-
   const resolveNextQuestion = useCallback(
     (answers: SurveyAnswer[]) => {
       if (!survey || !activeQuestion) {
@@ -65,6 +53,13 @@ export default function Survey({
 
       if (survey.questions.length === 0) {
         return null;
+      }
+
+      if (activeQuestion.type === AnswerType.CTA) {
+        const ctaType = (activeQuestion.settings as CTASettings).type;
+        if (ctaType !== CTAType.NEXT) {
+          return null;
+        }
       }
 
       const nextQuestionId = getNextQuestionId(activeQuestion, answers);
@@ -108,23 +103,24 @@ export default function Survey({
       setLoading(true);
 
       const nextQuestion = resolveNextQuestion(answers);
-      const finished = isLastQuestion(activeQuestion.id);
+      const lastQuestion = isLastQuestion(activeQuestion.id);
 
+      const finished = lastQuestion || !nextQuestion
       if (answers.length > 0) {
         answers[answers.length - 1].finished = finished;
       }
 
       await onQuestionAnswered?.(survey.id, activeQuestion.id, answers);
-
       setLoading(false);
 
-      if (finished || !nextQuestion) {
+      if (finished) {
         await onSurveyCompleted?.(survey.id);
 
         close();
         return;
       }
 
+      setResponseCount(responseCount + 1);
       setActiveQuestion(nextQuestion);
     },
     [survey, activeQuestion]
@@ -133,25 +129,24 @@ export default function Survey({
   return (
     <Wrapper
       close={() => close(true)}
-      placement={survey.settings.placement}
-      background={survey.theme?.background}
-      showProgressBar={survey.settings.showProgressBar}
-      progress={progress}
+      progress={responseCount / (responseCount + activeQuestion.maxPath)}
+      settings={survey.settings}
       theme={survey.theme}
       maxWidth={
         ['rating', 'nps', 'smiley_scale', 'numerical_scale'].includes(
           activeQuestion.type
         )
-          ? '504px'
+          ? '520px'
           : '304px'
       }
+      minWidth='304px'
     >
       <div
         ref={contentRef}
         className={cn(loading ? 'animate-pulse opacity-60' : '')}
       >
         {survey.questions.map(
-          (question, idx) =>
+          (question) =>
             activeQuestion.id === question.id && (
               <Response
                 key={question.id}

@@ -32,6 +32,7 @@ export const templates: Template[] = [
           orderNumber: 1,
           label: 'How disappointed would you be if you could no longer use Formily?',
           description: 'Please select one of the following options:',
+          maxPath: 4,
           options: [
             {
               id: 1,
@@ -60,6 +61,7 @@ export const templates: Template[] = [
           orderNumber: 2,
           label: 'What is your role, {{answer:1 | "Jimoh"}}?',
           description: 'Please select one of the following options:',
+          maxPath: 3,
           options: [
             {
               id: 1,
@@ -97,8 +99,8 @@ export const templates: Template[] = [
               condition: LogicSingleCondition.IS,
               values: [1, 2, 3, 4]
             }, {
-              id: 1,
-              orderNumber: 1,
+              id: 2,
+              orderNumber: 2,
               destination: 3,
               condition: LogicSingleCondition.IS,
               values: [5]
@@ -110,6 +112,7 @@ export const templates: Template[] = [
           type: AnswerType.TEXT,
           orderNumber: 3,
           label: 'What type of people do you think would most benefit from Formily?',
+          maxPath: 2,
           settings: {
             singleLine: false,
             logic: [{
@@ -124,6 +127,7 @@ export const templates: Template[] = [
           id: 4,
           type: AnswerType.TEXT,
           orderNumber: 4,
+          maxPath: 2,
           label: 'What is the main benefit you receive from Formily?',
           settings: {
             singleLine: false
@@ -133,6 +137,7 @@ export const templates: Template[] = [
           id: 5,
           type: AnswerType.TEXT,
           orderNumber: 5,
+          maxPath: 1,
           label: 'How can we improve our service for you?',
           description: 'Please be as specific as possible.',
           settings: {
@@ -143,6 +148,7 @@ export const templates: Template[] = [
           id: 6,
           type: AnswerType.CTA,
           orderNumber: 6,
+          maxPath: 0,
           label: 'Thank you!',
           description: 'We appreciate your feedback.',
           settings: {
@@ -172,6 +178,7 @@ export const templates: Template[] = [
           orderNumber: 1,
           label: 'What is your role?',
           description: 'Please select one of the following options:',
+          maxPath: 3,
           options: [
             {
               id: 1,
@@ -210,6 +217,7 @@ export const templates: Template[] = [
           orderNumber: 2,
           label: 'What\'s your company size?',
           description: 'Please select one of the following options:',
+          maxPath: 2,
           options: [
             {
               id: 1,
@@ -247,6 +255,7 @@ export const templates: Template[] = [
           type: AnswerType.SINGLE,
           label: 'How did you hear about us first?',
           description: 'Please select one of the following options:',
+          maxPath: 1,
           orderNumber: 3,
           options: [
             {
@@ -286,6 +295,7 @@ export const templates: Template[] = [
           orderNumber: 6,
           label: 'Thank you!',
           description: 'We appreciate your feedback.',
+          maxPath: 0,
           settings: {
             type: CTAType.CLOSE, 
             text: 'Close'
