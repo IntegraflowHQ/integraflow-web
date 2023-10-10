@@ -26,7 +26,12 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
   maxWidth,
   minWidth
 }) => {
-  const { placement, showProgressBar, close: showClose, showBranding } = settings;
+  const {
+    placement,
+    showProgressBar = true,
+    close: showClose = true,
+    showBranding = true
+  } = settings;
 
   const showTopBar = showProgressBar || !fullScreen;
   const isMobile = useIsMobile();
