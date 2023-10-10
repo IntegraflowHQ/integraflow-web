@@ -65,7 +65,7 @@ export const Wrapper: preact.FunctionComponent<ContainerProps> = ({
           !fullScreen && isMobile
             ? 'rounded-t-2xl w-screen max-h-[600px] shadow-3xl'
             : '',
-          fullScreen ? 'w-screen h-screen' : ''
+          fullScreen ? 'w-screen h-screen fixed z-[2147483650] inset-0' : ''
         )}
         style={{
           backgroundColor: theme?.background ?? '#FFF',
